@@ -1,6 +1,8 @@
 import 'package:_96_sooq/features/deals/data/models/chat_conversation_model.dart';
 import 'package:_96_sooq/features/deals/data/services/chat_api_service.dart';
+import 'package:_96_sooq/features/auth/domain/auth_session_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // ─── Events ──────────────────────────────────────────────────────────────────
 
@@ -55,6 +57,9 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
   }
 
   final ChatApiService _api;
+  final AuthSessionRepository _authSessionRepository = AuthSessionRepository();
+  RealtimeChannel? _inboxChannel;
+  String? _subscribedUserId;
 
   Future<void> _onFetched(
     ChatListFetched event,
@@ -69,6 +74,7 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
           conversations: conversations,
         ),
       );
+      await _ensureInboxSubscription();
     } catch (e) {
       emit(state.copyWith(status: ChatListStatus.failure, error: e.toString()));
     }
@@ -89,5 +95,36 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
     } catch (e) {
       emit(state.copyWith(status: ChatListStatus.failure, error: e.toString()));
     }
+  }
+
+  Future<void> _ensureInboxSubscription() async {
+    if (_inboxChannel != null && _subscribedUserId != null) return;
+
+    final user = await _authSessionRepository.getCachedUser();
+    final currentUserId = user?.id.trim();
+    if (currentUserId == null || currentUserId.isEmpty) return;
+
+    _inboxChannel?.unsubscribe();
+    _inboxChannel = Supabase.instance.client
+        .channel('inbox-$currentUserId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'conversations',
+          callback: (_) {
+            if (isClosed) return;
+            add(const ChatListRefreshed());
+          },
+        )
+        .subscribe();
+    _subscribedUserId = currentUserId;
+  }
+
+  @override
+  Future<void> close() async {
+    _inboxChannel?.unsubscribe();
+    _inboxChannel = null;
+    _subscribedUserId = null;
+    return super.close();
   }
 }

@@ -111,7 +111,12 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
           ),
         ),
       ),
-    );
+    ).then((_) {
+      // Refresh inbox when returning from chat to update last message & read status
+      if (mounted) {
+        context.read<ChatListBloc>().add(const ChatListRefreshed());
+      }
+    });
   }
 
   @override

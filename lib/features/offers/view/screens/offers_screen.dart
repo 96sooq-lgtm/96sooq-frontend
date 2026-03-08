@@ -1,9 +1,16 @@
 import 'package:_96_sooq/constants/app_assets.dart';
 import 'package:_96_sooq/constants/app_colors.dart';
 import 'package:_96_sooq/constants/app_themes.dart';
+import 'package:_96_sooq/features/auth/bloc/auth_bloc.dart';
+import 'package:_96_sooq/features/auth/domain/auth_session_repository.dart';
+import 'package:_96_sooq/features/auth/screens/login_screen.dart';
+import 'package:_96_sooq/features/deals/bloc/chat/chat_bloc.dart';
+import 'package:_96_sooq/features/deals/data/services/chat_api_service.dart';
+import 'package:_96_sooq/features/deals/view/screens/chats/chat_screen.dart';
 import 'package:_96_sooq/features/offers/model/offer_story_item.dart';
 import 'package:_96_sooq/shared/global_widgets/app_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -312,11 +319,24 @@ class _OffersScreenState extends State<OffersScreen>
                   const SizedBox(height: 14),
                   Row(
                     children: [
-                      if (_currentOffer.avatarUrl != null &&
+                      if (_currentOffer.isAdminOffer &&
+                          _currentOffer.avatarUrl != null &&
                           _currentOffer.avatarUrl!.trim().isNotEmpty)
                         ClipOval(
                           child: AppNetworkImage(
                             imageUrl: _currentOffer.avatarUrl!,
+                            width: 38,
+                            height: 38,
+                            fit: BoxFit.cover,
+                            shape: BoxShape.circle,
+                          ),
+                        )
+                      else if (!_currentOffer.isAdminOffer &&
+                          _currentOffer.storeLogo != null &&
+                          _currentOffer.storeLogo!.trim().isNotEmpty)
+                        ClipOval(
+                          child: AppNetworkImage(
+                            imageUrl: _currentOffer.storeLogo!,
                             width: 38,
                             height: 38,
                             fit: BoxFit.cover,
@@ -340,7 +360,9 @@ class _OffersScreenState extends State<OffersScreen>
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          _currentOffer.name,
+                          _currentOffer.isAdminOffer
+                              ? _currentOffer.name
+                              : _currentOffer.storeName ?? _currentOffer.name,
                           style: AppThemes.f18w600.copyWith(
                             color: AppColors.white,
                           ),
@@ -364,6 +386,19 @@ class _OffersScreenState extends State<OffersScreen>
                         Expanded(
                           child: GestureDetector(
                             onTap: () async {
+                              final authState = context.read<AuthBloc>().state;
+                              if (authState is! AuthAuthenticated) {
+                                final result = await Navigator.push<bool>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const LoginScreen(),
+                                  ),
+                                );
+                                if (result != true || !context.mounted) {
+                                  return;
+                                }
+                              }
+
                               final uri = Uri.tryParse(_currentOffer.linkUrl!);
                               if (uri != null) {
                                 await launchUrl(
@@ -405,24 +440,158 @@ class _OffersScreenState extends State<OffersScreen>
                       else
                         const Spacer(),
                       const SizedBox(width: 10),
-                      Container(
-                        width: 58,
-                        height: 58,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.3),
+                      if (_currentOffer.isAdminOffer)
+                        GestureDetector(
+                          onTap: () async {
+                            final authState = context.read<AuthBloc>().state;
+                            if (authState is! AuthAuthenticated) {
+                              final result = await Navigator.push<bool>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginScreen(),
+                                ),
+                              );
+                              if (result != true || !context.mounted) return;
+                            }
+
+                            final number = _currentOffer.whatsappNumber;
+                            if (number != null && number.isNotEmpty) {
+                              final text = Uri.encodeComponent(
+                                "Hi, I want to know more about this offer: ${_currentOffer.name}",
+                              );
+                              final uri = Uri.parse(
+                                "whatsapp://send?phone=$number&text=$text",
+                              );
+                              if (await canLaunchUrl(uri)) {
+                                await launchUrl(
+                                  uri,
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              }
+                            }
+                          },
+                          child: Container(
+                            width: 58,
+                            height: 58,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: Center(
+                              child: SvgPicture.asset(
+                                AppAssets.whatsappIc,
+                                width: 24,
+                                height: 24,
+                              ),
+                            ),
+                          ),
+                        )
+                      else
+                        GestureDetector(
+                          onTap: () async {
+                            final authState = context.read<AuthBloc>().state;
+                            if (authState is! AuthAuthenticated) {
+                              final result = await Navigator.push<bool>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginScreen(),
+                                ),
+                              );
+                              if (result != true || !context.mounted) {
+                                return;
+                              }
+                            }
+
+                            final user = await AuthSessionRepository()
+                                .getCachedUser();
+                            final currentUserId = user?.id ?? '';
+                            if (currentUserId.isEmpty || !context.mounted) {
+                              return;
+                            }
+
+                            final listingId = _currentOffer.listingId;
+                            if (listingId == null || listingId.isEmpty) {
+                              return;
+                            }
+
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (_) => const Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.primaryColor,
+                                ),
+                              ),
+                            );
+
+                            try {
+                              final conversation = await const ChatApiService()
+                                  .initiateChat(listingId);
+
+                              if (!context.mounted) return;
+                              Navigator.pop(context); // Close loading dialog
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider(
+                                    create: (_) =>
+                                        ChatBloc(currentUserId: currentUserId)
+                                          ..add(
+                                            ChatOpened(
+                                              conversation: conversation,
+                                            ),
+                                          ),
+                                    child: ChatScreen(
+                                      currentUserId: currentUserId,
+                                      userName:
+                                          _currentOffer.storeName ?? 'Seller',
+                                      avatarUrl:
+                                          _currentOffer.storeLogo ??
+                                          _currentOffer.avatarUrl ??
+                                          'https://i.pravatar.cc/300?img=12',
+                                      listingId: listingId,
+                                      listingTitle: _currentOffer.name,
+                                      listingPrice: '',
+                                      listingCurrency: 'OMR',
+                                      listingImageUrl:
+                                          _currentOffer.avatarUrl ?? '',
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } catch (e) {
+                              if (!context.mounted) return;
+                              Navigator.pop(context); // Close loading dialog
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Could not start chat: $e'),
+                                ),
+                              );
+                            }
+                          },
+                          child: Container(
+                            width: 58,
+                            height: 58,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: Center(
+                              child: SvgPicture.asset(
+                                AppAssets.chatWhiteIc,
+                                width: 24,
+                                height: 24,
+                              ),
+                            ),
                           ),
                         ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            AppAssets.chatWhiteIc,
-                            width: 24,
-                            height: 24,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ],

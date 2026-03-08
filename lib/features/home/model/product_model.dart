@@ -11,6 +11,10 @@ class ProductModel {
   final String? status;
   final String? city;
   final String? place;
+  final String? locationNameEn;
+  final String? locationNameAr;
+  final String? placeNameEn;
+  final String? placeNameAr;
   final bool isPreview;
   final List<String> images;
   final String? localImagePath;
@@ -21,8 +25,10 @@ class ProductModel {
   final String? storeLogo;
   final String? userId;
   final String? categoryId;
+  final String? subcategoryId;
   final String? currency;
   final String? rejectionReason;
+  final String? placeId;
   final String? planId;
   final String? expiresAt;
   final String? location;
@@ -36,6 +42,7 @@ class ProductModel {
   final String? userProfilePicture;
   final String? sellerPhoneNumber;
   final List<dynamic>? promotions;
+  final int favoritesCount;
 
   ProductModel({
     required this.id,
@@ -51,6 +58,10 @@ class ProductModel {
     this.status,
     this.city,
     this.place,
+    this.locationNameEn,
+    this.locationNameAr,
+    this.placeNameEn,
+    this.placeNameAr,
     this.isPreview = false,
     this.localImagePath,
     this.localImagePaths,
@@ -60,8 +71,10 @@ class ProductModel {
     this.storeLogo,
     this.userId,
     this.categoryId,
+    this.subcategoryId,
     this.currency,
     this.rejectionReason,
+    this.placeId,
     this.planId,
     this.expiresAt,
     this.location,
@@ -75,6 +88,7 @@ class ProductModel {
     this.userProfilePicture,
     this.sellerPhoneNumber,
     this.promotions,
+    this.favoritesCount = 0,
   });
 
   /// Capitalizes the first letter and replaces underscores with spaces.
@@ -105,21 +119,31 @@ class ProductModel {
       amount: (json['price'] ?? json['amount'] ?? '').toString(),
       imageUrl: imageUrl,
       images: imagesList,
-      categoryName: json['category_name']?.toString(),
-      subCategoryName: json['sub_category_name']?.toString(),
+      categoryName:
+          json['category_name']?.toString() ??
+          json['category_name_en']?.toString(),
+      subCategoryName:
+          json['sub_category_name']?.toString() ??
+          json['subcategory_name_en']?.toString(),
       condition: _capitalize(json['condition']?.toString()),
       sellerType: _capitalize(json['seller_type']?.toString()),
       status: json['status']?.toString(),
       city: json['city']?.toString(),
       place: json['place']?.toString(),
+      locationNameEn: json['location_name_en']?.toString(),
+      locationNameAr: json['location_name_ar']?.toString(),
+      placeNameEn: json['place_name_en']?.toString(),
+      placeNameAr: json['place_name_ar']?.toString(),
       attributesValues: json['attributes_values'] as Map<String, dynamic>?,
       storeId: json['store_id']?.toString(),
       storeName: json['store_name']?.toString(),
       storeLogo: json['store_logo']?.toString(),
       userId: json['user_id']?.toString(),
       categoryId: json['category_id']?.toString(),
+      subcategoryId: json['subcategory_id']?.toString(),
       currency: json['currency']?.toString(),
       rejectionReason: json['rejection_reason']?.toString(),
+      placeId: json['place_id']?.toString(),
       planId: json['plan_id']?.toString(),
       expiresAt: json['expires_at']?.toString(),
       location: json['location']?.toString(),
@@ -133,6 +157,9 @@ class ProductModel {
       userProfilePicture: json['user_profile_picture']?.toString(),
       sellerPhoneNumber: json['seller_phone_number']?.toString(),
       promotions: json['promotions'] as List<dynamic>?,
+      favoritesCount: json['favorites_count'] is int
+          ? json['favorites_count'] as int
+          : int.tryParse(json['favorites_count']?.toString() ?? '0') ?? 0,
     );
   }
 }

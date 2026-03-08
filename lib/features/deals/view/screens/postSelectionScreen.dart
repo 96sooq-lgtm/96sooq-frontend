@@ -87,58 +87,111 @@ class _PostSelectionScreenState extends State<PostSelectionScreen> {
         ? ListingAccountType.business
         : ListingAccountType.individual;
     final useExistingQuota = hasStore && storeStatus == 'active';
+    final status = product.status?.toLowerCase() ?? '';
 
     final imageUrl = product.imageUrl.isNotEmpty
         ? product.imageUrl
         : (product.images.isNotEmpty ? product.images.first : '');
 
-    if (!useExistingQuota) {
+    if (hasStore) {
+      // Store/business user: keep existing logic unchanged
+      if (!useExistingQuota) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (_) => AddlistPaymentFlowBloc(),
+              child: SubscriptionListingScreen(
+                disclaimerSubtext:
+                    'Business account gets 1 listing free per month.',
+                accountType: accountType,
+                promoteProduct: product,
+              ),
+            ),
+          ),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              lazy: false,
+              create: (_) => AddlistPaymentFlowBloc()
+                ..add(
+                  FlowInitialized(
+                    accountType: accountType,
+                    requiresPayment: false,
+                    planTitle: 'Post Promotion',
+                    planAmount: 0.0,
+                    currency: 'OMR',
+                    useExistingQuota: useExistingQuota,
+                  ),
+                ),
+              child: BoostYourProductScreen(
+                source: BoostFlowSource.myDeals,
+                postId: product.id,
+                postTitle: product.title,
+                postAmount: product.amount,
+                postImageUrl: imageUrl,
+                postDetails: product.details,
+                accountType: accountType,
+              ),
+            ),
+          ),
+        );
+      }
+      return;
+    }
+
+    // Individual user — NEVER show subscription for active listings
+    if (status == 'draft') {
+      // Draft only: go through subscription screen to pay listing amount
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => AddlistPaymentFlowBloc(),
             child: SubscriptionListingScreen(
-              disclaimerSubtext: accountType == ListingAccountType.individual
-                  ? 'Individual account gets 1 listing free per month.'
-                  : 'Business account gets 1 listing free per month.',
+              disclaimerSubtext:
+                  'Individual account gets 1 listing free per month.',
               accountType: accountType,
               promoteProduct: product,
             ),
           ),
         ),
       );
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => BlocProvider(
-          lazy: false,
-          create: (_) => AddlistPaymentFlowBloc()
-            ..add(
-              FlowInitialized(
-                accountType: accountType,
-                requiresPayment: false,
-                planTitle: 'Post Promotion',
-                planAmount: 0.0,
-                currency: 'OMR',
-                useExistingQuota: useExistingQuota,
+    } else {
+      // Active or any other status: go DIRECTLY to boost screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            lazy: false,
+            create: (_) => AddlistPaymentFlowBloc()
+              ..add(
+                FlowInitialized(
+                  accountType: accountType,
+                  requiresPayment: false,
+                  planTitle: 'Post Promotion',
+                  planId: null,
+                  planAmount: 0.0,
+                  currency: 'OMR',
+                  useExistingQuota: false,
+                ),
               ),
+            child: BoostYourProductScreen(
+              source: BoostFlowSource.myDeals,
+              postId: product.id,
+              postTitle: product.title,
+              postAmount: product.amount,
+              postImageUrl: imageUrl,
+              postDetails: product.details,
+              accountType: accountType,
             ),
-          child: BoostYourProductScreen(
-            source: BoostFlowSource.myDeals,
-            postId: product.id,
-            postTitle: product.title,
-            postAmount: product.amount,
-            postImageUrl: imageUrl,
-            postDetails: product.details,
-            accountType: accountType,
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   void _openProductDetailSheet(ProductModel product) {
@@ -261,12 +314,17 @@ class _PostSelectionScreenState extends State<PostSelectionScreen> {
                             }
 
                             final product = state.products[index];
+                            final status = product.status?.toLowerCase() ?? '';
                             final isPending =
-                                product.status == 'pending_approval';
+                                status == 'pending_approval' ||
+                                status == 'pending';
+                            final isRejected = status == 'rejected';
+                            // Hide promote for rejected/pending for all users
+                            final showPromote = !isPending && !isRejected;
                             return _PostSelectionCard(
                               product: product,
                               promoteLabel: localizations.promoteText,
-                              showPromote: !isPending,
+                              showPromote: showPromote,
                               onTap: () => _openProductDetailSheet(product),
                               onPromoteTap: () =>
                                   _onPromoteTap(context, product),
@@ -352,10 +410,7 @@ class _PostSelectionCard extends StatelessWidget {
                             if (status != null && status.isNotEmpty)
                               ProductStatusChip(
                                 status: status,
-                                isFeatured:
-                                    status.toLowerCase() == 'active' &&
-                                    product.promotions != null &&
-                                    product.promotions!.isNotEmpty,
+                                isFeatured: product.isPromoted == true,
                                 fontSize: 9,
                                 topEndRadius: 10,
                                 bottomStartRadius: 10,

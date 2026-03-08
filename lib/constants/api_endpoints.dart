@@ -1,5 +1,5 @@
 class ApiEndpoints {
-  static const String baseUrl = "https://nine6sooq-backend.onrender.com";
+  static const String baseUrl = "https://nine6sooq-backend-1.onrender.com";
   static const String getAllCategory = "$baseUrl/api/categories/";
   static const String getCategoriesByParent =
       "$baseUrl/api/categories/?parent_id=";
@@ -14,7 +14,7 @@ class ApiEndpoints {
   static const String listingPrices =
       "$baseUrl/api/subscriptions/listing-prices";
   static const String featuredBanners = "$baseUrl/api/banners/featured";
-  static const String offers = "$baseUrl/api/banners/offers";
+  static const String offers = "$baseUrl/api/feed/offers";
   static String feedCategory(String categoryId) =>
       "$baseUrl/api/feed/category/$categoryId";
   static const String uploadToS3 = "$baseUrl/storage/upload";
@@ -72,11 +72,7 @@ class ApiEndpoints {
   static String paymentStatus(String transactionId) =>
       '$baseUrl/api/payments/payment-check?transaction_id=$transactionId';
   static const String myTransactions = '$baseUrl/api/payments/my-transactions';
-  static String myListings({
-    String? status,
-    int? skip,
-    int? limit,
-  }) {
+  static String myListings({String? status, int? skip, int? limit}) {
     final query = <String, String>{};
     if (status != null && status.isNotEmpty) {
       query['status'] = status;
@@ -106,4 +102,11 @@ class ApiEndpoints {
       '$baseUrl/api/chats/$conversationId/read';
   static String chatSendMessage(String conversationId) =>
       '$baseUrl/api/chats/$conversationId/messages';
+  static const String chatScreenAd = '$baseUrl/api/feed/chat-screen-ad';
+
+  // ─── Notifications ─────────────────────────────────────────────────────────
+  static const String registerNotificationToken =
+      '$baseUrl/api/notifications/register-token';
+  static const String unregisterNotificationToken =
+      '$baseUrl/api/notifications/unregister-token';
 }

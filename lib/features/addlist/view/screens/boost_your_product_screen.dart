@@ -4,6 +4,7 @@ import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:_96_sooq/features/addlist/bloc/payment/addlist_payment_flow_bloc.dart';
 import 'package:_96_sooq/features/addlist/view/screens/summary_screen.dart';
 import 'package:_96_sooq/features/paymets/bloc/payment_bloc.dart';
+import 'package:_96_sooq/features/paymets/data/payment_repository.dart';
 import 'package:_96_sooq/features/addlist/model/listing_account_type.dart';
 import 'package:_96_sooq/features/root/view/screens/root_view.dart';
 import 'package:_96_sooq/l10n/app_localizations.dart';
@@ -70,7 +71,9 @@ class _BoostYourProductScreenState extends State<BoostYourProductScreen> {
     return double.tryParse(cleaned);
   }
 
-  void _onProceed() {
+  bool _isSubmitting = false;
+
+  Future<void> _onProceed() async {
     final paymentFlowBloc = context.read<AddlistPaymentFlowBloc>();
     final previousState = paymentFlowBloc.state;
     final localeCode = Localizations.localeOf(context).languageCode;
@@ -135,6 +138,48 @@ class _BoostYourProductScreenState extends State<BoostYourProductScreen> {
           ),
         ),
       );
+      return;
+    }
+
+    // No promotion selected — if useExistingQuota, call checkout bundle API.
+    if (previousState.useExistingQuota) {
+      if (_isSubmitting) return;
+      setState(() => _isSubmitting = true);
+
+      final listingId = previousState.postedListingId ?? widget.postId ?? '';
+
+      try {
+        const paymentRepo = PaymentRepository();
+        await paymentRepo.initiateCheckout(
+          listingId: listingId,
+          useExistingQuota: true,
+          currency: 'OMR',
+        );
+
+        if (!mounted) return;
+
+        final messenger = ScaffoldMessenger.of(context);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const RootScreen()),
+          (_) => false,
+        );
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('Your listing has been submitted for review!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } catch (e) {
+        if (!mounted) return;
+        setState(() => _isSubmitting = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Checkout failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
       return;
     }
 

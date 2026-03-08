@@ -29,9 +29,6 @@ class DealsScreen extends StatefulWidget {
 
 class _DealsScreenState extends State<DealsScreen> {
   late final MyListingsBloc _myListingsBloc;
-  bool _didFetchInitialListings = false;
-  bool? _lastFetchedHasStore;
-  String? _lastFetchedStoreId;
 
   @override
   void initState() {
@@ -75,10 +72,6 @@ class _DealsScreenState extends State<DealsScreen> {
           BlocListener<AuthBloc, AuthState>(
             listener: (context, authState) {
               if (authState is AuthAuthenticated) {
-                // Reset so listings are fetched with the new auth token
-                _didFetchInitialListings = false;
-                _lastFetchedHasStore = null;
-                _lastFetchedStoreId = null;
                 context.read<StoreProfileBloc>().add(
                   const StoreProfileCheckRequested(),
                 );
@@ -109,7 +102,8 @@ class _DealsScreenState extends State<DealsScreen> {
                   // ── My Deals section ──
                   BlocBuilder<MyListingsBloc, MyListingsState>(
                     builder: (context, state) {
-                      if (state.status == MyListingsStatus.loading) {
+                      if (state.status == MyListingsStatus.loading &&
+                          state.products.isEmpty) {
                         return _buildMyDealsSection(
                           context: context,
                           localizations: localizations,
@@ -141,13 +135,21 @@ class _DealsScreenState extends State<DealsScreen> {
                       return ProductListingWidget(
                         category: localizations.myDealsTitle,
                         showFavoriteIcon: false,
-
                         showStatus: true,
+                        showOwnerStatuses: true,
                         onProductTap: (product) {
                           showProductDetailSheet(
                             context: context,
                             product: product,
                           );
+                        },
+                        onRejectedStatusTap: (product) {
+                          if (product.status == 'rejected') {
+                            _showRejectionReasonSheet(
+                              context,
+                              product.rejectionReason,
+                            );
+                          }
                         },
                         products: state.products,
                         onSeeAllTap: () {
@@ -317,6 +319,72 @@ class _DealsScreenState extends State<DealsScreen> {
     );
   }
 
+  void _showRejectionReasonSheet(BuildContext context, String? reason) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => Padding(
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.red.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.cancel_outlined,
+                    color: Colors.red,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text('Rejection Reason', style: AppThemes.f18w600),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF5F5),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.15)),
+              ),
+              child: Text(
+                reason ?? 'No reason provided',
+                style: AppThemes.f14w500.copyWith(
+                  color: const Color(0xFF4A4A4A),
+                  height: 1.5,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void showProductDetailSheet({
     required BuildContext context,
     required ProductModel product,
@@ -333,15 +401,6 @@ class _DealsScreenState extends State<DealsScreen> {
   }
 
   void _fetchListingsIfNeeded({required bool hasStore, String? storeId}) {
-    final hasChanged =
-        _lastFetchedHasStore != hasStore || _lastFetchedStoreId != storeId;
-    if (_didFetchInitialListings && !hasChanged) {
-      return;
-    }
-
-    _didFetchInitialListings = true;
-    _lastFetchedHasStore = hasStore;
-    _lastFetchedStoreId = storeId;
     _myListingsBloc.add(
       MyListingsFetched(
         hasStore: hasStore,

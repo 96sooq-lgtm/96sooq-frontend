@@ -1,8 +1,8 @@
 class AppStrings {
   static const String empty = '';
   static const String letsGetStarted = 'Let’s get started';
-  static const String loginDescription =
-      "Enter your mobile number to receive a\nsecure verification code.";
+  // static const String loginDescription =
+  //     "Enter your mobile number to receive a\nsecure verification code.";
   static const String enterMobileNumber = "Enter mobile number";
   static const String enterYourFullName = "Enter your full name";
   static const String dontHaveAnAccount = "Don't have an account? ";

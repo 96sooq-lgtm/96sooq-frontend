@@ -9,6 +9,7 @@ class OffersState extends Equatable {
   final bool hasReachedMax;
   final int skip;
   final String errorMessage;
+  final String? governorate;
 
   const OffersState({
     this.status = OffersStatus.initial,
@@ -16,6 +17,7 @@ class OffersState extends Equatable {
     this.hasReachedMax = false,
     this.skip = 0,
     this.errorMessage = '',
+    this.governorate,
   });
 
   OffersState copyWith({
@@ -24,6 +26,7 @@ class OffersState extends Equatable {
     bool? hasReachedMax,
     int? skip,
     String? errorMessage,
+    String? governorate,
   }) {
     return OffersState(
       status: status ?? this.status,
@@ -31,9 +34,17 @@ class OffersState extends Equatable {
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       skip: skip ?? this.skip,
       errorMessage: errorMessage ?? this.errorMessage,
+      governorate: governorate ?? this.governorate,
     );
   }
 
   @override
-  List<Object> get props => [status, offers, hasReachedMax, skip, errorMessage];
+  List<Object> get props => [
+    status,
+    offers,
+    hasReachedMax,
+    skip,
+    errorMessage,
+    if (governorate != null) governorate!,
+  ];
 }

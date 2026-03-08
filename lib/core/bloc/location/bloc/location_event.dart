@@ -24,7 +24,11 @@ final class LocationCitySelected extends LocationEvent {
   final LocationItemModel city;
 }
 
-final class LocationUseCurrentRequested extends LocationEvent {}
+final class LocationUseCurrentRequested extends LocationEvent {
+  LocationUseCurrentRequested({this.isForceRefresh = false});
+
+  final bool isForceRefresh;
+}
 
 final class LocationSelectionCleared extends LocationEvent {}
 

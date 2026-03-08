@@ -35,4 +35,51 @@ class S3UploadService {
 
     throw Exception('Unexpected S3 upload response format');
   }
+
+  /// Uploads multiple files in a single request using the `files` key.
+  Future<List<S3UploadResult>> uploadFiles({
+    required List<({List<int> bytes, String filename})> files,
+    required String folder,
+  }) async {
+    final multipartFiles = <MultipartFile>[];
+    for (final file in files) {
+      multipartFiles.add(
+        MultipartFile.fromBytes(file.bytes, filename: file.filename),
+      );
+    }
+
+    final formData = FormData.fromMap({
+      'files': multipartFiles,
+      'folder': folder,
+    });
+
+    final response = await dio.post(
+      ApiEndpoints.uploadToS3,
+      data: formData,
+      options: Options(sendTimeout: const Duration(seconds: 120)),
+    );
+
+    final data = response.data;
+
+    // Backend may return a list of results or a map containing a list.
+    List<dynamic> rawList;
+    if (data is List) {
+      rawList = data;
+    } else if (data is Map) {
+      final mapData = Map<String, dynamic>.from(data);
+      rawList =
+          mapData['files'] as List? ??
+          mapData['urls'] as List? ??
+          mapData['results'] as List? ??
+          mapData.values.whereType<List>().firstOrNull ??
+          [];
+    } else {
+      throw Exception('Unexpected S3 batch upload response format');
+    }
+
+    return rawList
+        .whereType<Map>()
+        .map((item) => S3UploadResult.fromJson(Map<String, dynamic>.from(item)))
+        .toList();
+  }
 }

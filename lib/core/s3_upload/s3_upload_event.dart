@@ -13,3 +13,10 @@ class UploadFile extends S3UploadEvent {
     required this.folder,
   });
 }
+
+class UploadFiles extends S3UploadEvent {
+  final List<({Uint8List bytes, String filename})> files;
+  final String folder;
+
+  UploadFiles({required this.files, required this.folder});
+}

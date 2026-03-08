@@ -23,6 +23,11 @@ class S3UploadSuccess extends S3UploadState {
   S3UploadSuccess(this.result);
 }
 
+class S3UploadMultiSuccess extends S3UploadState {
+  final List<S3UploadResult> results;
+  S3UploadMultiSuccess(this.results);
+}
+
 class S3UploadFailure extends S3UploadState {
   final String message;
   S3UploadFailure(this.message);

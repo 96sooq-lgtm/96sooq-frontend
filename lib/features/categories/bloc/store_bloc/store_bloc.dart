@@ -20,6 +20,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
   }
 
   final StoreApiService _storeApiService;
+  static const int _categoryPageSize = 10;
 
   static const int _homePageSize = 20;
 
@@ -107,7 +108,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
         isPaginating: false,
         hasMore: true,
         skip: 0,
-        limit: 10,
+        limit: _categoryPageSize,
         activeLocationId: event.locationId,
       ),
     );
@@ -118,7 +119,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
           : state.filterMinRating;
       final stores = await _storeApiService.fetchStores(
         skip: 0,
-        limit: 10,
+        limit: _categoryPageSize,
         locationId: event.locationId,
         minRating: effectiveMinRating,
       );
@@ -127,9 +128,9 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
           categoryStatus: StoreLoadStatus.success,
           categoryStores: stores,
           categoryError: null,
-          hasMore: stores.isNotEmpty,
+          hasMore: stores.length >= _categoryPageSize,
           skip: 0,
-          limit: 10,
+          limit: _categoryPageSize,
           activeLocationId: event.locationId,
         ),
       );
@@ -155,8 +156,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
       return;
     }
 
-    final nextSkip = state.skip + 10;
-    final nextLimit = state.limit + 10;
+    final nextSkip = state.skip + _categoryPageSize;
 
     final effectiveMinRating = state.filterAnyRating
         ? null
@@ -165,7 +165,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
     try {
       final stores = await _storeApiService.fetchStores(
         skip: nextSkip,
-        limit: nextLimit,
+        limit: _categoryPageSize,
         locationId: state.activeLocationId,
         minRating: effectiveMinRating,
       );
@@ -176,9 +176,9 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
             ...state.categoryStores,
             ...stores,
           ],
-          hasMore: stores.isNotEmpty,
+          hasMore: stores.length >= _categoryPageSize,
           skip: nextSkip,
-          limit: nextLimit,
+          limit: _categoryPageSize,
         ),
       );
     } catch (e) {

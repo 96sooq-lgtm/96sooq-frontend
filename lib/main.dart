@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:_96_sooq/constants/app_colors.dart';
 import 'package:_96_sooq/core/bloc/language/bloc/language_bloc.dart';
 import 'package:_96_sooq/core/bloc/language/bloc/language_event.dart';
@@ -9,6 +11,7 @@ import 'package:_96_sooq/features/categories/bloc/categories_bloc.dart';
 import 'package:_96_sooq/features/categories/bloc/store_bloc/store_bloc.dart';
 import 'package:_96_sooq/features/profile/bloc/profile_bloc.dart';
 import 'package:_96_sooq/features/profile/bloc/profile_event.dart';
+import 'package:_96_sooq/features/notifications/data/local_notification_service.dart';
 import 'package:_96_sooq/features/profile/bloc/store_profile/store_profile_bloc.dart';
 import 'package:_96_sooq/features/root/view/screens/root_view.dart';
 import 'package:_96_sooq/features/offers/bloc/offers_bloc.dart';
@@ -18,14 +21,20 @@ import 'package:_96_sooq/features/deals/viewmodel/bloc/favorites_list_bloc/favor
 import 'package:_96_sooq/features/home/viewmodel/bloc/favorite_bloc/bloc/favorite_bloc.dart';
 import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:_96_sooq/shared/app_navigation.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  // Keep background handler registered for FCM; background system notifications
+  // should be handled by Firebase/OS tap flow.
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +44,37 @@ void main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrdHJmc2Rzb3dwY3hiaXlscmRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY0NzI3NTgsImV4cCI6MjA4MjA0ODc1OH0.bFUywICsEYswzj6V_GEVkGDGCm4AmpfMG01hskaV0zY',
   );
   await Firebase.initializeApp();
+  await LocalNotificationService.initialize();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    // iOS foreground banners are handled via setForegroundNotificationPresentationOptions.
+    // Android needs an explicit local notification to display while app is in foreground.
+    if (!kIsWeb && Platform.isAndroid) {
+      await LocalNotificationService.showFromRemoteMessage(message);
+    }
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    if (kDebugMode) {
+      debugPrint(
+        '[Notifications] Opened from background tap. data=${message.data}',
+      );
+    }
+  });
+
+  final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  if (kDebugMode && initialMessage != null) {
+    debugPrint(
+      '[Notifications] Opened from terminated tap. data=${initialMessage.data}',
+    );
+  }
+
   runApp(
     // DevicePreview(
     //   enabled: kDebugMode,

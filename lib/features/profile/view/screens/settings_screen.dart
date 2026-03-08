@@ -1,5 +1,6 @@
 import 'package:_96_sooq/constants/app_colors.dart';
 import 'package:_96_sooq/constants/app_themes.dart';
+import 'package:_96_sooq/features/notifications/data/notification_registration_service.dart';
 import 'package:_96_sooq/shared/global_widgets/backnavigation_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,42 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _pushNotifications = true;
+  bool _isUpdatingPush = false;
+  final NotificationRegistrationService _notificationService =
+      NotificationRegistrationService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNotificationPreference();
+  }
+
+  Future<void> _loadNotificationPreference() async {
+    final enabled = await _notificationService.isNotificationsEnabled();
+    if (!mounted) return;
+    setState(() => _pushNotifications = enabled);
+  }
+
+  Future<void> _onPushToggleChanged(bool value) async {
+    if (_isUpdatingPush) return;
+
+    setState(() => _isUpdatingPush = true);
+    try {
+      await _notificationService.setNotificationsEnabled(value);
+      if (value) {
+        await _notificationService.registerTokenIfAllowedAtStartup();
+      } else {
+        await _notificationService.unregisterCurrentToken();
+      }
+
+      if (!mounted) return;
+      setState(() => _pushNotifications = value);
+    } finally {
+      if (mounted) {
+        setState(() => _isUpdatingPush = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +117,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     CupertinoSwitch(
                       value: _pushNotifications,
                       activeTrackColor: const Color(0xFF2A2F3B),
-                      onChanged: (value) {
-                        setState(() => _pushNotifications = value);
-                      },
+                      onChanged: _isUpdatingPush
+                          ? null
+                          : (value) => _onPushToggleChanged(value),
                     ),
                   ],
                 ),

@@ -62,7 +62,7 @@ class UnauthorizedProfileScreen extends StatelessWidget {
                     crossAxisAlignment: .start,
                     children: [
                       Text(
-                        'Login',
+                        localizations.loginText,
                         style: isArabic
                             ? AppThemes.f18w600.copyWith(
                                 fontSize: 20,
@@ -71,7 +71,7 @@ class UnauthorizedProfileScreen extends StatelessWidget {
                             : AppThemes.f18w600,
                       ),
                       Text(
-                        'Login in to your account',
+                        localizations.loginInYourAccountText,
                         style: isArabic
                             ? AppThemes.f12w400.copyWith(
                                 fontSize: 14,
@@ -150,7 +150,7 @@ class UnauthorizedProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 46),
               CustomButton(
-                text: "Login",
+                text: localizations.loginText,
                 onPressed: () async {
                   final result = await Navigator.push<bool>(
                     context,

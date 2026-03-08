@@ -10,6 +10,7 @@ class S3UploadBloc extends Bloc<S3UploadEvent, S3UploadState> {
 
   S3UploadBloc(this.service) : super(S3UploadInitial()) {
     on<UploadFile>(_uploadFile);
+    on<UploadFiles>(_uploadFiles);
   }
 
   Future<void> _uploadFile(
@@ -26,6 +27,24 @@ class S3UploadBloc extends Bloc<S3UploadEvent, S3UploadState> {
       emit(S3UploadSuccess(result));
     } on DioException catch (e) {
       emit(S3UploadFailure(e.message ?? 'Upload failed'));
+    } catch (e) {
+      emit(S3UploadFailure(e.toString()));
+    }
+  }
+
+  Future<void> _uploadFiles(
+    UploadFiles event,
+    Emitter<S3UploadState> emit,
+  ) async {
+    emit(S3UploadLoading());
+    try {
+      final results = await service.uploadFiles(
+        files: event.files,
+        folder: event.folder,
+      );
+      emit(S3UploadMultiSuccess(results));
+    } on DioException catch (e) {
+      emit(S3UploadFailure(e.message ?? 'Batch upload failed'));
     } catch (e) {
       emit(S3UploadFailure(e.toString()));
     }

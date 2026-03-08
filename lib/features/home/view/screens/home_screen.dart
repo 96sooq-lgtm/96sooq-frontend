@@ -1,17 +1,18 @@
 import 'package:_96_sooq/constants/app_assets.dart';
 import 'package:_96_sooq/constants/app_colors.dart';
 import 'package:_96_sooq/core/bloc/location/bloc/location_bloc.dart';
-import 'package:_96_sooq/features/categories/view/screens/product_listing_screen.dart';
 import 'package:_96_sooq/features/categories/bloc/store_bloc/store_bloc.dart';
 import 'package:_96_sooq/features/deals/view/screens/favoutire_screen.dart';
 import 'package:_96_sooq/features/home/data/featured_banner_api_service.dart';
+import 'package:_96_sooq/features/categories/widgets/category_feed_widget.dart';
+import 'package:_96_sooq/shared/global_widgets/section_header.dart';
 import 'package:_96_sooq/features/home/model/featured_banner_model.dart';
 import 'package:_96_sooq/features/home/model/product_model.dart';
+
 import 'package:_96_sooq/features/home/widgets/categories_widget.dart';
 import 'package:_96_sooq/features/home/widgets/moving_dots_widget.dart';
 import 'package:_96_sooq/features/home/widgets/offers_widget.dart';
 import 'package:_96_sooq/features/home/widgets/product_detail_sheet.dart';
-import 'package:_96_sooq/features/home/widgets/product_listing_widget.dart';
 import 'package:_96_sooq/features/home/widgets/searchbar_black_widget.dart';
 import 'package:_96_sooq/features/search/view/screens/search_screen.dart';
 import 'package:_96_sooq/features/home/widgets/store_listing_widget.dart';
@@ -20,7 +21,6 @@ import 'package:_96_sooq/features/offers/bloc/offers_event.dart';
 import 'package:_96_sooq/features/offers/bloc/offers_state.dart';
 import 'package:_96_sooq/features/location/view/screens/governarate_list_screen.dart';
 import 'package:_96_sooq/features/auth/domain/auth_session_repository.dart';
-import 'package:_96_sooq/features/auth/bloc/auth_bloc.dart';
 import 'package:_96_sooq/features/auth/screens/login_screen.dart';
 import 'package:_96_sooq/features/profile/view/screens/store_details_screen.dart';
 import 'package:_96_sooq/features/profile/bloc/store_profile/store_profile_bloc.dart';
@@ -224,7 +224,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     // Re-fetch categories
     context.read<CategoriesBloc>().add(CategoriesRequested());
     // Re-fetch offers
-    context.read<OffersBloc>().add(const FetchOffers());
+    context.read<OffersBloc>().add(
+      FetchOffers(
+        isRefresh: true,
+        governorate: context.read<LocationBloc>().state.selectedState?.nameEn,
+      ),
+    );
     // Re-fetch stores
     context.read<StoreBloc>().add(
       HomeStoresRequested(
@@ -274,6 +279,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           listener: (context, state) {
             context.read<StoreBloc>().add(
               HomeStoresRequested(locationId: _resolvedLocationId(state)),
+            );
+            context.read<OffersBloc>().add(
+              FetchOffers(
+                isRefresh: true,
+                governorate: state.selectedState?.nameEn,
+              ),
             );
           },
         ),
@@ -391,8 +402,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       _IconCircle(
                         AppAssets.favoritesIc,
                         onTap: () async {
-                          final authState = context.read<AuthBloc>().state;
-                          if (authState is! AuthAuthenticated) {
+                          final isLoggedIn = await _authSessionRepository
+                              .isLoggedIn();
+                          if (!context.mounted) return;
+                          if (!isLoggedIn) {
                             // Not logged in, redirect to login screen
                             final result = await Navigator.push<bool>(
                               context,
@@ -400,10 +413,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 builder: (_) => const LoginScreen(),
                               ),
                             );
+                            if (!context.mounted) return;
 
-                            // If login was successful, change tab to Deals (index 2)
-                            if (result == true && context.mounted) {
-                              context.read<RootBloc>().add(ChangeTabEvent(2));
+                            // If login was successful, open favorites directly
+                            if (result == true) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const FavoutireScreen(),
+                                ),
+                              );
                             }
                             return;
                           }
@@ -418,8 +437,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           }
                         },
                       ),
-                      const SizedBox(width: 10),
-                      _IconCircle(AppAssets.notificationIc),
+                      // const SizedBox(width: 10),
+                      // _IconCircle(AppAssets.notificationIc),
                     ],
                   ),
                 ),
@@ -471,7 +490,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                   .languageCode ==
                               'ar';
 
-                          final header = _SectionHeader(
+                          final header = SectionHeader(
                             title: localizations.categoriesTitle,
                             action: localizations.seeAllText,
                             isArabic: isArabic,
@@ -727,162 +746,74 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         },
                       ),
 
-                      /// Products
-                      ProductListingWidget(
-                        category: "Electronics",
-                        onProductTap: (product) {
-                          showProductDetailSheet(
-                            context: context,
-                            product: product,
-                          );
-                        },
-                        products: [
-                          ProductModel(
-                            id: "el_1",
-                            title: "Samsung Galaxy",
-                            details: "S24 256 GB",
-                            amount: "125 OMR",
-                            imageUrl:
-                                "https://images.pexels.com/photos/1786433/pexels-photo-1786433.jpeg",
-                          ),
-                          ProductModel(
-                            id: "el_2",
-                            title: "iPhone 15",
-                            details: "128 GB",
-                            amount: "320 OMR",
-                            imageUrl:
-                                "https://images.pexels.com/photos/1786433/pexels-photo-1786433.jpeg",
-                          ),
-                          ProductModel(
-                            id: "el_3",
-                            title: "MacBook Air",
-                            details: "M2 16GB",
-                            amount: "540 OMR",
-                            imageUrl:
-                                "https://images.pexels.com/photos/1786433/pexels-photo-1786433.jpeg",
-                          ),
-                          ProductModel(
-                            id: "el_4",
-                            title: "Sony Headphones",
-                            details: "WH-1000XM5",
-                            amount: "90 OMR",
-                            imageUrl:
-                                "https://images.pexels.com/photos/1786433/pexels-photo-1786433.jpeg",
-                          ),
-                        ],
-                        onSeeAllTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const ProductListingScreen(categoryId: ''),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 22),
-                      ProductListingWidget(
-                        category: "Fashion & Lifestyle",
-                        onProductTap: (product) {
-                          showProductDetailSheet(
-                            context: context,
-                            product: product,
-                          );
-                        },
-                        products: [
-                          ProductModel(
-                            id: "fa_1",
-                            title: "Kurti",
-                            details: "F Orange",
-                            amount: "20 OMR",
-                            imageUrl:
-                                "https://www.exhibit.tech/wp-content/uploads/2024/05/infashion-1683875219.webp",
-                          ),
-                          ProductModel(
-                            id: "fa_2",
-                            title: "Men T-Shirt",
-                            details: "Cotton XL",
-                            amount: "12 OMR",
-                            imageUrl:
-                                "https://www.exhibit.tech/wp-content/uploads/2024/05/infashion-1683875219.webp",
-                          ),
-                          ProductModel(
-                            id: "fa_3",
-                            title: "Sneakers",
-                            details: "Nike Air",
-                            amount: "45 OMR",
-                            imageUrl:
-                                "https://www.exhibit.tech/wp-content/uploads/2024/05/infashion-1683875219.webp",
-                          ),
-                          ProductModel(
-                            id: "fa_4",
-                            title: "Handbag",
-                            details: "Leather Brown",
-                            amount: "38 OMR",
-                            imageUrl:
-                                "https://www.exhibit.tech/wp-content/uploads/2024/05/infashion-1683875219.webp",
-                          ),
-                        ],
-                        onSeeAllTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const ProductListingScreen(categoryId: ''),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 22),
-                      ProductListingWidget(
-                        category: "Automotive",
-                        onProductTap: (product) {
-                          showProductDetailSheet(
-                            context: context,
-                            product: product,
-                          );
-                        },
-                        products: [
-                          ProductModel(
-                            id: "au_1",
-                            title: "GMC Sierra",
-                            details: "2024 · 30,000 km",
-                            amount: "7500 OMR",
-                            imageUrl:
-                                "https://armormax.com/wp-content/uploads/2021/03/Armored-Toyota-Landcruiser-1200x675.jpg",
-                          ),
-                          ProductModel(
-                            id: "au_2",
-                            title: "Toyota Land Cruiser",
-                            details: "2022 · 45,000 km",
-                            amount: "9800 OMR",
-                            imageUrl:
-                                "https://armormax.com/wp-content/uploads/2021/03/Armored-Toyota-Landcruiser-1200x675.jpg",
-                          ),
-                          ProductModel(
-                            id: "au_3",
-                            title: "Honda Civic",
-                            details: "2021 · 60,000 km",
-                            amount: "3200 OMR",
-                            imageUrl:
-                                "https://armormax.com/wp-content/uploads/2021/03/Armored-Toyota-Landcruiser-1200x675.jpg",
-                          ),
-                          ProductModel(
-                            id: "au_4",
-                            title: "BMW X5",
-                            details: "2023 · 20,000 km",
-                            amount: "12500 OMR",
-                            imageUrl:
-                                "https://armormax.com/wp-content/uploads/2021/03/Armored-Toyota-Landcruiser-1200x675.jpg",
-                          ),
-                        ],
-                        onSeeAllTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const ProductListingScreen(categoryId: ''),
-                            ),
+                      /// Products - Category Feeds
+                      BlocBuilder<LocationBloc, LocationState>(
+                        builder: (context, locationState) {
+                          String? governorateName =
+                              locationState.selectedState?.nameEn;
+
+                          return BlocBuilder<CategoriesBloc, CategoriesState>(
+                            builder: (context, catState) {
+                              final electronicsCat = catState.categories
+                                  .where(
+                                    (c) =>
+                                        c.nameEn.toLowerCase().contains(
+                                          'electronic',
+                                        ) ||
+                                        c.nameEn.toLowerCase().contains(
+                                          'mobile',
+                                        ),
+                                  )
+                                  .firstOrNull;
+
+                              final vehiclesCat = catState.categories
+                                  .where(
+                                    (c) =>
+                                        c.nameEn.toLowerCase().contains(
+                                          'vehicle',
+                                        ) ||
+                                        c.nameEn.toLowerCase().contains(
+                                          'auto',
+                                        ) ||
+                                        c.nameEn.toLowerCase().contains('car'),
+                                  )
+                                  .firstOrNull;
+
+                              final localeCode = Localizations.localeOf(
+                                context,
+                              ).languageCode;
+                              final electronicsTitle =
+                                  electronicsCat?.displayName(localeCode) ??
+                                  (localeCode == 'ar'
+                                      ? 'الإلكترونيات'
+                                      : 'Electronics');
+                              final vehiclesTitle =
+                                  vehiclesCat?.displayName(localeCode) ??
+                                  (localeCode == 'ar'
+                                      ? 'المركبات'
+                                      : 'Vehicles');
+
+                              return Column(
+                                children: [
+                                  CategoryFeedWidget(
+                                    categoryId:
+                                        electronicsCat?.id ??
+                                        "047c4745-f354-4941-b4cf-995168d79b0e",
+                                    title: electronicsTitle,
+                                    governorate: governorateName,
+                                  ),
+                                  const SizedBox(height: 22),
+                                  if (vehiclesCat != null) ...[
+                                    CategoryFeedWidget(
+                                      categoryId: vehiclesCat.id,
+                                      title: vehiclesTitle,
+                                      governorate: governorateName,
+                                    ),
+                                    const SizedBox(height: 22),
+                                  ],
+                                ],
+                              );
+                            },
                           );
                         },
                       ),
@@ -932,56 +863,6 @@ class _IconCircle extends StatelessWidget {
         ),
         child: Center(child: Image.asset(icon)),
       ),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final String action;
-  final VoidCallback? onActionTap;
-  final bool isArabic;
-
-  const _SectionHeader({
-    required this.title,
-    required this.action,
-    this.onActionTap,
-    this.isArabic = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: isArabic
-              ? AppThemes.f16w600.copyWith(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                )
-              : AppThemes.f16w600,
-        ),
-        GestureDetector(
-          onTap: onActionTap,
-          child: Row(
-            children: [
-              Text(
-                action,
-                style: isArabic
-                    ? AppThemes.f12w500.copyWith(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.subTextBlue,
-                      )
-                    : AppThemes.f12w500.copyWith(color: AppColors.subTextBlue),
-              ),
-              const Icon(Icons.arrow_right, color: AppColors.subTextBlue),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

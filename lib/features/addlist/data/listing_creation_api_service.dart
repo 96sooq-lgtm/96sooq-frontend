@@ -45,6 +45,17 @@ class ListingCreationApiService {
     }
   }
 
+  Future<bool> deleteListing({required String id}) async {
+    try {
+      final response = await DioServices.client.delete(
+        '${ApiEndpoints.baseUrl}/api/listings/$id',
+      );
+      return response.statusCode == 200 || response.statusCode == 204;
+    } on DioException catch (e) {
+      throw Exception(_buildDioErrorMessage('delete listing', e));
+    }
+  }
+
   String _buildDioErrorMessage(String resourceName, DioException e) {
     final statusCode = e.response?.statusCode?.toString() ?? 'unknown';
     final message = _extractApiErrorMessage(e.response?.data);

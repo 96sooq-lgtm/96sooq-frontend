@@ -1,9 +1,9 @@
 import 'package:_96_sooq/constants/app_assets.dart';
 import 'package:_96_sooq/constants/app_colors.dart';
-import 'package:_96_sooq/constants/app_strings.dart';
 import 'package:_96_sooq/core/bloc/language/bloc/language_bloc.dart';
 import 'package:_96_sooq/features/auth/bloc/auth_bloc.dart';
 import 'package:_96_sooq/features/auth/screens/create_user_screen.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:_96_sooq/features/profile/bloc/profile_bloc.dart';
 import 'package:_96_sooq/features/profile/bloc/profile_event.dart';
 import 'package:_96_sooq/shared/global_widgets/custom_icon_button_white.dart';
@@ -111,6 +111,7 @@ class _LoginScreenState extends State<LoginScreen>
       context.watch<LanguageBloc>().state.locale.languageCode == 'ar';
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) => _onAuthStateChanged(state),
       child: Scaffold(
@@ -149,19 +150,19 @@ class _LoginScreenState extends State<LoginScreen>
                               Image.asset(AppAssets.logo),
                               const SizedBox(height: 10),
                               Text(
-                                AppStrings.letsGetStarted,
+                                localizations.letsGetStartedText,
                                 style: AppThemes.f20w600.copyWith(
                                   color: AppColors.white,
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                AppStrings.loginDescription,
-                                textAlign: TextAlign.center,
-                                style: AppThemes.f12w400.copyWith(
-                                  color: AppColors.subTextColor,
-                                ),
-                              ),
+                              // const SizedBox(height: 8),
+                              // Text(
+                              //   AppStrings.loginDescription,
+                              //   textAlign: TextAlign.center,
+                              //   style: AppThemes.f12w400.copyWith(
+                              //     color: AppColors.subTextColor,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
@@ -181,7 +182,8 @@ class _LoginScreenState extends State<LoginScreen>
                                       horizontal: 16,
                                     ),
                                     child: CustomIconButtonWhite(
-                                      text: 'Continue with Google',
+                                      text:
+                                          localizations.continueWithGoogleText,
                                       icon: AppAssets.googleIc,
                                       textStyle: isArabic
                                           ? AppThemes.f18w600.copyWith(
@@ -215,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen>
                                   horizontal: 16,
                                 ),
                                 child: CustomIconButtonWhite(
-                                  text: 'Continue with Apple',
+                                  text: localizations.continueWithAppleText,
                                   icon: AppAssets.appleLogoSvg,
                                   textStyle: isArabic
                                       ? AppThemes.f18w600.copyWith(
@@ -239,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen>
                               ),
                               const SizedBox(height: 20),
                               Text(
-                                "I agree to the Terms of Service and Privacy Policy",
+                                localizations.agreeTermsConditionsText,
                                 style: AppThemes.f12w500.copyWith(
                                   color: const Color(0xFFC5C5C5),
                                 ),

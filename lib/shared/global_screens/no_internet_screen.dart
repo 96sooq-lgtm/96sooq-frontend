@@ -2,6 +2,7 @@ import 'package:_96_sooq/constants/app_assets.dart';
 import 'package:_96_sooq/constants/app_colors.dart';
 import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:_96_sooq/features/root/view/screens/root_view.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:_96_sooq/shared/global_widgets/custom_button_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,6 +12,7 @@ class NoInternetScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -22,10 +24,10 @@ class NoInternetScreen extends StatelessWidget {
               children: [
                 SvgPicture.asset(AppAssets.noInternetIc),
                 const SizedBox(height: 22),
-                Text("Oops!", style: AppThemes.f18w600),
+                Text(localizations.oopsText, style: AppThemes.f18w600),
                 const SizedBox(height: 8),
                 Text(
-                  "No internet connection. Please check\nyour network.",
+                  localizations.noInternetMessage,
                   textAlign: TextAlign.center,
                   style: AppThemes.f14w500.copyWith(
                     color: AppColors.productListingTextColor,
@@ -35,7 +37,7 @@ class NoInternetScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: CustomButton(
-                    text: "Try Again",
+                    text: localizations.tryAgainText,
                     onPressed: () {
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(builder: (_) => RootScreen()),
