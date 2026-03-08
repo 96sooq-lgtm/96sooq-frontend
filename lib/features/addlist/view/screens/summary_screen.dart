@@ -120,8 +120,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
       child: BlocBuilder<AddlistPaymentFlowBloc, AddlistPaymentFlowState>(
         builder: (context, state) {
           final subtotal = state.subtotalAmount;
-          final vat = state.effectiveVatAmount;
-          final total = state.totalAmount;
+          final platformFee = subtotal * 0.02;
+          final displayTotal = subtotal + platformFee;
           final currency = state.selectedPlanCurrency;
 
           // Determine product display info from API data or fallback to state
@@ -152,7 +152,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   builder: (context, payState) {
                     final isLoading = payState is PaymentCheckoutLoading;
                     return CustomButton(
-                      text: 'Pay & Confirm ${_formatAmount(total)} $currency',
+                      text:
+                          'Pay & Confirm ${_formatAmount(displayTotal)} $currency',
                       isLoading: isLoading,
                       onPressed: () {
                         if (isLoading) return;
@@ -174,6 +175,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                           '║ subtotalAmount     : ${state.subtotalAmount}\n'
                           '║ vatAmount          : ${state.effectiveVatAmount}\n'
                           '║ totalAmount        : ${state.totalAmount}\n'
+                          '║ platformFee(2%)    : $platformFee\n'
+                          '║ displayTotal       : $displayTotal\n'
                           '║ currency           : ${state.selectedPlanCurrency}\n'
                           '║ accountType        : ${state.accountType}\n'
                           '╚══════════════════════════════════════════════════════════════╝',
@@ -243,8 +246,9 @@ class _SummaryScreenState extends State<SummaryScreen> {
                     const SizedBox(height: 10),
                     _OrderDetailsCard(
                       subtotalText: '${_formatAmount(subtotal)} $currency',
-                      vatText: '${_formatAmount(vat, decimals: 2)} $currency',
-                      totalText: '${_formatAmount(total)} $currency',
+                      platformFeeText:
+                          '${_formatAmount(platformFee)} $currency',
+                      totalText: '${_formatAmount(displayTotal)} $currency',
                     ),
                   ],
                 ),
@@ -437,12 +441,12 @@ class _SelectedPlanCard extends StatelessWidget {
 class _OrderDetailsCard extends StatelessWidget {
   const _OrderDetailsCard({
     required this.subtotalText,
-    required this.vatText,
+    required this.platformFeeText,
     required this.totalText,
   });
 
   final String subtotalText;
-  final String vatText;
+  final String platformFeeText;
   final String totalText;
 
   @override
@@ -458,8 +462,8 @@ class _OrderDetailsCard extends StatelessWidget {
       child: Column(
         children: [
           _AmountRow(label: 'Subtotal', value: subtotalText),
-          // const SizedBox(height: 12),
-          // _AmountRow(label: 'Tax / VAT (5%)', value: vatText),
+          const SizedBox(height: 12),
+          _AmountRow(label: 'Platform Fee (2%)', value: platformFeeText),
           const SizedBox(height: 14),
           const Divider(color: Color(0xFFDCE1E8), height: 1),
           const SizedBox(height: 14),

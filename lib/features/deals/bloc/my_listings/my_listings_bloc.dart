@@ -1,6 +1,7 @@
 import 'package:_96_sooq/constants/api_endpoints.dart';
 import 'package:_96_sooq/features/home/model/product_model.dart';
 import 'package:_96_sooq/features/profile/data/store_profile_api_service.dart';
+import 'package:_96_sooq/features/addlist/data/listing_creation_api_service.dart';
 import 'package:_96_sooq/shared/dio_services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +34,11 @@ class MyListingsLoadMore extends MyListingsEvent {
   const MyListingsLoadMore();
 }
 
+class MyListingsDeleteRequested extends MyListingsEvent {
+  const MyListingsDeleteRequested(this.listingId);
+  final String listingId;
+}
+
 // ─── States ──────────────────────────────────────────────────────────────────
 
 enum MyListingsStatus { initial, loading, success, failure, loadingMore }
@@ -42,6 +48,7 @@ class MyListingsState {
     this.status = MyListingsStatus.initial,
     this.products = const <ProductModel>[],
     this.error,
+    this.actionError,
     this.hasReachedMax = false,
     this.hasStore = false,
     this.storeId,
@@ -53,6 +60,7 @@ class MyListingsState {
   final MyListingsStatus status;
   final List<ProductModel> products;
   final String? error;
+  final String? actionError;
   final bool hasReachedMax;
 
   // Pagination context — remembers what the last fetch was for
@@ -66,6 +74,7 @@ class MyListingsState {
     MyListingsStatus? status,
     List<ProductModel>? products,
     String? error,
+    String? actionError,
     bool? hasReachedMax,
     bool? hasStore,
     String? storeId,
@@ -77,6 +86,7 @@ class MyListingsState {
       status: status ?? this.status,
       products: products ?? this.products,
       error: error,
+      actionError: actionError,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       hasStore: hasStore ?? this.hasStore,
       storeId: storeId ?? this.storeId,
@@ -93,9 +103,11 @@ class MyListingsBloc extends Bloc<MyListingsEvent, MyListingsState> {
   MyListingsBloc() : super(const MyListingsState()) {
     on<MyListingsFetched>(_onFetched);
     on<MyListingsLoadMore>(_onLoadMore);
+    on<MyListingsDeleteRequested>(_onDeleteRequested);
   }
 
   final _storeService = const StoreProfileApiService();
+  final _listingCreationService = const ListingCreationApiService();
   bool _isFetching = false;
 
   Future<void> _onFetched(
@@ -177,6 +189,28 @@ class MyListingsBloc extends Bloc<MyListingsEvent, MyListingsState> {
       emit(state.copyWith(status: MyListingsStatus.success));
     } finally {
       _isFetching = false;
+    }
+  }
+
+  Future<void> _onDeleteRequested(
+    MyListingsDeleteRequested event,
+    Emitter<MyListingsState> emit,
+  ) async {
+    try {
+      final success = await _listingCreationService.deleteListing(
+        id: event.listingId,
+      );
+      if (success) {
+        final updatedProducts = state.products
+            .where((p) => p.id != event.listingId)
+            .toList();
+        emit(state.copyWith(products: updatedProducts, actionError: null));
+      } else {
+        emit(state.copyWith(actionError: 'Failed to delete listing.'));
+      }
+    } catch (e) {
+      debugPrint('[MyListingsBloc] Delete error: $e');
+      emit(state.copyWith(actionError: e.toString()));
     }
   }
 

@@ -14,6 +14,9 @@ class ProductListingWidget extends StatelessWidget {
   final void Function() onSeeAllTap;
   final bool showFavoriteIcon;
   final bool showStatus;
+  final bool showOwnerStatuses;
+  final bool showFeaturedOnlyStatus;
+  final void Function(ProductModel product)? onRejectedStatusTap;
 
   const ProductListingWidget({
     super.key,
@@ -23,6 +26,9 @@ class ProductListingWidget extends StatelessWidget {
     required this.onSeeAllTap,
     this.showFavoriteIcon = true,
     this.showStatus = false,
+    this.showOwnerStatuses = false,
+    this.showFeaturedOnlyStatus = false,
+    this.onRejectedStatusTap,
   });
 
   @override
@@ -98,6 +104,11 @@ class ProductListingWidget extends StatelessWidget {
                   onTapProduct: () => onProductTap(product),
                   showFavoriteIcon: showFavoriteIcon,
                   showStatus: showStatus,
+                  showOwnerStatuses: showOwnerStatuses,
+                  showFeaturedOnlyStatus: showFeaturedOnlyStatus,
+                  onRejectedStatusTap: onRejectedStatusTap != null
+                      ? () => onRejectedStatusTap!(product)
+                      : null,
                 ),
               );
             },

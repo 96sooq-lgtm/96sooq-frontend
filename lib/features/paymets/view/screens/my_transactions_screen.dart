@@ -32,7 +32,10 @@ class MyTransactionsScreen extends StatelessWidget {
                   children: [
                     BackButtonWidget(ontap: () => Navigator.pop(context)),
                     const SizedBox(width: 12),
-                    Text('Transaction History', style: AppThemes.f18w600),
+                    Text(
+                      localizations.transactionHistoryTitle,
+                      style: AppThemes.f18w600,
+                    ),
                   ],
                 ),
               ),
@@ -42,10 +45,13 @@ class MyTransactionsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Business Expenses', style: AppThemes.f18w600),
+                    Text(
+                      localizations.businessExpensesTitle,
+                      style: AppThemes.f18w600,
+                    ),
                     const SizedBox(height: 4),
                     Text(
-                      'Download invoices for your tax records',
+                      localizations.downloadInvoicesTaxRecords,
                       style: AppThemes.f14w400.copyWith(
                         color: const Color(0xFF6E7A8A),
                       ),
@@ -304,7 +310,7 @@ class _TransactionCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Download Invoice',
+                        AppLocalizations.of(context)!.downloadInvoiceText,
                         style: AppThemes.f12w600.copyWith(
                           color: AppColors.primaryColor,
                         ),

@@ -54,6 +54,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileTitle => 'الملف الشخصي';
 
   @override
+  String get loginText => 'تسجيل الدخول';
+
+  @override
+  String get loginInYourAccountText => 'تسجيل الدخول في حسابك';
+
+  @override
+  String get letsGetStartedText => 'لنبدأ';
+
+  @override
+  String get agreeTermsConditionsText => 'أوافق على الشروط والأحكام';
+
+  @override
+  String get signupDescriptionText => 'أدخل بياناتك للبدء في عمليات البيع والشراء محلياً';
+
+  @override
+  String get getStartedText => 'ابدأ';
+
+  @override
   String get myProfileTitle => 'ملفي الشخصي';
 
   @override
@@ -301,6 +319,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get latestPicksTitle => 'أحدث اللقطات';
+
+  @override
+  String get oopsText => 'أُووبس!';
+
+  @override
+  String get noInternetMessage => 'لا يوجد اتصال بالإنترنت. يرجى التحقق من شبكتك.';
+
+  @override
+  String get tryAgainText => 'حاول ثانية';
+
+  @override
+  String get continueWithGoogleText => 'تواصل مع جوجل';
+
+  @override
+  String get continueWithAppleText => 'تسجيل الدخول باستخدام Apple';
+
+  @override
+  String get downloadInvoiceText => 'تحميل الفاتورة';
+
+  @override
+  String get transactionHistoryTitle => 'تاريخ المعاملات';
+
+  @override
+  String get businessExpensesTitle => 'مصاريف العمل';
+
+  @override
+  String get downloadInvoicesTaxRecords => 'قم بتنزيل الفواتير لسجلاتك الضريبية';
 
   @override
   String get individualAccountType => 'فرد/ مستخدم عادي';

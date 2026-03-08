@@ -7,6 +7,7 @@ import 'package:_96_sooq/features/auth/data/models/auth_user_model.dart'
     as app_auth;
 import 'package:_96_sooq/features/auth/data/services/auth_api_service.dart';
 import 'package:_96_sooq/features/auth/domain/auth_session_repository.dart';
+import 'package:_96_sooq/features/notifications/data/notification_registration_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,10 +20,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     SupabaseClient? supabaseClient,
     AuthApiService? authApiService,
     AuthSessionRepository? authSessionRepository,
+    NotificationRegistrationService? notificationRegistrationService,
   }) : _supabaseClient = supabaseClient ?? Supabase.instance.client,
        _authApiService = authApiService ?? const AuthApiService(),
        _authSessionRepository =
            authSessionRepository ?? AuthSessionRepository(),
+       _notificationRegistrationService =
+           notificationRegistrationService ?? NotificationRegistrationService(),
        super(AuthInitial()) {
     on<GoogleSignInRequested>(_onGoogleSignInRequested);
     on<AuthSessionChanged>(_onAuthSessionChanged);
@@ -38,6 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SupabaseClient _supabaseClient;
   final AuthApiService _authApiService;
   final AuthSessionRepository _authSessionRepository;
+  final NotificationRegistrationService _notificationRegistrationService;
   late final StreamSubscription _authSubscription;
 
   bool _isProcessingOAuthCheck = false;
@@ -266,6 +271,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
+    await _notificationRegistrationService.unregisterCurrentToken();
     await _authSessionRepository.clearSession();
     try {
       await _supabaseClient.auth.signOut();

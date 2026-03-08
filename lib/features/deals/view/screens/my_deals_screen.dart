@@ -3,7 +3,9 @@ import 'package:_96_sooq/constants/app_colors.dart';
 import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:_96_sooq/features/addlist/bloc/payment/addlist_payment_flow_bloc.dart';
 import 'package:_96_sooq/features/addlist/model/listing_account_type.dart';
-import 'package:_96_sooq/features/addlist/view/screens/list_your_product_screen.dart';
+import 'package:_96_sooq/features/addlist/view/screens/boost_your_product_screen.dart';
+import 'package:_96_sooq/features/addlist/view/screens/edit_listing_screen.dart';
+import 'package:_96_sooq/features/addlist/view/screens/subscription_listing_screen.dart';
 import 'package:_96_sooq/features/home/model/product_model.dart';
 import 'package:_96_sooq/features/home/widgets/product_detail_sheet.dart';
 import 'package:_96_sooq/features/deals/bloc/my_listings/my_listings_bloc.dart';
@@ -88,7 +90,14 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
               ),
               const SizedBox(height: 18),
               Expanded(
-                child: BlocBuilder<MyListingsBloc, MyListingsState>(
+                child: BlocConsumer<MyListingsBloc, MyListingsState>(
+                  listener: (context, state) {
+                    if (state.actionError != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(state.actionError!)),
+                      );
+                    }
+                  },
                   builder: (context, state) {
                     if (state.status == MyListingsStatus.loading ||
                         state.status == MyListingsStatus.initial) {
@@ -113,48 +122,76 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
                       );
                     }
 
+                    final storeState = context.read<StoreProfileBloc>().state;
+                    final isStoreUser = storeState.hasStore;
+
                     return ListView.separated(
                       itemCount: state.products.length,
                       separatorBuilder: (_, index) =>
                           const SizedBox(height: 14),
                       itemBuilder: (context, index) {
                         final product = state.products[index];
+                        final status = product.status?.toLowerCase() ?? '';
+
+                        // For individual users: hide promote for rejected/pending
+                        final showPromote =
+                            isStoreUser ||
+                            (status != 'rejected' && status != 'pending');
+
                         return _MyDealCard(
                           product: product,
                           editLabel: localizations.editText,
+                          promoteLabel: localizations.promoteText,
                           showActions: _selectedTab == _DealsTab.active,
-                          onEdit: () {
-                            final storeState = context
-                                .read<StoreProfileBloc>()
-                                .state;
-                            final paymentFlowBloc = AddlistPaymentFlowBloc()
-                              ..add(
-                                FlowInitialized(
-                                  accountType: storeState.hasStore
-                                      ? ListingAccountType.business
-                                      : ListingAccountType.individual,
-                                  requiresPayment: false,
-                                  planTitle: 'Edit Listing',
-                                  planId: '',
-                                  planAmount: 0.0,
-                                  currency: 'OMR',
-                                  flowMode: ListFlowMode.edit,
-                                  editingProduct: product,
+                          showPromote: showPromote,
+                          onDelete: () async {
+                            final confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                surfaceTintColor: Colors.transparent,
+                                backgroundColor: Colors.white,
+                                title: const Text(
+                                  'Delete Listing',
+                                  style: AppThemes.f16w600,
                                 ),
+                                content: const Text(
+                                  'Are you sure you want to delete this listing?',
+                                  style: AppThemes.f14w500,
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: const Text(
+                                      'Cancel',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: const Text(
+                                      'Delete',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                            if (confirm == true && context.mounted) {
+                              context.read<MyListingsBloc>().add(
+                                MyListingsDeleteRequested(product.id),
                               );
-
+                            }
+                          },
+                          onEdit: () {
                             Navigator.push<bool>(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => BlocProvider.value(
-                                  value: paymentFlowBloc,
-                                  child: const ListYourProductScreen(
-                                    requiresPayment: false,
-                                  ),
-                                ),
+                                builder: (_) =>
+                                    EditListingScreen(product: product),
                               ),
                             ).then((updated) {
-                              paymentFlowBloc.close();
                               if (!mounted) return;
                               if (updated == true) {
                                 setState(() {
@@ -164,6 +201,7 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
                               _fetchListings(_selectedTab);
                             });
                           },
+                          onPromote: () => _onPromoteTap(context, product),
                           onTap: () =>
                               _openProductDetailSheet(context, product),
                         );
@@ -177,6 +215,122 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
         ),
       ),
     );
+  }
+
+  void _onPromoteTap(BuildContext context, ProductModel product) {
+    final storeState = context.read<StoreProfileBloc>().state;
+    final isStoreUser = storeState.hasStore;
+    final storeStatus = storeState.store?.status ?? '';
+    final status = product.status?.toLowerCase() ?? '';
+
+    final imageUrl = product.imageUrl.isNotEmpty
+        ? product.imageUrl
+        : (product.images.isNotEmpty ? product.images.first : '');
+
+    if (isStoreUser) {
+      // Store user: same flow as postSelectionScreen
+      final accountType = ListingAccountType.business;
+      final useExistingQuota = storeStatus == 'active';
+
+      if (!useExistingQuota) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (_) => AddlistPaymentFlowBloc(),
+              child: SubscriptionListingScreen(
+                disclaimerSubtext:
+                    'Business account gets 1 listing free per month.',
+                accountType: accountType,
+                promoteProduct: product,
+              ),
+            ),
+          ),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              lazy: false,
+              create: (_) => AddlistPaymentFlowBloc()
+                ..add(
+                  FlowInitialized(
+                    accountType: accountType,
+                    requiresPayment: false,
+                    planTitle: 'Post Promotion',
+                    planAmount: 0.0,
+                    currency: 'OMR',
+                    useExistingQuota: useExistingQuota,
+                  ),
+                ),
+              child: BoostYourProductScreen(
+                source: BoostFlowSource.myDeals,
+                postId: product.id,
+                postTitle: product.title,
+                postAmount: product.amount,
+                postImageUrl: imageUrl,
+                postDetails: product.details,
+                accountType: accountType,
+              ),
+            ),
+          ),
+        );
+      }
+      return;
+    }
+
+    // Individual user — NEVER show subscription for active listings
+    const accountType = ListingAccountType.individual;
+
+    if (status == 'draft') {
+      // Draft only: go through subscription screen to pay listing amount
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => AddlistPaymentFlowBloc(),
+            child: SubscriptionListingScreen(
+              disclaimerSubtext:
+                  'Individual account gets 1 listing free per month.',
+              accountType: accountType,
+              promoteProduct: product,
+            ),
+          ),
+        ),
+      );
+    } else {
+      // Active or any other status: go DIRECTLY to boost screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            lazy: false,
+            create: (_) => AddlistPaymentFlowBloc()
+              ..add(
+                FlowInitialized(
+                  accountType: accountType,
+                  requiresPayment: false,
+                  planTitle: 'Post Promotion',
+                  planId: null,
+                  planAmount: 0.0,
+                  currency: 'OMR',
+                  useExistingQuota: false,
+                ),
+              ),
+            child: BoostYourProductScreen(
+              source: BoostFlowSource.myDeals,
+              postId: product.id,
+              postTitle: product.title,
+              postAmount: product.amount,
+              postImageUrl: imageUrl,
+              postDetails: product.details,
+              accountType: accountType,
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   void _openProductDetailSheet(BuildContext context, ProductModel product) {
@@ -273,16 +427,24 @@ class _MyDealCard extends StatelessWidget {
   const _MyDealCard({
     required this.product,
     required this.editLabel,
+    required this.promoteLabel,
     required this.showActions,
+    required this.showPromote,
     required this.onTap,
     required this.onEdit,
+    required this.onDelete,
+    required this.onPromote,
   });
 
   final ProductModel product;
   final String editLabel;
+  final String promoteLabel;
   final bool showActions;
+  final bool showPromote;
   final VoidCallback onTap;
   final VoidCallback onEdit;
+  final VoidCallback onDelete;
+  final VoidCallback onPromote;
 
   @override
   Widget build(BuildContext context) {
@@ -379,7 +541,7 @@ class _MyDealCard extends StatelessWidget {
                   children: [
                     _OutlinedIconButton(
                       svgAsset: AppAssets.deleteIc,
-                      onTap: () {},
+                      onTap: onDelete,
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -391,20 +553,22 @@ class _MyDealCard extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: _OutlinedTextButton(
-                        label: '0',
+                        label: product.favoritesCount.toString(),
                         icon: Icons.favorite_border,
                         iconColor: AppColors.brandBlack,
                         onTap: () {},
                       ),
                     ),
-                    // Promote button removed as per requirements
-                    // if (showActions) ...[
-                    //   const SizedBox(width: 10),
-                    //   Expanded(
-                    //     flex: 2,
-                    //     child: _PromoteButton(label: promoteLabel, onTap: () {}),
-                    //   ),
-                    // ],
+                    if (showPromote) ...[
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 2,
+                        child: _PromoteButton(
+                          label: promoteLabel,
+                          onTap: onPromote,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
             ],
@@ -489,6 +653,37 @@ class _OutlinedTextButton extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PromoteButton extends StatelessWidget {
+  const _PromoteButton({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(22),
+        onTap: onTap,
+        child: Ink(
+          height: 40,
+          decoration: BoxDecoration(
+            color: AppColors.brandBlack,
+            borderRadius: BorderRadius.circular(22),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: AppThemes.f14w500.copyWith(color: Colors.white),
+            ),
           ),
         ),
       ),

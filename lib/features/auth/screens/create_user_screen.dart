@@ -1,6 +1,5 @@
 import 'package:_96_sooq/constants/app_assets.dart';
 import 'package:_96_sooq/constants/app_colors.dart';
-import 'package:_96_sooq/constants/app_strings.dart';
 import 'package:_96_sooq/features/auth/bloc/auth_bloc.dart';
 import 'package:_96_sooq/features/profile/bloc/profile_bloc.dart';
 import 'package:_96_sooq/features/profile/bloc/profile_event.dart';
@@ -134,7 +133,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        AppStrings.signupDescription,
+                        localizations.signupDescriptionText,
                         textAlign: TextAlign.center,
                         style: AppThemes.f12w400.copyWith(
                           color: AppColors.subTextColor,
@@ -235,7 +234,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                         BlocBuilder<AuthBloc, AuthState>(
                           builder: (context, state) {
                             return CustomButton(
-                              text: 'Get Started',
+                              text: localizations.getStartedText,
                               isLoading: state is AuthLoading,
                               onPressed: _submitProfile,
                             );

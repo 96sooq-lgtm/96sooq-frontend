@@ -8,6 +8,7 @@ import 'package:_96_sooq/features/auth/screens/login_screen.dart';
 import 'package:_96_sooq/features/categories/view/screens/category_screen.dart';
 import 'package:_96_sooq/features/deals/view/screens/deals_screen.dart';
 import 'package:_96_sooq/features/home/view/screens/home_screen.dart';
+import 'package:_96_sooq/features/notifications/data/notification_registration_service.dart';
 import 'package:_96_sooq/features/profile/bloc/store_profile/store_profile_bloc.dart';
 import 'package:_96_sooq/features/profile/bloc/store_profile/store_profile_event.dart';
 import 'package:_96_sooq/features/profile/view/screens/profile_screen.dart';
@@ -30,6 +31,8 @@ class RootScreen extends StatefulWidget {
 
 class _RootScreenState extends State<RootScreen> with WidgetsBindingObserver {
   final AuthSessionRepository _authSessionRepository = AuthSessionRepository();
+  final NotificationRegistrationService _notificationRegistrationService =
+      NotificationRegistrationService();
 
   final List<BottomNavItem> _bottomNavItems = <BottomNavItem>[
     BottomNavItem(
@@ -64,12 +67,14 @@ class _RootScreenState extends State<RootScreen> with WidgetsBindingObserver {
   bool _isLoggedInCached = false;
   bool _isCheckingAuth = false;
   bool _isLoginRouteOpen = false;
+  bool _isRegisteringFcmToken = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _refreshLoginStatus();
+    _registerFcmTokenIfAllowed();
   }
 
   @override
@@ -158,6 +163,17 @@ class _RootScreenState extends State<RootScreen> with WidgetsBindingObserver {
       // Re-check store every time the user's auth token becomes valid
       // (covers fresh login, token refresh, and app re-launch with saved token)
       context.read<StoreProfileBloc>().add(const StoreProfileCheckRequested());
+      _registerFcmTokenIfAllowed();
+    }
+  }
+
+  Future<void> _registerFcmTokenIfAllowed() async {
+    if (_isRegisteringFcmToken) return;
+    _isRegisteringFcmToken = true;
+    try {
+      await _notificationRegistrationService.registerTokenIfAllowedAtStartup();
+    } finally {
+      _isRegisteringFcmToken = false;
     }
   }
 

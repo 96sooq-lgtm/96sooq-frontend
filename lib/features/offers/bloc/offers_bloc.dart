@@ -25,12 +25,14 @@ class OffersBloc extends Bloc<OffersEvent, OffersState> {
             hasReachedMax: false,
             offers: [],
             errorMessage: '',
+            governorate: event.governorate ?? state.governorate,
           ),
         );
 
         final offers = await apiService.fetchOffers(
           skip: 0,
           limit: event.limit,
+          governorate: event.governorate ?? state.governorate,
         );
 
         emit(
@@ -42,10 +44,16 @@ class OffersBloc extends Bloc<OffersEvent, OffersState> {
           ),
         );
       } else {
-        emit(state.copyWith(status: OffersStatus.loading));
+        emit(
+          state.copyWith(
+            status: OffersStatus.loading,
+            governorate: event.governorate ?? state.governorate,
+          ),
+        );
         final offers = await apiService.fetchOffers(
           skip: state.skip,
           limit: event.limit,
+          governorate: event.governorate ?? state.governorate,
         );
 
         emit(

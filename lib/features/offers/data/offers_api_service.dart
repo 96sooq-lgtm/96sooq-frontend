@@ -10,19 +10,27 @@ class OffersApiService {
   Future<List<OfferStoryItem>> fetchOffers({
     required int skip,
     required int limit,
+    String? governorate,
   }) async {
     try {
+      final query = <String, dynamic>{'skip': skip, 'limit': limit};
+      if (governorate != null && governorate.trim().isNotEmpty) {
+        query['governorate'] = governorate.trim();
+      }
       final response = await DioServices.client.get(
         ApiEndpoints.offers,
-        queryParameters: {'skip': skip, 'limit': limit},
+        queryParameters: query,
       );
       if (response.statusCode == 200 && response.data != null) {
-        final data = response.data as List<dynamic>;
-        return data
-            .map(
-              (json) => OfferStoryItem.fromJson(json as Map<String, dynamic>),
-            )
-            .toList();
+        final Map<String, dynamic> data = response.data;
+        if (data.containsKey('offers')) {
+          final offersList = data['offers'] as List<dynamic>;
+          return offersList
+              .map(
+                (json) => OfferStoryItem.fromJson(json as Map<String, dynamic>),
+              )
+              .toList();
+        }
       }
       return [];
     } on DioException catch (e) {

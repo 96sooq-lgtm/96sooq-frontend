@@ -54,6 +54,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileTitle => 'Profile';
 
   @override
+  String get loginText => 'Login';
+
+  @override
+  String get loginInYourAccountText => 'Login in your account';
+
+  @override
+  String get letsGetStartedText => 'Let\'s Get Started';
+
+  @override
+  String get agreeTermsConditionsText => 'I agree to Terms and Conditions';
+
+  @override
+  String get signupDescriptionText => 'Enter your details to get started with buying and selling locally';
+
+  @override
+  String get getStartedText => 'Get Started';
+
+  @override
   String get myProfileTitle => 'My Profile';
 
   @override
@@ -301,6 +319,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get latestPicksTitle => 'Latest Picks';
+
+  @override
+  String get oopsText => 'Oops!';
+
+  @override
+  String get noInternetMessage => 'No internet connection. Please check your network.';
+
+  @override
+  String get tryAgainText => 'Try Again';
+
+  @override
+  String get continueWithGoogleText => 'Continue with Google';
+
+  @override
+  String get continueWithAppleText => 'Continue with Apple';
+
+  @override
+  String get downloadInvoiceText => 'Download Invoice';
+
+  @override
+  String get transactionHistoryTitle => 'Transaction History';
+
+  @override
+  String get businessExpensesTitle => 'Business Expenses';
+
+  @override
+  String get downloadInvoicesTaxRecords => 'Download invoices for your tax records';
 
   @override
   String get individualAccountType => 'Individual / Normal User';

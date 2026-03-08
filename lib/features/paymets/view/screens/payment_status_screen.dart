@@ -5,6 +5,7 @@ import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:_96_sooq/features/addlist/view/screens/addlist_screen.dart';
 import 'package:_96_sooq/features/paymets/bloc/payment_bloc.dart';
 import 'package:_96_sooq/features/root/view/screens/root_view.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:_96_sooq/shared/global_widgets/custom_button_widgets.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
@@ -311,6 +312,7 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen>
     required bool isSuccess,
     required bool isFailed,
   }) {
+    final localizations = AppLocalizations.of(context)!;
     final String text;
     if (isWaiting) {
       text = 'Awaiting Payment…';
@@ -319,7 +321,7 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen>
     } else if (isSuccess) {
       text = 'Congratulations!';
     } else if (isFailed) {
-      text = 'Oops!';
+      text = localizations.oopsText;
     } else {
       text = 'Still Processing…';
     }
@@ -385,6 +387,7 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen>
     required bool isSuccess,
     required bool isFailed,
   }) {
+    final localizations = AppLocalizations.of(context)!;
     // No button while waiting for Paymob or while a check is in flight
     if (isWaiting || isLoading) return SizedBox.shrink(key: key);
 
@@ -392,7 +395,7 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen>
     if (isSuccess) {
       text = 'Start Exploring';
     } else if (isFailed) {
-      text = 'Try Again';
+      text = localizations.tryAgainText;
     } else {
       text = 'Check Again';
     }

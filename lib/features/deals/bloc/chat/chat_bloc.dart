@@ -30,11 +30,6 @@ class ChatMessagesRequested extends ChatEvent {
   const ChatMessagesRequested();
 }
 
-/// A silent background poll for new messages.
-class _ChatSilentPoll extends ChatEvent {
-  const _ChatSilentPoll();
-}
-
 /// User tapped send.
 class ChatMessageSent extends ChatEvent {
   const ChatMessageSent({
@@ -101,7 +96,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ChatInitiated>(_onInitiated);
     on<ChatOpened>(_onOpened);
     on<ChatMessagesRequested>(_onMessagesRequested);
-    on<_ChatSilentPoll>(_onSilentPoll);
     on<ChatMessageSent>(_onMessageSent);
     on<ChatMessageReceived>(_onMessageReceived);
   }
@@ -270,100 +264,43 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     onInboxRefresh?.call();
   }
 
-  Future<void> _onSilentPoll(
-    _ChatSilentPoll event,
-    Emitter<ChatState> emit,
-  ) async {
-    final conversationId = state.conversation?.id;
-    if (conversationId == null) return;
-
-    // Do not overwrite local state if we have pending optimistic messages trying to send.
-    // Exclude errored messages because they are no longer pending.
-    final hasPendingTemp = state.messages.any(
-      (m) => m.id.startsWith('temp_') && !m.hasError,
-    );
-    if (hasPendingTemp) return;
-
-    try {
-      final messages = await _api.getMessages(conversationId);
-      // Only update if message count changed or different to avoid flicker
-      if (messages.length != state.messages.length) {
-        emit(state.copyWith(status: ChatStatus.ready, messages: messages));
-        onInboxRefresh?.call();
-      }
-    } catch (_) {
-      // Silent ignore
-    }
-  }
-
-  // ── Supabase Broadcast (instant) + Polling ─────────────────────────────────
-
-  Timer? _pollingTimer;
+  // ── Supabase Broadcast (instant) only ──────────────────────────────────────
 
   void _subscribeToRealtime(String conversationId) {
     _activeChannel?.unsubscribe();
     _activeChannel = null;
-    _pollingTimer?.cancel();
 
-    developer.log(
-      'Subscribing to broadcast channel: conversation:$conversationId',
-      name: 'ChatBloc',
-    );
-
-    try {
-      final channel = Supabase.instance.client.channel(
-        'conversation:$conversationId',
-      );
-
-      channel
-          .onBroadcast(
-            event: 'new_message',
-            callback: (payload) {
-              developer.log(
-                'Broadcast new_message received: $payload',
-                name: 'ChatBloc',
+    final channel = Supabase.instance.client
+        .channel('db-messages-$conversationId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'messages',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'conversation_id',
+            value: conversationId,
+          ),
+          callback: (payload) {
+            try {
+              final message = ChatMessageModel.fromJson(
+                Map<String, dynamic>.from(payload.newRecord),
               );
-              try {
-                if (payload.isNotEmpty) {
-                  final message = ChatMessageModel.fromJson(
-                    Map<String, dynamic>.from(payload),
-                  );
-                  add(ChatMessageReceived(message: message));
-                }
-              } catch (e, st) {
-                developer.log(
-                  'Broadcast parse error: $e',
-                  name: 'ChatBloc',
-                  error: e,
-                  stackTrace: st,
-                );
-              }
-            },
-          )
-          .subscribe((status, [error]) {
-            developer.log(
-              'Broadcast subscribe status: $status, error: $error',
-              name: 'ChatBloc',
-            );
-          });
+              add(ChatMessageReceived(message: message));
+            } catch (e) {
+              developer.log('Realtime parse error: $e', name: 'ChatBloc');
+            }
+          },
+        )
+        .subscribe();
 
-      _activeChannel = channel;
-    } catch (e) {
-      developer.log('Failed to subscribe to broadcast: $e', name: 'ChatBloc');
-    }
-
-    // Polling fallback (every 3s)
-    _pollingTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (state.conversation == null || isClosed) return;
-      add(const _ChatSilentPoll());
-    });
+    _activeChannel = channel;
   }
 
   RealtimeChannel? _activeChannel;
 
   @override
   Future<void> close() async {
-    _pollingTimer?.cancel();
     _activeChannel?.unsubscribe();
     return super.close();
   }

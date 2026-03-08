@@ -203,6 +203,8 @@ class _ProductListingViewState extends State<_ProductListingView> {
                                     padding: const EdgeInsets.only(bottom: 14),
                                     child: ProductCard(
                                       product: product,
+                                      showStatus: true,
+                                      showFeaturedOnlyStatus: true,
                                       onTapProduct: () {
                                         showModalBottomSheet(
                                           context: context,
@@ -239,6 +241,8 @@ class _ProductListingViewState extends State<_ProductListingView> {
                                     padding: const EdgeInsets.only(bottom: 14),
                                     child: ProductCard(
                                       product: product,
+                                      showStatus: true,
+                                      showFeaturedOnlyStatus: true,
                                       onTapProduct: () {
                                         showModalBottomSheet(
                                           context: context,

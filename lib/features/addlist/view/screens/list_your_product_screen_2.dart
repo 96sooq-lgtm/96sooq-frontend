@@ -394,18 +394,36 @@ class _ListYourProductScreen2State extends State<ListYourProductScreen2> {
       final networkPhotos = paymentFlowBloc.state.networkPhotos;
       final List<String> imageUrls = [...networkPhotos];
 
-      for (final photoPath in photoPaths) {
-        if (photoPath.trim().isNotEmpty) {
+      // Filter out empty paths
+      final localPhotoPaths = photoPaths
+          .where((p) => p.trim().isNotEmpty)
+          .toList();
+
+      if (localPhotoPaths.length == 1) {
+        // Single image → use `file` key
+        final file = File(localPhotoPaths.first);
+        final bytes = await file.readAsBytes();
+        final filename = localPhotoPaths.first.split('/').last;
+        final result = await s3Service.uploadFile(
+          bytes: bytes,
+          filename: filename,
+          folder: 'listings',
+        );
+        imageUrls.add(result.url);
+      } else if (localPhotoPaths.length > 1) {
+        // Multiple images → use `files` key in one batch request
+        final fileEntries = <({List<int> bytes, String filename})>[];
+        for (final photoPath in localPhotoPaths) {
           final file = File(photoPath);
           final bytes = await file.readAsBytes();
           final filename = photoPath.split('/').last;
-          final result = await s3Service.uploadFile(
-            bytes: bytes,
-            filename: filename,
-            folder: 'listings',
-          );
-          imageUrls.add(result.url);
+          fileEntries.add((bytes: bytes, filename: filename));
         }
+        final results = await s3Service.uploadFiles(
+          files: fileEntries,
+          folder: 'listings',
+        );
+        imageUrls.addAll(results.map((r) => r.url));
       }
 
       final creationService = const ListingCreationApiService();
@@ -458,9 +476,11 @@ class _ListYourProductScreen2State extends State<ListYourProductScreen2> {
               paymentFlowBloc.state.subCategoryAttributesSchema,
           description: paymentFlowBloc.state.description ?? '',
           condition: conditionText,
-          city: _selectedGovernorate?.displayName(localeCode) ??
+          city:
+              _selectedGovernorate?.displayName(localeCode) ??
               _governorateController.text.trim(),
-          place: _selectedWilayat?.displayName(localeCode) ??
+          place:
+              _selectedWilayat?.displayName(localeCode) ??
               _wilayatController.text.trim(),
           governorateId: _selectedGovernorate?.id,
           wilayatId: _selectedWilayat?.id,

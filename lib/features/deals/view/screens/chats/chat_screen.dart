@@ -2,9 +2,12 @@ import 'package:_96_sooq/constants/app_colors.dart';
 import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:_96_sooq/constants/api_endpoints.dart';
 import 'package:_96_sooq/features/deals/bloc/chat/chat_bloc.dart';
+import 'package:_96_sooq/features/deals/data/services/chat_screen_ad_api_service.dart';
+import 'package:_96_sooq/features/home/model/product_model.dart';
 import 'package:_96_sooq/shared/dio_services.dart';
 import 'package:_96_sooq/shared/global_widgets/app_network_image.dart';
 import 'package:_96_sooq/shared/global_widgets/backnavigation_button.dart';
+import 'package:_96_sooq/features/home/widgets/product_detail_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -37,12 +40,16 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
+  final ChatScreenAdApiService _chatScreenAdApiService =
+      const ChatScreenAdApiService();
 
   // Product detail fetched from API
   String? _productTitle;
   String? _productPrice;
   String? _productCurrency;
   String? _productImageUrl;
+  ProductModel? _chatScreenAdProduct;
+  bool _hasShownChatAdPopup = false;
 
   @override
   void initState() {
@@ -55,6 +62,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // Fetch full details from API
     if (widget.listingId != null) {
       _fetchListingDetail();
+      _fetchChatScreenAd();
     }
   }
 
@@ -83,6 +91,46 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  Future<void> _fetchChatScreenAd() async {
+    final adProduct = await _chatScreenAdApiService.fetchChatScreenAd();
+    if (!mounted || adProduct == null || _hasShownChatAdPopup) return;
+
+    _chatScreenAdProduct = adProduct;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _chatScreenAdProduct == null || _hasShownChatAdPopup) {
+        return;
+      }
+      _hasShownChatAdPopup = true;
+      _showChatAdPopup(_chatScreenAdProduct!);
+    });
+  }
+
+  void _showChatAdPopup(ProductModel adProduct) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withValues(alpha: 0.45),
+      builder: (dialogContext) {
+        return _ChatAdPopup(
+          product: adProduct,
+          onClose: () => Navigator.pop(dialogContext),
+          onTap: () {
+            Navigator.pop(dialogContext);
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              builder: (_) => ProductDetailSheet(product: adProduct),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -99,6 +147,38 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       }
     });
+  }
+
+  String _conversationSenderName(ChatState state) {
+    final conversation = state.conversation;
+    if (conversation == null) return widget.userName;
+
+    final isStorePeer = conversation.otherParticipantType == 'store';
+    final storeName = (conversation.storeName ?? '').trim();
+    final otherName = (conversation.otherParticipantName ?? '').trim();
+    final senderName = (conversation.senderName ?? '').trim();
+
+    if (isStorePeer && storeName.isNotEmpty) return storeName;
+    if (otherName.isNotEmpty) return otherName;
+    if (senderName.isNotEmpty) return senderName;
+    if (storeName.isNotEmpty) return storeName;
+    return widget.userName;
+  }
+
+  String _conversationSenderImage(ChatState state) {
+    final conversation = state.conversation;
+    if (conversation == null) return widget.avatarUrl;
+
+    final isStorePeer = conversation.otherParticipantType == 'store';
+    final storeLogo = (conversation.storeLogo ?? '').trim();
+    final otherImage = (conversation.otherParticipantImage ?? '').trim();
+    final senderLogo = (conversation.senderLogo ?? '').trim();
+
+    if (isStorePeer && storeLogo.isNotEmpty) return storeLogo;
+    if (otherImage.isNotEmpty) return otherImage;
+    if (senderLogo.isNotEmpty) return senderLogo;
+    if (storeLogo.isNotEmpty) return storeLogo;
+    return widget.avatarUrl;
   }
 
   @override
@@ -119,8 +199,8 @@ class _ChatScreenState extends State<ChatScreen> {
               buildWhen: (prev, curr) =>
                   prev.messages.length != curr.messages.length,
               builder: (context, state) {
-                String displayName = widget.userName;
-                String displayAvatar = widget.avatarUrl;
+                String displayName = _conversationSenderName(state);
+                String displayAvatar = _conversationSenderImage(state);
                 for (final msg in state.messages) {
                   if (!msg.isOutgoing(widget.currentUserId)) {
                     if (msg.senderName != null && msg.senderName!.isNotEmpty) {
@@ -232,7 +312,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     controller: _scrollController,
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
                     itemCount: messages.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 14),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 14),
                     itemBuilder: (context, index) {
                       final message = messages[index];
                       final isOutgoing = message.isOutgoing(
@@ -261,9 +342,17 @@ class _ChatScreenState extends State<ChatScreen> {
                           },
                         );
                       } else {
+                        final fallbackName = _conversationSenderName(state);
+                        final fallbackImage = _conversationSenderImage(state);
                         return _IncomingBlock(
-                          senderName: message.senderName ?? '',
-                          senderImage: message.senderImage ?? '',
+                          senderName:
+                              (message.senderName ?? '').trim().isNotEmpty
+                              ? message.senderName!
+                              : fallbackName,
+                          senderImage:
+                              (message.senderImage ?? '').trim().isNotEmpty
+                              ? message.senderImage!
+                              : fallbackImage,
                           message: message.content,
                           time: timeStr,
                         );
@@ -275,6 +364,117 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ChatAdPopup extends StatefulWidget {
+  const _ChatAdPopup({
+    required this.product,
+    required this.onClose,
+    required this.onTap,
+  });
+
+  final ProductModel product;
+  final VoidCallback onClose;
+  final VoidCallback onTap;
+
+  @override
+  State<_ChatAdPopup> createState() => _ChatAdPopupState();
+}
+
+class _ChatAdPopupState extends State<_ChatAdPopup> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  List<String> get _images {
+    if (widget.product.images.isNotEmpty) return widget.product.images;
+    if (widget.product.imageUrl.trim().isNotEmpty) {
+      return <String>[widget.product.imageUrl.trim()];
+    }
+    return const <String>[];
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
+      backgroundColor: Colors.transparent,
+      child: Stack(
+        children: [
+          GestureDetector(
+            onTap: widget.onTap,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(22),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.62,
+                color: Colors.black,
+                child: _images.isEmpty
+                    ? const SizedBox.shrink()
+                    : PageView.builder(
+                        controller: _pageController,
+                        itemCount: _images.length,
+                        onPageChanged: (index) {
+                          setState(() => _currentPage = index);
+                        },
+                        itemBuilder: (context, index) {
+                          return AppNetworkImage(
+                            imageUrl: _images[index],
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 12,
+            right: 12,
+            child: GestureDetector(
+              onTap: widget.onClose,
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                alignment: Alignment.center,
+                child: const Icon(Icons.close, color: Colors.white, size: 22),
+              ),
+            ),
+          ),
+          if (_images.length > 1)
+            Positioned(
+              bottom: 14,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(_images.length, (index) {
+                  final isActive = _currentPage == index;
+                  return Container(
+                    width: isActive ? 18 : 8,
+                    height: 8,
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? Colors.white
+                          : Colors.white.withValues(alpha: 0.45),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  );
+                }),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -322,9 +522,9 @@ class _HeaderSection extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(child: Text(userName, style: AppThemes.f16w600)),
-          const Icon(Icons.call_outlined, size: 24, color: Color(0xFF111827)),
-          const SizedBox(width: 12),
-          const Icon(Icons.more_vert, size: 24, color: Color(0xFF111827)),
+          // const Icon(Icons.call_outlined, size: 24, color: Color(0xFF111827)),
+          // const SizedBox(width: 12),
+          // const Icon(Icons.more_vert, size: 24, color: Color(0xFF111827)),
         ],
       ),
     );
@@ -387,7 +587,7 @@ class _ProductInfoCard extends StatelessWidget {
               children: [
                 if (price != null)
                   Text(
-                    '${price} ${currency ?? ''}',
+                    '$price ${currency ?? ''}',
                     style: AppThemes.f14w600.copyWith(
                       color: const Color(0xFF111827),
                     ),
@@ -656,7 +856,8 @@ class _ChatComposerState extends State<_ChatComposer> {
                 ),
                 scrollDirection: Axis.horizontal,
                 itemCount: suggestions.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(width: 8),
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
@@ -704,6 +905,7 @@ class _ChatComposerState extends State<_ChatComposer> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: TextField(
                         controller: _controller,
+                        textCapitalization: TextCapitalization.sentences,
                         cursorColor: AppColors.primaryColor,
                         style: AppThemes.f14w500.copyWith(
                           color: AppColors.brandBlack,

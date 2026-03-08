@@ -617,23 +617,29 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
   }
 
   String _getLocationText(BuildContext context) {
-    if (widget.product.locationDetails != null) {
-      final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-      final name = widget
-          .product
-          .locationDetails![isArabic ? 'name_ar' : 'name_en']
-          ?.toString();
-      if (name != null && name.trim().isNotEmpty) {
-        return name.trim();
-      }
-    }
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final place = (isArabic
+            ? widget.product.placeNameAr
+            : widget.product.placeNameEn)
+        ?.trim();
+    final location = (isArabic
+            ? widget.product.locationNameAr
+            : widget.product.locationNameEn)
+        ?.trim();
 
-    final city = widget.product.city?.trim() ?? '';
-    final place = widget.product.place?.trim() ?? '';
-    if (city.isEmpty && place.isEmpty) return '';
-    if (city.isEmpty) return place;
-    if (place.isEmpty) return city;
-    return '$city, $place';
+    final hasPlace = place != null && place.isNotEmpty;
+    final hasLocation = location != null && location.isNotEmpty;
+    if (hasPlace && hasLocation) return '$place, $location';
+    if (hasPlace) return place;
+    if (hasLocation) return location;
+
+    // Backward compatibility fallback for older payloads
+    final cityFallback = widget.product.city?.trim() ?? '';
+    final placeFallback = widget.product.place?.trim() ?? '';
+    if (cityFallback.isEmpty && placeFallback.isEmpty) return '';
+    if (cityFallback.isEmpty) return placeFallback;
+    if (placeFallback.isEmpty) return cityFallback;
+    return '$cityFallback, $placeFallback';
   }
 
   Widget _buildAttributes(

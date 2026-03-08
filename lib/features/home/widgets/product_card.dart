@@ -16,16 +16,23 @@ import 'package:flutter/services.dart';
 
 class ProductCard extends StatefulWidget {
   const ProductCard({
+    super.key,
     required this.product,
     required this.onTapProduct,
     this.showFavoriteIcon = true,
     this.showStatus = false,
+    this.showOwnerStatuses = false,
+    this.showFeaturedOnlyStatus = false,
+    this.onRejectedStatusTap,
   });
 
   final ProductModel product;
   final VoidCallback onTapProduct;
   final bool showFavoriteIcon;
   final bool showStatus;
+  final bool showOwnerStatuses;
+  final bool showFeaturedOnlyStatus;
+  final VoidCallback? onRejectedStatusTap;
 
   @override
   State<ProductCard> createState() => _ProductCardState();
@@ -71,6 +78,13 @@ class _ProductCardState extends State<ProductCard>
   @override
   Widget build(BuildContext context) {
     final status = widget.product.status;
+    final isPromoted = widget.product.isPromoted == true;
+    final hasRegularStatus = status != null && status.isNotEmpty;
+    final allowRegularStatuses =
+        widget.showOwnerStatuses && !widget.showFeaturedOnlyStatus;
+    final shouldShowStatusChip =
+        widget.showStatus &&
+        (isPromoted || (allowRegularStatuses && hasRegularStatus));
     return GestureDetector(
       onTap: widget.onTapProduct,
       behavior: HitTestBehavior.opaque,
@@ -114,20 +128,30 @@ class _ProductCardState extends State<ProductCard>
                     ),
                   ),
                   // Status chip — top right (directional end)
-                  if (widget.showStatus && status != null && status.isNotEmpty)
+                  if (shouldShowStatusChip)
                     PositionedDirectional(
                       top: 0,
                       end: 0,
-                      child: ProductStatusChip(
-                        status: status,
-                        isFeatured:
-                            status.toLowerCase() == 'active' &&
-                            widget.product.promotions != null &&
-                            widget.product.promotions!.isNotEmpty,
-                        fontSize: 9,
-                        topEndRadius: 16,
-                        bottomStartRadius: 16,
-                      ),
+                      child:
+                          status == 'rejected' &&
+                              widget.onRejectedStatusTap != null
+                          ? GestureDetector(
+                              onTap: widget.onRejectedStatusTap,
+                              child: ProductStatusChip(
+                                status: status ?? '',
+                                isFeatured: isPromoted,
+                                fontSize: 9,
+                                topEndRadius: 16,
+                                bottomStartRadius: 16,
+                              ),
+                            )
+                          : ProductStatusChip(
+                              status: status ?? '',
+                              isFeatured: isPromoted,
+                              fontSize: 9,
+                              topEndRadius: 16,
+                              bottomStartRadius: 16,
+                            ),
                     ),
                   if (widget.showFavoriteIcon)
                     PositionedDirectional(

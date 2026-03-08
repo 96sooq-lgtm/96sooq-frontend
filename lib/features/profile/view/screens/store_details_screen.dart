@@ -276,7 +276,8 @@ class _StoreDetailsScreenViewState extends State<_StoreDetailsScreenView> {
         return ProductCard(
           product: product,
           showFavoriteIcon: !isOwnStore,
-          showStatus: isOwnStore,
+          showStatus: true,
+          showOwnerStatuses: isOwnStore,
           onTapProduct: () => _openProductDetailSheet(product, isOwnStore),
         );
       },

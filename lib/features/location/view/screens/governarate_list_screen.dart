@@ -36,7 +36,9 @@ class _GovernarateListScreenState extends State<GovernarateListScreen> {
   }
 
   void _onUseCurrentLocation() {
-    context.read<LocationBloc>().add(LocationUseCurrentRequested());
+    context.read<LocationBloc>().add(
+      LocationUseCurrentRequested(isForceRefresh: true),
+    );
   }
 
   @override

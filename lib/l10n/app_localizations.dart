@@ -185,6 +185,42 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profileTitle;
 
+  /// No description provided for @loginText.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get loginText;
+
+  /// No description provided for @loginInYourAccountText.
+  ///
+  /// In en, this message translates to:
+  /// **'Login in your account'**
+  String get loginInYourAccountText;
+
+  /// No description provided for @letsGetStartedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s Get Started'**
+  String get letsGetStartedText;
+
+  /// No description provided for @agreeTermsConditionsText.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to Terms and Conditions'**
+  String get agreeTermsConditionsText;
+
+  /// No description provided for @signupDescriptionText.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your details to get started with buying and selling locally'**
+  String get signupDescriptionText;
+
+  /// No description provided for @getStartedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get getStartedText;
+
   /// No description provided for @myProfileTitle.
   ///
   /// In en, this message translates to:
@@ -682,6 +718,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Latest Picks'**
   String get latestPicksTitle;
+
+  /// No description provided for @oopsText.
+  ///
+  /// In en, this message translates to:
+  /// **'Oops!'**
+  String get oopsText;
+
+  /// No description provided for @noInternetMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Please check your network.'**
+  String get noInternetMessage;
+
+  /// No description provided for @tryAgainText.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgainText;
+
+  /// No description provided for @continueWithGoogleText.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get continueWithGoogleText;
+
+  /// No description provided for @continueWithAppleText.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get continueWithAppleText;
+
+  /// No description provided for @downloadInvoiceText.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Invoice'**
+  String get downloadInvoiceText;
+
+  /// No description provided for @transactionHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction History'**
+  String get transactionHistoryTitle;
+
+  /// No description provided for @businessExpensesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Business Expenses'**
+  String get businessExpensesTitle;
+
+  /// No description provided for @downloadInvoicesTaxRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'Download invoices for your tax records'**
+  String get downloadInvoicesTaxRecords;
 
   /// No description provided for @individualAccountType.
   ///

@@ -264,6 +264,17 @@ class _ListYourProductScreenState extends State<ListYourProductScreen> {
             editingProduct?.attributesValues ??
             paymentFlowBloc.state.dynamicAttributes,
         description: _descriptionController.text.trim(),
+        governorateId:
+            paymentFlowBloc.state.governorateId ?? editingProduct?.locationId,
+        wilayatId: paymentFlowBloc.state.wilayatId ?? editingProduct?.placeId,
+        city:
+            paymentFlowBloc.state.city ??
+            editingProduct?.locationNameEn ??
+            editingProduct?.city,
+        place:
+            paymentFlowBloc.state.place ??
+            editingProduct?.placeNameEn ??
+            editingProduct?.place,
       ),
     );
 
@@ -418,9 +429,9 @@ class _ListYourProductScreenState extends State<ListYourProductScreen> {
                                 border: Border.all(
                                   color:
                                       (_submitted &&
-                                          (_photos.length +
-                                                  _networkPhotos.length <
-                                              3)) ||
+                                              (_photos.length +
+                                                      _networkPhotos.length <
+                                                  3)) ||
                                           _hasPhotoSizeError
                                       ? Colors.red
                                       : Colors.transparent,
@@ -463,8 +474,10 @@ class _ListYourProductScreenState extends State<ListYourProductScreen> {
                                         fit: BoxFit.cover,
                                       )
                                     : Image.file(
-                                        File(_photos[mediaIndex - networkCount]
-                                            .path),
+                                        File(
+                                          _photos[mediaIndex - networkCount]
+                                              .path,
+                                        ),
                                         fit: BoxFit.cover,
                                       ),
                               ),

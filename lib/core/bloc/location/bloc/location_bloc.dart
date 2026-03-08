@@ -122,6 +122,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
         selectedCity: event.city,
         selectedCountryLabel: null,
         isCountryFallback: false,
+        isManuallySelected: true,
         errorMessage: null,
         failureType: LocationFailureType.none,
       ),
@@ -132,6 +133,10 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     LocationUseCurrentRequested event,
     Emitter<LocationState> emit,
   ) async {
+    if (state.isManuallySelected && !event.isForceRefresh) {
+      return;
+    }
+
     emit(
       state.copyWith(
         currentLocationStatus: LocationLoadStatus.loading,
@@ -207,6 +212,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
             selectedCity: null,
             selectedCountryLabel: 'All in Oman',
             isCountryFallback: true,
+            isManuallySelected: false,
             selectedLatitude: latitude,
             selectedLongitude: longitude,
             currentLocationStatus: LocationLoadStatus.success,
@@ -223,6 +229,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
           selectedCity: resolved.city,
           selectedCountryLabel: null,
           isCountryFallback: false,
+          isManuallySelected: false,
           selectedLatitude: resolved.latitude,
           selectedLongitude: resolved.longitude,
           cities: resolved.cities,
@@ -261,6 +268,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
         selectedCity: null,
         selectedCountryLabel: null,
         isCountryFallback: false,
+        isManuallySelected: false,
         selectedLatitude: null,
         selectedLongitude: null,
         failureType: LocationFailureType.none,
@@ -278,6 +286,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
         selectedCity: null,
         selectedCountryLabel: event.label,
         isCountryFallback: true,
+        isManuallySelected: true,
         currentLocationStatus: LocationLoadStatus.success,
         errorMessage: null,
         failureType: LocationFailureType.none,

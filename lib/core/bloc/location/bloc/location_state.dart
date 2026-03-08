@@ -16,6 +16,7 @@ class LocationState {
     this.selectedCity,
     this.selectedCountryLabel,
     this.isCountryFallback = false,
+    this.isManuallySelected = false,
     this.selectedLatitude,
     this.selectedLongitude,
     this.errorMessage,
@@ -31,6 +32,7 @@ class LocationState {
   final LocationItemModel? selectedCity;
   final String? selectedCountryLabel;
   final bool isCountryFallback;
+  final bool isManuallySelected;
   final double? selectedLatitude;
   final double? selectedLongitude;
   final String? errorMessage;
@@ -50,6 +52,7 @@ class LocationState {
     Object? selectedCity = _unset,
     Object? selectedCountryLabel = _unset,
     bool? isCountryFallback,
+    bool? isManuallySelected,
     Object? selectedLatitude = _unset,
     Object? selectedLongitude = _unset,
     Object? errorMessage = _unset,
@@ -72,6 +75,7 @@ class LocationState {
           ? this.selectedCountryLabel
           : selectedCountryLabel as String?,
       isCountryFallback: isCountryFallback ?? this.isCountryFallback,
+      isManuallySelected: isManuallySelected ?? this.isManuallySelected,
       selectedLatitude: identical(selectedLatitude, _unset)
           ? this.selectedLatitude
           : selectedLatitude as double?,
