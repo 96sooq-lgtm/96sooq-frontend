@@ -43,6 +43,7 @@ class ProductModel {
   final String? sellerPhoneNumber;
   final List<dynamic>? promotions;
   final int favoritesCount;
+  final int viewsCount;
 
   ProductModel({
     required this.id,
@@ -89,6 +90,7 @@ class ProductModel {
     this.sellerPhoneNumber,
     this.promotions,
     this.favoritesCount = 0,
+    this.viewsCount = 0,
   });
 
   /// Capitalizes the first letter and replaces underscores with spaces.
@@ -160,6 +162,9 @@ class ProductModel {
       favoritesCount: json['favorites_count'] is int
           ? json['favorites_count'] as int
           : int.tryParse(json['favorites_count']?.toString() ?? '0') ?? 0,
+      viewsCount: json['views_count'] is int
+          ? json['views_count'] as int
+          : int.tryParse(json['views_count']?.toString() ?? '0') ?? 0,
     );
   }
 }

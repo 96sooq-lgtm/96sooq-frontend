@@ -75,12 +75,7 @@ class _AddlistScreenState extends State<AddlistScreen> {
 
     final destination = BlocProvider(
       create: (_) => AddlistPaymentFlowBloc(),
-      child: SubscriptionListingScreen(
-        disclaimerSubtext: accountType == ListingAccountType.individual
-            ? 'Individual account gets 1 listing free per month.'
-            : 'Business account gets 1 listing free per month.',
-        accountType: accountType,
-      ),
+      child: SubscriptionListingScreen(accountType: accountType),
     );
 
     Navigator.push(

@@ -1,5 +1,6 @@
 import 'package:_96_sooq/constants/app_assets.dart';
 import 'package:_96_sooq/constants/app_colors.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:_96_sooq/features/auth/bloc/auth_bloc.dart';
 import 'package:_96_sooq/features/auth/domain/auth_session_repository.dart';
@@ -421,7 +422,7 @@ class _OffersScreenState extends State<OffersScreen>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Open Link',
+                                    AppLocalizations.of(context)!.openLinkText,
                                     style: AppThemes.f18w400.copyWith(
                                       color: AppColors.white,
                                     ),
@@ -459,10 +460,17 @@ class _OffersScreenState extends State<OffersScreen>
                               final text = Uri.encodeComponent(
                                 "Hi, I want to know more about this offer: ${_currentOffer.name}",
                               );
+                              final cleanNumber = number.replaceAll(RegExp(r'[^0-9]'), '');
                               final uri = Uri.parse(
-                                "whatsapp://send?phone=$number&text=$text",
+                                "https://wa.me/$cleanNumber?text=$text",
                               );
                               if (await canLaunchUrl(uri)) {
+                                await launchUrl(
+                                  uri,
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              } else {
+                                // Fallback if canLaunchUrl fails
                                 await launchUrl(
                                   uri,
                                   mode: LaunchMode.externalApplication,
@@ -548,7 +556,7 @@ class _OffersScreenState extends State<OffersScreen>
                                     child: ChatScreen(
                                       currentUserId: currentUserId,
                                       userName:
-                                          _currentOffer.storeName ?? 'Seller',
+                                          _currentOffer.storeName ?? AppLocalizations.of(context)!.sellerFallback,
                                       avatarUrl:
                                           _currentOffer.storeLogo ??
                                           _currentOffer.avatarUrl ??
@@ -568,7 +576,7 @@ class _OffersScreenState extends State<OffersScreen>
                               Navigator.pop(context); // Close loading dialog
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Could not start chat: $e'),
+                                  content: Text('${AppLocalizations.of(context)!.couldNotStartChatPrefix}$e'),
                                 ),
                               );
                             }

@@ -1,6 +1,7 @@
 import 'package:_96_sooq/constants/app_colors.dart';
 import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:_96_sooq/shared/global_widgets/backnavigation_button.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,6 +14,7 @@ class HelpAndSupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -26,9 +28,12 @@ class HelpAndSupportScreen extends StatelessWidget {
               Row(
                 children: [
                   BackButtonWidget(ontap: () => Navigator.pop(context)),
-                  const Expanded(
+                  Expanded(
                     child: Center(
-                      child: Text('Help & Support', style: AppThemes.f18w600),
+                      child: Text(
+                        localizations.helpSupportTitle,
+                        style: AppThemes.f18w600,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 40), // balance the back button
@@ -37,10 +42,10 @@ class HelpAndSupportScreen extends StatelessWidget {
               const SizedBox(height: 32),
 
               // ── Subtitle ──
-              const Text('How can we help you?', style: AppThemes.f18w600),
+              Text(localizations.howCanWeHelpYou, style: AppThemes.f18w600),
               const SizedBox(height: 8),
               Text(
-                'Our team is available to assist you with any questions about 96sooq.',
+                localizations.supportTeamDescription,
                 style: AppThemes.f14w400.copyWith(
                   color: const Color(0xFF6E7A8A),
                   height: 1.5,
@@ -52,9 +57,9 @@ class HelpAndSupportScreen extends StatelessWidget {
               _SupportCard(
                 icon: Icons.chat_outlined,
                 iconColor: const Color(0xFF25D366),
-                title: 'WhatsApp Support',
-                subtitle: 'Fastest response time',
-                buttonLabel: 'Chat Now',
+                title: localizations.whatsappSupport,
+                subtitle: localizations.fastestResponseTime,
+                buttonLabel: localizations.chatNow,
                 buttonIcon: Icons.send_rounded,
                 buttonColor: const Color(0xFF25D366),
                 onTap: () {
@@ -70,9 +75,9 @@ class HelpAndSupportScreen extends StatelessWidget {
               _SupportCard(
                 icon: Icons.mail_outline_rounded,
                 iconColor: Color(0xFFF97316),
-                title: 'Email Support',
+                title: localizations.emailSupport,
                 subtitle: _email,
-                buttonLabel: 'Email Us',
+                buttonLabel: localizations.emailUs,
                 buttonIcon: Icons.alternate_email_rounded,
                 buttonColor: Color(0xFFF97316),
                 onTap: () {
@@ -88,10 +93,10 @@ class HelpAndSupportScreen extends StatelessWidget {
               _SupportCard(
                 icon: Icons.phone_outlined,
                 iconColor: Color(0xFF2563EB),
-                title: 'Call Support',
-                subtitle: 'Speak with our team',
+                title: localizations.callSupport,
+                subtitle: localizations.speakWithOurTeam,
                 extraInfo: '+968 7722 8181',
-                buttonLabel: 'Call Now',
+                buttonLabel: localizations.callNow,
                 buttonIcon: Icons.phone_in_talk_rounded,
                 buttonColor: Color(0xFF2563EB),
                 onTap: () {

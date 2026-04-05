@@ -15,6 +15,7 @@ import 'package:_96_sooq/shared/global_widgets/custom_button_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 
 class SummaryScreen extends StatefulWidget {
   const SummaryScreen({super.key});
@@ -128,13 +129,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
           final productTitle = _fetchedProduct?.title.isNotEmpty == true
               ? _fetchedProduct!.title
               : (state.productTitle.trim().isEmpty
-                    ? 'Product'
+                    ? AppLocalizations.of(context)!.productFallback
                     : state.productTitle.trim());
           final productDescription = _fetchedProduct?.details.isNotEmpty == true
               ? _fetchedProduct!.details
               : (state.description?.trim().isNotEmpty == true
                     ? state.description!.trim()
-                    : 'No description');
+                    : AppLocalizations.of(context)!.noDescriptionText);
           final productImageUrl = _fetchedProduct?.imageUrl.isNotEmpty == true
               ? _fetchedProduct!.imageUrl
               : (_fetchedProduct?.images.isNotEmpty == true
@@ -152,8 +153,10 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   builder: (context, payState) {
                     final isLoading = payState is PaymentCheckoutLoading;
                     return CustomButton(
-                      text:
-                          'Pay & Confirm ${_formatAmount(displayTotal)} $currency',
+                      text: AppLocalizations.of(context)!.payAndConfirmTotal(
+                        _formatAmount(displayTotal),
+                        currency,
+                      ),
                       isLoading: isLoading,
                       onPressed: () {
                         if (isLoading) return;
@@ -209,7 +212,10 @@ class _SummaryScreenState extends State<SummaryScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         BackButtonWidget(ontap: () => Navigator.pop(context)),
-                        Text('Payment Summary', style: AppThemes.f18w600),
+                        Text(
+                          AppLocalizations.of(context)!.paymentSummaryTitle,
+                          style: AppThemes.f18w600,
+                        ),
                         const SizedBox(width: 43),
                       ],
                     ),
@@ -223,7 +229,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Selected Plan',
+                      AppLocalizations.of(context)!.selectedPlanTitleSection,
                       style: AppThemes.f14w600.copyWith(
                         color: AppColors.productListingTextColor,
                       ),
@@ -231,14 +237,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
                     const SizedBox(height: 10),
                     _SelectedPlanCard(
                       planTitle: state.selectedPlanTitle.trim().isEmpty
-                          ? 'Product Listing Ad'
+                          ? AppLocalizations.of(context)!.productListingAdOption
                           : state.selectedPlanTitle.trim(),
                       planAmountText: '${_formatAmount(subtotal)} $currency',
                       currency: currency,
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Order Details',
+                      AppLocalizations.of(context)!.orderDetailsTitleSection,
                       style: AppThemes.f14w600.copyWith(
                         color: AppColors.productListingTextColor,
                       ),
@@ -355,7 +361,10 @@ class _ProductSummaryCard extends StatelessWidget {
                         border: Border.all(color: const Color(0xFFC8D1DC)),
                       ),
                       alignment: Alignment.center,
-                      child: Text('View Item', style: AppThemes.f14w600),
+                      child: Text(
+                        AppLocalizations.of(context)!.viewItemButton,
+                        style: AppThemes.f14w600,
+                      ),
                     ),
                   ),
                 ),
@@ -408,7 +417,7 @@ class _SelectedPlanCard extends StatelessWidget {
               children: [
                 Text(planTitle, style: AppThemes.f16w600),
                 Text(
-                  'Billed monthly',
+                  AppLocalizations.of(context)!.billedMonthlyText,
                   style: AppThemes.f16w400.copyWith(
                     color: AppColors.productListingTextColor,
                   ),
@@ -461,14 +470,20 @@ class _OrderDetailsCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _AmountRow(label: 'Subtotal', value: subtotalText),
+          _AmountRow(
+            label: AppLocalizations.of(context)!.subtotalLabel,
+            value: subtotalText,
+          ),
           const SizedBox(height: 12),
-          _AmountRow(label: 'Platform Fee (2%)', value: platformFeeText),
+          _AmountRow(
+            label: AppLocalizations.of(context)!.platformFeeLabel,
+            value: platformFeeText,
+          ),
           const SizedBox(height: 14),
           const Divider(color: Color(0xFFDCE1E8), height: 1),
           const SizedBox(height: 14),
           _AmountRow(
-            label: 'Total Amount',
+            label: AppLocalizations.of(context)!.totalAmountLabel,
             value: totalText,
             isEmphasized: true,
           ),

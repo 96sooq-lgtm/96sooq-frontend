@@ -102,8 +102,6 @@ class _PostSelectionScreenState extends State<PostSelectionScreen> {
             builder: (_) => BlocProvider(
               create: (_) => AddlistPaymentFlowBloc(),
               child: SubscriptionListingScreen(
-                disclaimerSubtext:
-                    'Business account gets 1 listing free per month.',
                 accountType: accountType,
                 promoteProduct: product,
               ),
@@ -152,8 +150,6 @@ class _PostSelectionScreenState extends State<PostSelectionScreen> {
           builder: (_) => BlocProvider(
             create: (_) => AddlistPaymentFlowBloc(),
             child: SubscriptionListingScreen(
-              disclaimerSubtext:
-                  'Individual account gets 1 listing free per month.',
               accountType: accountType,
               promoteProduct: product,
             ),
@@ -176,7 +172,7 @@ class _PostSelectionScreenState extends State<PostSelectionScreen> {
                   planId: null,
                   planAmount: 0.0,
                   currency: 'OMR',
-                  useExistingQuota: false,
+                  useExistingQuota: true,
                 ),
               ),
             child: BoostYourProductScreen(
@@ -257,7 +253,7 @@ class _PostSelectionScreenState extends State<PostSelectionScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  state.error ?? 'Error loading ads',
+                                  state.error ?? AppLocalizations.of(context)!.errorLoadingAds,
                                   style: AppThemes.f14w500,
                                   textAlign: TextAlign.center,
                                 ),
@@ -273,7 +269,7 @@ class _PostSelectionScreenState extends State<PostSelectionScreen> {
                                       storeId: s.store?.id,
                                     );
                                   },
-                                  child: const Text('Retry'),
+                                  child: Text(AppLocalizations.of(context)!.retryText),
                                 ),
                               ],
                             ),
@@ -283,7 +279,7 @@ class _PostSelectionScreenState extends State<PostSelectionScreen> {
                         if (state.products.isEmpty) {
                           return Center(
                             child: Text(
-                              'No ads found.',
+                              AppLocalizations.of(context)!.noAdsFound,
                               style: AppThemes.f14w500,
                             ),
                           );
@@ -319,8 +315,9 @@ class _PostSelectionScreenState extends State<PostSelectionScreen> {
                                 status == 'pending_approval' ||
                                 status == 'pending';
                             final isRejected = status == 'rejected';
-                            // Hide promote for rejected/pending for all users
-                            final showPromote = !isPending && !isRejected;
+                            final isExpired = status == 'expire' || status == 'expired';
+                            // Hide promote for expired, rejected, and pending for all users
+                            final showPromote = !isPending && !isRejected && !isExpired;
                             return _PostSelectionCard(
                               product: product,
                               promoteLabel: localizations.promoteText,

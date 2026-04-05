@@ -165,8 +165,8 @@ class _BoostYourProductScreenState extends State<BoostYourProductScreen> {
           (_) => false,
         );
         messenger.showSnackBar(
-          const SnackBar(
-            content: Text('Your listing has been submitted for review!'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.listingSubmittedReviewText),
             backgroundColor: Colors.green,
           ),
         );
@@ -175,7 +175,9 @@ class _BoostYourProductScreenState extends State<BoostYourProductScreen> {
         setState(() => _isSubmitting = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Checkout failed: $e'),
+            content: Text(
+              '${AppLocalizations.of(context)!.checkoutFailedPrefix}$e',
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -190,10 +192,8 @@ class _BoostYourProductScreenState extends State<BoostYourProductScreen> {
       (_) => false,
     );
     messenger.showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Your post has been set for review and will be posted successfully in next 30 minutes',
-        ),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.postWillBePublishedText),
       ),
     );
   }
@@ -250,7 +250,7 @@ class _BoostYourProductScreenState extends State<BoostYourProductScreen> {
                     Column(
                       children: [
                         Text(
-                          'DAYS',
+                          localizations.daysTopLabel,
                           style: AppThemes.f10w600.copyWith(
                             color: const Color(0xFF8FA0B8),
                             letterSpacing: 0.5,
@@ -272,7 +272,7 @@ class _BoostYourProductScreenState extends State<BoostYourProductScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          'CURRENT RATE',
+                          localizations.currentRateTopLabel,
                           style: AppThemes.f10w600.copyWith(
                             color: const Color(0xFF8FA0B8),
                             letterSpacing: 0.5,
@@ -288,7 +288,7 @@ class _BoostYourProductScreenState extends State<BoostYourProductScreen> {
                               style: AppThemes.f20w700,
                             ),
                             Text(
-                              '$currency/d',
+                              '$currency ${localizations.perDayLabel}',
                               style: AppThemes.f12w500.copyWith(
                                 color: AppColors.productListingTextColor,
                               ),
@@ -305,12 +305,15 @@ class _BoostYourProductScreenState extends State<BoostYourProductScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Total Promotion Days',
+                      localizations.totalPromotionDaysLabel,
                       style: AppThemes.f14w400.copyWith(
                         color: const Color(0xFF6B7280),
                       ),
                     ),
-                    Text('$totalDays Days', style: AppThemes.f14w600),
+                    Text(
+                      localizations.totalDaysCountLabel(totalDays.toString()),
+                      style: AppThemes.f14w600,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -319,7 +322,7 @@ class _BoostYourProductScreenState extends State<BoostYourProductScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'TOTAL PRICE',
+                      localizations.totalPriceTopLabel,
                       style: AppThemes.f12w600.copyWith(
                         color: const Color(0xFF8FA0B8),
                       ),
@@ -420,13 +423,10 @@ class _BoostYourProductScreenState extends State<BoostYourProductScreen> {
                 ],
               ),
               const SizedBox(height: 24),
-              Text(
-                "Which promotion do you need for your product?",
-                style: AppThemes.f18w600,
-              ),
+              Text(localizations.whichPromotionTitle, style: AppThemes.f18w600),
               const SizedBox(height: 6),
               Text(
-                'Select the best option to increase views, clicks, and sales.',
+                localizations.promotionSelectionDesc,
                 style: AppThemes.f14w500.copyWith(
                   color: AppColors.productListingTextColor,
                 ),
@@ -529,9 +529,10 @@ class _BoostListingTypeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     final durationLabel = durationDays <= 1
-        ? '/ PER DAY'
-        : '/ for $durationDays days';
+        ? localizations.perDayLabel
+        : localizations.forDaysLabel(durationDays.toString());
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,

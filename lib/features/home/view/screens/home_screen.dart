@@ -23,6 +23,7 @@ import 'package:_96_sooq/features/location/view/screens/governarate_list_screen.
 import 'package:_96_sooq/features/auth/domain/auth_session_repository.dart';
 import 'package:_96_sooq/features/auth/screens/login_screen.dart';
 import 'package:_96_sooq/features/profile/view/screens/store_details_screen.dart';
+import 'package:_96_sooq/features/profile/view/screens/help_and_support_screen.dart';
 import 'package:_96_sooq/features/profile/bloc/store_profile/store_profile_bloc.dart';
 import 'package:_96_sooq/features/profile/bloc/store_profile/store_profile_event.dart';
 import 'package:_96_sooq/features/root/bloc/root_bloc.dart';
@@ -104,14 +105,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       builder: (dialogContext) {
         return AlertDialog(
           backgroundColor: AppColors.white,
-          title: const Text('Location Services Off'),
-          content: const Text(
-            'Please turn on location services to automatically detect your location.',
+          title: Text(AppLocalizations.of(context)!.locationServicesOff),
+          content: Text(
+            AppLocalizations.of(context)!.locationServicesOffMessage,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Not now'),
+              child: Text(AppLocalizations.of(context)!.notNow),
             ),
             TextButton(
               onPressed: () async {
@@ -121,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   Navigator.of(dialogContext).pop();
                 }
               },
-              child: const Text('Open Settings'),
+              child: Text(AppLocalizations.of(context)!.openSettings),
             ),
           ],
         );
@@ -191,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (!mounted) return;
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Unable to open link')));
+    ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.unableToOpenLink)));
   }
 
   bool get _usesFeaturedBanners => _featuredBanners.isNotEmpty;
@@ -308,137 +309,157 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     children: [
                       Image.asset(AppAssets.logo, width: 36, height: 36),
                       const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: isRtl
-                            ? CrossAxisAlignment.end
-                            : CrossAxisAlignment.start,
-                        children: [
-                          Align(
-                            alignment: isRtl
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                            child: Directionality(
-                              textDirection: TextDirection.ltr,
-                              child: Text(
-                                "96 SOOQ",
-                                textAlign: TextAlign.start,
-                                style: AppThemes.f14w500.copyWith(
-                                  color: AppColors.white,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: isRtl
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
+                          children: [
+                            Align(
+                              alignment: isRtl
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
+                              child: Directionality(
+                                textDirection: TextDirection.ltr,
+                                child: Text(
+                                  "96 SOOQ",
+                                  textAlign: TextAlign.start,
+                                  style: AppThemes.f14w500.copyWith(
+                                    color: AppColors.white,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          GestureDetector(
-                            behavior: HitTestBehavior.opaque,
+                            GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const GovernarateListScreen(),
+                                  ),
+                                );
+                              },
+                              child: BlocBuilder<LocationBloc, LocationState>(
+                                buildWhen: (previous, current) =>
+                                    previous.selectedState !=
+                                        current.selectedState ||
+                                    previous.selectedCity !=
+                                        current.selectedCity ||
+                                    previous.selectedCountryLabel !=
+                                        current.selectedCountryLabel ||
+                                    previous.isCountryFallback !=
+                                        current.isCountryFallback,
+                                builder: (context, locationState) {
+                                  final localeCode = Localizations.localeOf(
+                                    context,
+                                  ).languageCode;
+                                  final hasExactSelection =
+                                      locationState.selectedState != null &&
+                                      locationState.selectedCity != null;
+                                  final locationText = hasExactSelection
+                                      ? '${locationState.selectedCity!.displayName(localeCode)}, ${locationState.selectedState!.displayName(localeCode)}'
+                                      : (locationState.isCountryFallback &&
+                                                (locationState
+                                                        .selectedCountryLabel
+                                                        ?.isNotEmpty ??
+                                                    false)
+                                            ? locationState
+                                                .selectedCountryLabel!
+                                            : localizations
+                                                .selectLocationLabel);
+                                  return Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (isRtl)
+                                        const Icon(
+                                          Icons.arrow_drop_down,
+                                          color: AppColors.white,
+                                          size: 16,
+                                        ),
+                                      Flexible(
+                                        child: Text(
+                                          locationText,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: AppThemes.f12w400.copyWith(
+                                            color: AppColors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      if (!isRtl)
+                                        const Icon(
+                                          Icons.arrow_drop_down,
+                                          color: AppColors.white,
+                                          size: 16,
+                                        ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _MaterialIconCircle(
+                            Icons.help_outline_rounded,
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const GovernarateListScreen(),
+                                  builder: (_) => const HelpAndSupportScreen(),
                                 ),
                               );
                             },
-                            child: BlocBuilder<LocationBloc, LocationState>(
-                              buildWhen: (previous, current) =>
-                                  previous.selectedState !=
-                                      current.selectedState ||
-                                  previous.selectedCity !=
-                                      current.selectedCity ||
-                                  previous.selectedCountryLabel !=
-                                      current.selectedCountryLabel ||
-                                  previous.isCountryFallback !=
-                                      current.isCountryFallback,
-                              builder: (context, locationState) {
-                                final localeCode = Localizations.localeOf(
-                                  context,
-                                ).languageCode;
-                                final hasExactSelection =
-                                    locationState.selectedState != null &&
-                                    locationState.selectedCity != null;
-                                final locationText = hasExactSelection
-                                    ? '${locationState.selectedCity!.displayName(localeCode)}, ${locationState.selectedState!.displayName(localeCode)}'
-                                    : (locationState.isCountryFallback &&
-                                              (locationState
-                                                      .selectedCountryLabel
-                                                      ?.isNotEmpty ??
-                                                  false)
-                                          ? locationState.selectedCountryLabel!
-                                          : localizations.selectLocationLabel);
-                                return Row(
-                                  children: [
-                                    if (isRtl)
-                                      const Icon(
-                                        Icons.arrow_drop_down,
-                                        color: AppColors.white,
-                                        size: 16,
-                                      ),
-                                    ConstrainedBox(
-                                      constraints: const BoxConstraints(
-                                        maxWidth: 140,
-                                      ),
-                                      child: Text(
-                                        locationText,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: AppThemes.f12w400.copyWith(
-                                          color: AppColors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    if (!isRtl)
-                                      const Icon(
-                                        Icons.arrow_drop_down,
-                                        color: AppColors.white,
-                                        size: 16,
-                                      ),
-                                  ],
-                                );
-                              },
-                            ),
                           ),
+                          const SizedBox(width: 5),
+                          _IconCircle(
+                            AppAssets.favoritesIc,
+                            onTap: () async {
+                              final isLoggedIn = await _authSessionRepository
+                                  .isLoggedIn();
+                              if (!context.mounted) return;
+                              if (!isLoggedIn) {
+                                // Not logged in, redirect to login screen
+                                final result = await Navigator.push<bool>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const LoginScreen(),
+                                  ),
+                                );
+                                if (!context.mounted) return;
+
+                                // If login was successful, open favorites directly
+                                if (result == true) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const FavoutireScreen(),
+                                    ),
+                                  );
+                                }
+                                return;
+                              }
+
+                              if (context.mounted) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const FavoutireScreen(),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          const SizedBox(width: 5),
+                          _IconCircle(AppAssets.notificationIc),
                         ],
                       ),
-                      const Spacer(),
-                      _IconCircle(
-                        AppAssets.favoritesIc,
-                        onTap: () async {
-                          final isLoggedIn = await _authSessionRepository
-                              .isLoggedIn();
-                          if (!context.mounted) return;
-                          if (!isLoggedIn) {
-                            // Not logged in, redirect to login screen
-                            final result = await Navigator.push<bool>(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const LoginScreen(),
-                              ),
-                            );
-                            if (!context.mounted) return;
-
-                            // If login was successful, open favorites directly
-                            if (result == true) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const FavoutireScreen(),
-                                ),
-                              );
-                            }
-                            return;
-                          }
-
-                          if (context.mounted) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const FavoutireScreen(),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                      // const SizedBox(width: 10),
-                      // _IconCircle(AppAssets.notificationIc),
                     ],
                   ),
                 ),
@@ -862,6 +883,29 @@ class _IconCircle extends StatelessWidget {
           color: AppColors.white.withValues(alpha: 0.1),
         ),
         child: Center(child: Image.asset(icon)),
+      ),
+    );
+  }
+}
+
+class _MaterialIconCircle extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback? onTap;
+
+  const _MaterialIconCircle(this.icon, {this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 48,
+        width: 48,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.white.withValues(alpha: 0.1),
+        ),
+        child: Center(child: Icon(icon, color: AppColors.white.withOpacity(0.8), size: 22)),
       ),
     );
   }

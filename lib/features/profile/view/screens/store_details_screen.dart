@@ -14,6 +14,7 @@ import 'package:_96_sooq/features/profile/bloc/profile_state.dart';
 import 'package:_96_sooq/features/profile/model/store_check_response_model.dart';
 import 'package:_96_sooq/features/profile/model/store_review_model.dart';
 import 'package:_96_sooq/shared/dio_services.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:_96_sooq/shared/global_widgets/app_network_image.dart';
 import 'package:_96_sooq/shared/global_widgets/backnavigation_button.dart';
 import 'package:flutter/material.dart';
@@ -250,7 +251,12 @@ class _StoreDetailsScreenViewState extends State<_StoreDetailsScreenView> {
         state.listingsStatus == StoreDetailsLoadStatus.success) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 100),
-        child: Center(child: Text('No listings yet', style: AppThemes.f14w400)),
+        child: Center(
+          child: Text(
+            AppLocalizations.of(context)!.noListingsText,
+            style: AppThemes.f14w400,
+          ),
+        ),
       );
     }
 
@@ -343,7 +349,10 @@ class _StoreDetailsScreenViewState extends State<_StoreDetailsScreenView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 18),
-            Text('Reviews', style: AppThemes.f14w600),
+            Text(
+              AppLocalizations.of(context)!.reviewsTabTitle,
+              style: AppThemes.f14w600,
+            ),
             const SizedBox(height: 14),
             _buildReviewsShimmer(),
           ],
@@ -376,7 +385,10 @@ class _StoreDetailsScreenViewState extends State<_StoreDetailsScreenView> {
                   ),
                   onPressed: _openStartReviewSheet,
                   child: Center(
-                    child: Text('Start a Review', style: AppThemes.f14w500),
+                    child: Text(
+                      AppLocalizations.of(context)!.startAReviewButton,
+                      style: AppThemes.f14w500,
+                    ),
                   ),
                 ),
               ),
@@ -384,7 +396,7 @@ class _StoreDetailsScreenViewState extends State<_StoreDetailsScreenView> {
             const SizedBox(height: 100),
             Center(
               child: Text(
-                'There are no reviews for this\nbusiness as of now',
+                AppLocalizations.of(context)!.noReviewsForBusiness,
                 style: AppThemes.f14w400.copyWith(
                   color: AppColors.brandBlack.withValues(alpha: 0.6),
                 ),
@@ -420,20 +432,26 @@ class _StoreDetailsScreenViewState extends State<_StoreDetailsScreenView> {
                 ),
                 onPressed: _openStartReviewSheet,
                 child: Center(
-                  child: Text('Start a Review', style: AppThemes.f14w500),
+                  child: Text(
+                    AppLocalizations.of(context)!.startAReviewButton,
+                    style: AppThemes.f14w500,
+                  ),
                 ),
               ),
             ),
           ],
           const SizedBox(height: 18),
-          Text('Reviews', style: AppThemes.f14w600),
+          Text(
+            AppLocalizations.of(context)!.reviewsTabTitle,
+            style: AppThemes.f14w600,
+          ),
           const SizedBox(height: 8),
           Text(avgRating.toStringAsFixed(1), style: AppThemes.f40w700),
           const SizedBox(height: 8),
           _buildStars(rating: avgRating, size: 38 / 2),
           const SizedBox(height: 8),
           Text(
-            '($totalReviews ${totalReviews == 1 ? 'Review' : 'Reviews'})',
+            AppLocalizations.of(context)!.reviewCountText(totalReviews),
             style: AppThemes.f14w400.copyWith(color: AppColors.brandBlack),
           ),
           const SizedBox(height: 18),
@@ -458,7 +476,7 @@ class _StoreDetailsScreenViewState extends State<_StoreDetailsScreenView> {
               SizedBox(
                 width: 52,
                 child: Text(
-                  '$star ${star == 1 ? 'star' : 'stars'}',
+                  AppLocalizations.of(context)!.starCount(star),
                   style: AppThemes.f12w500,
                 ),
               ),
@@ -502,7 +520,12 @@ class _StoreDetailsScreenViewState extends State<_StoreDetailsScreenView> {
         state.reviewsStatus == StoreDetailsLoadStatus.success) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Center(child: Text('No reviews yet', style: AppThemes.f14w400)),
+        child: Center(
+          child: Text(
+            AppLocalizations.of(context)!.noReviewsYet,
+            style: AppThemes.f14w400,
+          ),
+        ),
       );
     }
 
@@ -794,14 +817,14 @@ class _StoreDetailsScreenViewState extends State<_StoreDetailsScreenView> {
                   Row(
                     children: [
                       _buildTabItem(
-                        label: 'Posts',
+                        label: AppLocalizations.of(context)!.postsTabTitle,
                         selected: _selectedTab == _StoreDetailsTab.posts,
                         onTap: () => setState(
                           () => _selectedTab = _StoreDetailsTab.posts,
                         ),
                       ),
                       _buildTabItem(
-                        label: 'Reviews',
+                        label: AppLocalizations.of(context)!.reviewsTabTitle,
                         selected: _selectedTab == _StoreDetailsTab.reviews,
                         onTap: () => setState(
                           () => _selectedTab = _StoreDetailsTab.reviews,
@@ -936,15 +959,21 @@ class _ReviewFormSheetState extends State<_ReviewFormSheet> {
       if (mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Review submitted successfully!')),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.reviewSubmittedSuccess),
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isSubmitting = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to submit review: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '${AppLocalizations.of(context)!.reviewSubmitFailedPrefix}$e',
+            ),
+          ),
+        );
       }
     }
   }
@@ -963,10 +992,13 @@ class _ReviewFormSheetState extends State<_ReviewFormSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Write a Review', style: AppThemes.f18w600),
+            Text(
+              AppLocalizations.of(context)!.writeAReviewTitle,
+              style: AppThemes.f18w600,
+            ),
             const SizedBox(height: 6),
             Text(
-              'How would you rate this business?',
+              AppLocalizations.of(context)!.rateBusinessPrompt,
               style: AppThemes.f14w400.copyWith(
                 color: AppColors.brandBlack.withValues(alpha: 0.6),
               ),
@@ -996,7 +1028,7 @@ class _ReviewFormSheetState extends State<_ReviewFormSheet> {
               controller: _commentController,
               maxLines: 4,
               decoration: InputDecoration(
-                hintText: 'Share your experience (optional)',
+                hintText: AppLocalizations.of(context)!.shareExperienceHint,
                 hintStyle: AppThemes.f14w400.copyWith(
                   color: AppColors.brandBlack.withValues(alpha: 0.4),
                 ),
@@ -1035,9 +1067,9 @@ class _ReviewFormSheetState extends State<_ReviewFormSheet> {
                           color: Colors.black,
                         ),
                       )
-                    : const Text(
-                        'Submit Review',
-                        style: TextStyle(
+                    : Text(
+                        AppLocalizations.of(context)!.submitReviewButton,
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),

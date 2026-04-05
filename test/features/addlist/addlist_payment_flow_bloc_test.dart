@@ -121,6 +121,7 @@ void main() {
                 accept: null,
                 status: 'active',
                 options: <String>[],
+                optionsAr: <String>[],
                 multiple: false,
               ),
             ],

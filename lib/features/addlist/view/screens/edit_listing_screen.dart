@@ -133,7 +133,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       BackButtonWidget(ontap: () => Navigator.pop(context)),
-                      Text('Edit Listing', style: AppThemes.f16w600),
+                      Text(localizations.editListingTitle, style: AppThemes.f16w600),
                       const SizedBox(width: 30),
                     ],
                   ),
@@ -159,7 +159,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
                   _RequiredLabel(label: localizations.addImagesTitle),
                   const SizedBox(height: 8),
                   Text(
-                    'Add at least 3 photos of your ad',
+                    AppLocalizations.of(context)!.addAtLeast3Photos,
                     style: AppThemes.f14w400.copyWith(
                       color: AppColors.productListingTextColor,
                     ),
@@ -277,7 +277,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 6, left: 12),
                       child: Text(
-                        'Please add images smaller than 5 MB',
+                        localizations.pleaseAddSmallerImages,
                         style: AppThemes.f12w400.copyWith(color: Colors.red),
                       ),
                     ),
@@ -286,7 +286,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 6, left: 12),
                       child: Text(
-                        'At least 3 photos are required',
+                        localizations.atLeast3PhotosRequired,
                         style: AppThemes.f12w400.copyWith(color: Colors.red),
                       ),
                     ),

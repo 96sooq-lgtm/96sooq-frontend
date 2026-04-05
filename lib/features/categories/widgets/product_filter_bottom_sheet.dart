@@ -1,6 +1,7 @@
 import 'package:_96_sooq/constants/app_colors.dart';
 import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:flutter/material.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 
 class ProductFilterBottomSheet extends StatefulWidget {
   const ProductFilterBottomSheet({
@@ -113,13 +114,13 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
     );
   }
 
-  Widget _buildConditionSegment(String label) {
-    final isSelected = _selectedCondition == label;
+  Widget _buildConditionSegment(String internalLabel, String displayLabel) {
+    final isSelected = _selectedCondition == internalLabel;
     return Expanded(
       child: GestureDetector(
         onTap: () {
           setState(() {
-            _selectedCondition = label;
+            _selectedCondition = internalLabel;
           });
         },
         child: Container(
@@ -130,7 +131,7 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
           ),
           alignment: Alignment.center,
           child: Text(
-            label,
+            displayLabel,
             style: AppThemes.f14w600.copyWith(
               color: isSelected ? Colors.white : const Color(0xFF4B5563),
             ),
@@ -140,16 +141,20 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
     );
   }
 
-  Widget _buildSellerTypeChip(String label, IconData icon) {
-    final isSelected = _selectedSellerType == label;
+  Widget _buildSellerTypeChip(
+    String internalLabel,
+    String displayLabel,
+    IconData icon,
+  ) {
+    final isSelected = _selectedSellerType == internalLabel;
     final color = isSelected ? Colors.black : const Color(0xFF6B7280);
     return GestureDetector(
       onTap: () {
         setState(() {
-          if (_selectedSellerType == label) {
+          if (_selectedSellerType == internalLabel) {
             _selectedSellerType = null;
           } else {
-            _selectedSellerType = label;
+            _selectedSellerType = internalLabel;
           }
         });
       },
@@ -169,7 +174,7 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
           children: [
             Icon(icon, size: 20, color: color),
             const SizedBox(width: 8),
-            Text(label, style: AppThemes.f14w500.copyWith(color: color)),
+            Text(displayLabel, style: AppThemes.f14w500.copyWith(color: color)),
           ],
         ),
       ),
@@ -178,6 +183,8 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Container(
       padding: EdgeInsets.only(
         left: 20,
@@ -208,12 +215,12 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
             const SizedBox(height: 24),
 
             // Price Range
-            _buildSectionTitle('Price Range (OMR)'),
+            _buildSectionTitle(loc.priceRangeTitle),
             Row(
               children: [
                 Expanded(
                   child: _buildPriceField(
-                    'Min Price',
+                    loc.minPriceLabel,
                     '50',
                     _minPriceController,
                   ),
@@ -221,7 +228,7 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildPriceField(
-                    'Max Price',
+                    loc.maxPriceLabel,
                     '350',
                     _maxPriceController,
                   ),
@@ -231,7 +238,7 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
             const SizedBox(height: 28),
 
             // Condition
-            _buildSectionTitle('Condition'),
+            _buildSectionTitle(loc.conditionLabel),
             Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
@@ -240,22 +247,27 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
               ),
               child: Row(
                 children: [
-                  _buildConditionSegment('All'),
-                  _buildConditionSegment('New'),
-                  _buildConditionSegment('Used'),
+                  _buildConditionSegment('All', loc.allText),
+                  _buildConditionSegment('New', loc.newCondition),
+                  _buildConditionSegment('Used', loc.usedCondition),
                 ],
               ),
             ),
             const SizedBox(height: 28),
 
             // Seller Type
-            _buildSectionTitle('Seller Type'),
+            _buildSectionTitle(loc.sellerTypeTitle),
             Wrap(
               spacing: 12,
               children: [
-                _buildSellerTypeChip('Individual', Icons.person_outline),
+                _buildSellerTypeChip(
+                  'Individual',
+                  loc.individualShortLabel,
+                  Icons.person_outline,
+                ),
                 _buildSellerTypeChip(
                   'Business/Store',
+                  loc.businessShortLabel,
                   Icons.store_mall_directory_outlined,
                 ),
               ],
@@ -286,7 +298,7 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
                   ),
                 ),
                 child: Text(
-                  'Apply Filters',
+                  loc.applyFiltersButton,
                   style: AppThemes.f16w600.copyWith(color: Colors.white),
                 ),
               ),

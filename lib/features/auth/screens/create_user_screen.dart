@@ -60,7 +60,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
 
     if (name.isEmpty || phone.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all required fields')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseFullAllRequiredFields)),
       );
       return;
     }

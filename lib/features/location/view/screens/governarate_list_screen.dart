@@ -147,7 +147,7 @@ class _GovernarateListScreenState extends State<GovernarateListScreen> {
                             children: [
                               Text(
                                 state.errorMessage ??
-                                    'Failed to load governorates',
+                                    localizations.failedToLoadGovernorates,
                                 style: AppThemes.f14w500,
                                 textAlign: TextAlign.center,
                               ),
@@ -158,7 +158,7 @@ class _GovernarateListScreenState extends State<GovernarateListScreen> {
                                     LocationStatesRequested(),
                                   );
                                 },
-                                child: const Text('Retry'),
+                                child: Text(localizations.retryText),
                               ),
                             ],
                           ),
@@ -180,7 +180,7 @@ class _GovernarateListScreenState extends State<GovernarateListScreen> {
                       if (items.isEmpty && !showAllInOman) {
                         return Center(
                           child: Text(
-                            'No governorates found',
+                            localizations.noGovernoratesFound,
                             style: AppThemes.f14w500,
                           ),
                         );

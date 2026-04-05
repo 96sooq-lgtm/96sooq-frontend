@@ -71,6 +71,7 @@ class CategoryAttributeSchemaModel {
   final String? accept;
   final String? status;
   final List<String> options;
+  final List<String> optionsAr;
   final bool multiple;
 
   const CategoryAttributeSchemaModel({
@@ -82,6 +83,7 @@ class CategoryAttributeSchemaModel {
     required this.accept,
     required this.status,
     required this.options,
+    required this.optionsAr,
     required this.multiple,
   });
 
@@ -96,6 +98,12 @@ class CategoryAttributeSchemaModel {
       status: json['status']?.toString(),
       options: (json['options'] is List)
           ? (json['options'] as List)
+                .map((item) => item.toString())
+                .where((item) => item.trim().isNotEmpty)
+                .toList()
+          : const <String>[],
+      optionsAr: (json['options_ar'] is List)
+          ? (json['options_ar'] as List)
                 .map((item) => item.toString())
                 .where((item) => item.trim().isNotEmpty)
                 .toList()

@@ -390,4 +390,479 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get email => 'Email';
+
+  @override
+  String get howCanWeHelpYou => 'How can we help you?';
+
+  @override
+  String get supportTeamDescription => 'Our team is available to assist you with any questions about 96sooq.';
+
+  @override
+  String get whatsappSupport => 'WhatsApp Support';
+
+  @override
+  String get fastestResponseTime => 'Fastest response time';
+
+  @override
+  String get chatNow => 'Chat Now';
+
+  @override
+  String get emailSupport => 'Email Support';
+
+  @override
+  String get emailUs => 'Email Us';
+
+  @override
+  String get callSupport => 'Call Support';
+
+  @override
+  String get speakWithOurTeam => 'Speak with our team';
+
+  @override
+  String get callNow => 'Call Now';
+
+  @override
+  String get pushNotifications => 'Push Notifications';
+
+  @override
+  String noDealsFound(Object status) {
+    return 'No $status deals found';
+  }
+
+  @override
+  String get noSubcategoriesFound => 'No subcategories found';
+
+  @override
+  String get noFavoritesYet => 'No favorites yet';
+
+  @override
+  String get statusDraft => 'Draft';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusActive => 'Active';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get statusSold => 'Sold';
+
+  @override
+  String get statusExpired => 'Expired';
+
+  @override
+  String get promotedText => '96 PROMOTED';
+
+  @override
+  String get subscriptionPlansTitle => 'Subscription Plans';
+
+  @override
+  String get forBusinessesTitle => 'For Businesses';
+
+  @override
+  String get forBusinessesSubtitle => 'Scalable solutions for Omani entrepreneurs and local store owners.';
+
+  @override
+  String get chooseYourPlanTitle => 'Choose Your Plan';
+
+  @override
+  String get chooseYourPlanSubtitle => 'Select the best membership for your local selling needs in Oman.';
+
+  @override
+  String get continueWithSelection => 'Continue with Selection';
+
+  @override
+  String get whyUpgradeTitle => 'WHY UPGRADE?';
+
+  @override
+  String get whyUpgradeDesc => 'Best value users sell items 40% faster on average due to higher volume capacity.';
+
+  @override
+  String get bestValueBadge => 'BEST VALUE';
+
+  @override
+  String get noSubscriptionPlans => 'No subscription plans available right now.';
+
+  @override
+  String daysListingDuration(Object days) {
+    return '$days days listing duration';
+  }
+
+  @override
+  String daysLabel(Object days) {
+    return '$days days';
+  }
+
+  @override
+  String get priceRangeTitle => 'Price Range (OMR)';
+
+  @override
+  String get minPriceLabel => 'Min Price';
+
+  @override
+  String get maxPriceLabel => 'Max Price';
+
+  @override
+  String get sellerTypeTitle => 'Seller Type';
+
+  @override
+  String get applyFiltersButton => 'Apply Filters';
+
+  @override
+  String get ratingTitle => 'Rating';
+
+  @override
+  String get anyRatingLabel => 'Any Rating';
+
+  @override
+  String get applyButton => 'Apply';
+
+  @override
+  String get resetButton => 'Reset';
+
+  @override
+  String get searchPlaceholder => 'Search electronics';
+
+  @override
+  String get recentSearchesTitle => 'Recent Searches';
+
+  @override
+  String get clearAllText => 'Clear All';
+
+  @override
+  String get popularSearchesTitle => 'Popular Searches';
+
+  @override
+  String get postsTabTitle => 'Posts';
+
+  @override
+  String get reviewsTabTitle => 'Reviews';
+
+  @override
+  String get noListingsText => 'No listings yet';
+
+  @override
+  String get startAReviewButton => 'Start a Review';
+
+  @override
+  String get noReviewsForBusiness => 'There are no reviews for this\nbusiness as of now';
+
+  @override
+  String get noReviewsYet => 'No reviews yet';
+
+  @override
+  String get writeAReviewTitle => 'Write a Review';
+
+  @override
+  String get rateBusinessPrompt => 'How would you rate this business?';
+
+  @override
+  String get shareExperienceHint => 'Share your experience (optional)';
+
+  @override
+  String get reviewSubmittedSuccess => 'Review submitted successfully!';
+
+  @override
+  String get reviewSubmitFailedPrefix => 'Failed to submit review: ';
+
+  @override
+  String get submitReviewButton => 'Submit Review';
+
+  @override
+  String starCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count stars',
+      one: '1 star',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reviewCountText(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Reviews',
+      one: 'Review',
+    );
+    return '($count $_temp0)';
+  }
+
+  @override
+  String get whichPromotionTitle => 'Which promotion do you need for your product?';
+
+  @override
+  String get promotionSelectionDesc => 'Select the best option to increase views, clicks, and sales.';
+
+  @override
+  String get daysTopLabel => 'DAYS';
+
+  @override
+  String get currentRateTopLabel => 'CURRENT RATE';
+
+  @override
+  String get perDayLabel => '/ PER DAY';
+
+  @override
+  String forDaysLabel(Object days) {
+    return '/ for $days days';
+  }
+
+  @override
+  String get totalPromotionDaysLabel => 'Total Promotion Days';
+
+  @override
+  String totalDaysCountLabel(Object days) {
+    return '$days Days';
+  }
+
+  @override
+  String get totalPriceTopLabel => 'TOTAL PRICE';
+
+  @override
+  String get listingSubmittedReviewText => 'Your listing has been submitted for review!';
+
+  @override
+  String get postWillBePublishedText => 'Your post has been set for review and will be posted successfully in next 30 minutes';
+
+  @override
+  String get checkoutFailedPrefix => 'Checkout failed: ';
+
+  @override
+  String get paymentSummaryTitle => 'Payment Summary';
+
+  @override
+  String get selectedPlanTitleSection => 'Selected Plan';
+
+  @override
+  String get orderDetailsTitleSection => 'Order Details';
+
+  @override
+  String get viewItemButton => 'View Item';
+
+  @override
+  String get billedMonthlyText => 'Billed monthly';
+
+  @override
+  String get subtotalLabel => 'Subtotal';
+
+  @override
+  String get platformFeeLabel => 'Platform Fee (2%)';
+
+  @override
+  String get totalAmountLabel => 'Total Amount';
+
+  @override
+  String get productListingAdOption => 'Product Listing Ad';
+
+  @override
+  String payAndConfirmTotal(Object amount, Object currency) {
+    return 'Pay & Confirm $amount $currency';
+  }
+
+  @override
+  String get noResultFoundTitle => 'No result Found !';
+
+  @override
+  String get noResultFoundSubtitle => 'There is no result for your search.\nCome on, try again!';
+
+  @override
+  String get addAtLeast3Photos => 'Add at least 3 photos of your ad';
+
+  @override
+  String get locationServicesOff => 'Location Services Off';
+
+  @override
+  String get locationServicesOffMessage => 'To show nearby listings, please enable location services in your device settings.';
+
+  @override
+  String get notNow => 'Not now';
+
+  @override
+  String get openSettings => 'Open Settings';
+
+  @override
+  String get unableToOpenLink => 'Unable to open link';
+
+  @override
+  String get cancelPaymentTitle => 'Cancel Payment?';
+
+  @override
+  String get cancelPaymentMessage => 'Are you sure you want to cancel?';
+
+  @override
+  String get noText => 'No';
+
+  @override
+  String get yesText => 'Yes';
+
+  @override
+  String get generatingInvoice => 'Generating invoice...';
+
+  @override
+  String get failedToGenerateInvoicePrefix => 'Failed to generate invoice: ';
+
+  @override
+  String get editListingTitle => 'Edit Listing';
+
+  @override
+  String get listingUpdatedSuccess => 'Listing updated successfully!';
+
+  @override
+  String get updateFailedPrefix => 'Update failed: ';
+
+  @override
+  String get updatingText => 'Updating...';
+
+  @override
+  String get updateText => 'Update';
+
+  @override
+  String get storeUpdatedSuccess => 'Your store has been updated successfully';
+
+  @override
+  String get storeCreatedSuccess => 'Your store has been created successfully';
+
+  @override
+  String get editYourStoreTitle => 'Edit Your Store';
+
+  @override
+  String get createYourStoreTitle => 'Create Your Store';
+
+  @override
+  String get updateStoreText => 'Update Store';
+
+  @override
+  String get selectGovernorateFirst => 'Please select governorate first';
+
+  @override
+  String get selectYourDistrict => 'Select your District';
+
+  @override
+  String get districtLabel => 'District';
+
+  @override
+  String get loadingCategories => 'Loading categories';
+
+  @override
+  String get noCategoriesAvailable => 'No categories available right now';
+
+  @override
+  String get pleaseSelectCategoryFirst => 'Please select category first';
+
+  @override
+  String get loadingSubcategories => 'Loading subcategories';
+
+  @override
+  String get noSubcategoriesForCategory => 'No subcategories found for this category';
+
+  @override
+  String get pleaseAddSmallerImages => 'Please add images smaller than 5 MB';
+
+  @override
+  String get atLeast3PhotosRequired => 'At least 3 photos are required';
+
+  @override
+  String get typeAMessage => 'Type a message';
+
+  @override
+  String get couldNotLoadChats => 'Could not load chats';
+
+  @override
+  String get retryText => 'Retry';
+
+  @override
+  String get tapToStartChatting => 'Tap to start chatting';
+
+  @override
+  String get couldNotStartChatPrefix => 'Could not start chat: ';
+
+  @override
+  String get openLinkText => 'Open Link';
+
+  @override
+  String get sellerFallback => 'Seller';
+
+  @override
+  String get storeFallback => 'Store';
+
+  @override
+  String get userFallback => 'User';
+
+  @override
+  String get productFallback => 'Product';
+
+  @override
+  String get noDescriptionText => 'No description';
+
+  @override
+  String get selectCategoryPrompt => 'Select a category to view subcategories';
+
+  @override
+  String get failedToLoadSubcategories => 'Failed to load subcategories';
+
+  @override
+  String get failedToLoadCategories => 'Failed to load categories';
+
+  @override
+  String get failedToLoadStores => 'Failed to load stores';
+
+  @override
+  String get failedToLoadProducts => 'Failed to load products';
+
+  @override
+  String get noProductsFound => 'No products found.';
+
+  @override
+  String get pleaseSelectGovernorateFirst => 'Please select governorate first';
+
+  @override
+  String get pleaseFullAllRequiredFields => 'Please fill in all required fields';
+
+  @override
+  String get noAdsFound => 'No ads found.';
+
+  @override
+  String get errorLoadingAds => 'Error loading ads';
+
+  @override
+  String get noCitiesFound => 'No cities found';
+
+  @override
+  String get failedToLoadCities => 'Failed to load cities';
+
+  @override
+  String get noGovernoratesFound => 'No governorates found';
+
+  @override
+  String get failedToLoadGovernorates => 'Failed to load governorates';
+
+  @override
+  String get failedToLoadPlans => 'Failed to load plans';
+
+  @override
+  String get rejectionReasonTitle => 'Rejection Reason';
+
+  @override
+  String get noReasonProvided => 'No reason provided';
+
+  @override
+  String get failedToLoadProductsPrefix => 'Failed to load products: ';
+
+  @override
+  String get deleteListingTitle => 'Delete Listing';
+
+  @override
+  String get deleteListingMessage => 'Are you sure you want to delete this listing?';
+
+  @override
+  String get deleteText => 'Delete';
+
+  @override
+  String get markAsSold => 'Mark as Sold';
 }

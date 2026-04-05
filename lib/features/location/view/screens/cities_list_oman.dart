@@ -108,7 +108,7 @@ class _CitiesListOmanState extends State<CitiesListOman> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              state.errorMessage ?? 'Failed to load cities',
+                              state.errorMessage ?? localizations.failedToLoadCities,
                               style: AppThemes.f14w500,
                               textAlign: TextAlign.center,
                             ),
@@ -119,7 +119,7 @@ class _CitiesListOmanState extends State<CitiesListOman> {
                                   LocationCitiesRequested(widget.state.id),
                                 );
                               },
-                              child: const Text('Retry'),
+                              child: Text(localizations.retryText),
                             ),
                           ],
                         ),
@@ -135,7 +135,7 @@ class _CitiesListOmanState extends State<CitiesListOman> {
                     if (items.isEmpty) {
                       return Center(
                         child: Text(
-                          'No cities found',
+                          localizations.noCitiesFound,
                           style: AppThemes.f14w500,
                         ),
                       );

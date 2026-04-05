@@ -131,5 +131,218 @@
   "uploadBusinessLogoText": "Upload Business Logo",
   "storeNameLabel": "Store Name",
   "mobileNumber": "Mobile Number",
-  "email": "Email"
+  "email": "Email",
+  "howCanWeHelpYou": "How can we help you?",
+  "supportTeamDescription": "Our team is available to assist you with any questions about 96sooq.",
+  "whatsappSupport": "WhatsApp Support",
+  "fastestResponseTime": "Fastest response time",
+  "chatNow": "Chat Now",
+  "emailSupport": "Email Support",
+  "emailUs": "Email Us",
+  "callSupport": "Call Support",
+  "speakWithOurTeam": "Speak with our team",
+  "callNow": "Call Now",
+  "pushNotifications": "Push Notifications",
+  "noDealsFound": "No {status} deals found",
+  "@noDealsFound": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "noSubcategoriesFound": "No subcategories found",
+  "noFavoritesYet": "No favorites yet",
+  "statusDraft": "Draft",
+  "statusPending": "Pending",
+  "statusActive": "Active",
+  "statusRejected": "Rejected",
+  "statusSold": "Sold",
+  "statusExpired": "Expired",
+  "promotedText": "96 PROMOTED",
+  "subscriptionPlansTitle": "Subscription Plans",
+  "forBusinessesTitle": "For Businesses",
+  "forBusinessesSubtitle": "Scalable solutions for Omani entrepreneurs and local store owners.",
+  "chooseYourPlanTitle": "Choose Your Plan",
+  "chooseYourPlanSubtitle": "Select the best membership for your local selling needs in Oman.",
+  "continueWithSelection": "Continue with Selection",
+  "whyUpgradeTitle": "WHY UPGRADE?",
+  "whyUpgradeDesc": "Best value users sell items 40% faster on average due to higher volume capacity.",
+  "bestValueBadge": "BEST VALUE",
+  "noSubscriptionPlans": "No subscription plans available right now.",
+  "daysListingDuration": "{days} days listing duration",
+  "@daysListingDuration": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "daysLabel": "{days} days",
+  "@daysLabel": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "priceRangeTitle": "Price Range (OMR)",
+  "minPriceLabel": "Min Price",
+  "maxPriceLabel": "Max Price",
+  "sellerTypeTitle": "Seller Type",
+  "applyFiltersButton": "Apply Filters",
+  "ratingTitle": "Rating",
+  "anyRatingLabel": "Any Rating",
+  "applyButton": "Apply",
+  "resetButton": "Reset",
+  "searchPlaceholder": "Search electronics",
+  "recentSearchesTitle": "Recent Searches",
+  "clearAllText": "Clear All",
+  "popularSearchesTitle": "Popular Searches",
+  "postsTabTitle": "Posts",
+  "reviewsTabTitle": "Reviews",
+  "noListingsText": "No listings yet",
+  "startAReviewButton": "Start a Review",
+  "noReviewsForBusiness": "There are no reviews for this\nbusiness as of now",
+  "noReviewsYet": "No reviews yet",
+  "writeAReviewTitle": "Write a Review",
+  "rateBusinessPrompt": "How would you rate this business?",
+  "shareExperienceHint": "Share your experience (optional)",
+  "reviewSubmittedSuccess": "Review submitted successfully!",
+  "reviewSubmitFailedPrefix": "Failed to submit review: ",
+  "submitReviewButton": "Submit Review",
+  "starCount": "{count, plural, =1{1 star} other{{count} stars}}",
+  "@starCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewCountText": "({count} {count, plural, =1{Review} other{Reviews}})",
+  "@reviewCountText": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "whichPromotionTitle": "Which promotion do you need for your product?",
+  "promotionSelectionDesc": "Select the best option to increase views, clicks, and sales.",
+  "daysTopLabel": "DAYS",
+  "currentRateTopLabel": "CURRENT RATE",
+  "perDayLabel": "/ PER DAY",
+  "forDaysLabel": "/ for {days} days",
+  "@forDaysLabel": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "totalPromotionDaysLabel": "Total Promotion Days",
+  "totalDaysCountLabel": "{days} Days",
+  "@totalDaysCountLabel": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "totalPriceTopLabel": "TOTAL PRICE",
+  "listingSubmittedReviewText": "Your listing has been submitted for review!",
+  "postWillBePublishedText": "Your post has been set for review and will be posted successfully in next 30 minutes",
+  "checkoutFailedPrefix": "Checkout failed: ",
+  "paymentSummaryTitle": "Payment Summary",
+  "selectedPlanTitleSection": "Selected Plan",
+  "orderDetailsTitleSection": "Order Details",
+  "viewItemButton": "View Item",
+  "billedMonthlyText": "Billed monthly",
+  "subtotalLabel": "Subtotal",
+  "platformFeeLabel": "Platform Fee (2%)",
+  "totalAmountLabel": "Total Amount",
+  "productListingAdOption": "Product Listing Ad",
+  "payAndConfirmTotal": "Pay & Confirm {amount} {currency}",
+  "@payAndConfirmTotal": {
+    "placeholders": {
+      "amount": {},
+      "currency": {}
+    }
+  },
+  "noResultFoundTitle": "No result Found !",
+  "noResultFoundSubtitle": "There is no result for your search.\nCome on, try again!",
+  "addAtLeast3Photos": "Add at least 3 photos of your ad",
+
+  "locationServicesOff": "Location Services Off",
+  "locationServicesOffMessage": "To show nearby listings, please enable location services in your device settings.",
+  "notNow": "Not now",
+  "openSettings": "Open Settings",
+  "unableToOpenLink": "Unable to open link",
+
+  "cancelPaymentTitle": "Cancel Payment?",
+  "cancelPaymentMessage": "Are you sure you want to cancel?",
+  "noText": "No",
+  "yesText": "Yes",
+
+  "generatingInvoice": "Generating invoice...",
+  "failedToGenerateInvoicePrefix": "Failed to generate invoice: ",
+
+  "editListingTitle": "Edit Listing",
+  "listingUpdatedSuccess": "Listing updated successfully!",
+  "updateFailedPrefix": "Update failed: ",
+  "updatingText": "Updating...",
+  "updateText": "Update",
+
+  "storeUpdatedSuccess": "Your store has been updated successfully",
+  "storeCreatedSuccess": "Your store has been created successfully",
+  "editYourStoreTitle": "Edit Your Store",
+  "createYourStoreTitle": "Create Your Store",
+  "updateStoreText": "Update Store",
+  "selectGovernorateFirst": "Please select governorate first",
+  "selectYourDistrict": "Select your District",
+  "districtLabel": "District",
+
+  "loadingCategories": "Loading categories",
+  "noCategoriesAvailable": "No categories available right now",
+  "pleaseSelectCategoryFirst": "Please select category first",
+  "loadingSubcategories": "Loading subcategories",
+  "noSubcategoriesForCategory": "No subcategories found for this category",
+  "pleaseAddSmallerImages": "Please add images smaller than 5 MB",
+  "atLeast3PhotosRequired": "At least 3 photos are required",
+
+  "typeAMessage": "Type a message",
+
+  "couldNotLoadChats": "Could not load chats",
+  "retryText": "Retry",
+  "tapToStartChatting": "Tap to start chatting",
+
+  "couldNotStartChatPrefix": "Could not start chat: ",
+  "openLinkText": "Open Link",
+
+  "sellerFallback": "Seller",
+  "storeFallback": "Store",
+  "userFallback": "User",
+  "productFallback": "Product",
+  "noDescriptionText": "No description",
+
+  "selectCategoryPrompt": "Select a category to view subcategories",
+  "failedToLoadSubcategories": "Failed to load subcategories",
+  "failedToLoadCategories": "Failed to load categories",
+  "failedToLoadStores": "Failed to load stores",
+  "failedToLoadProducts": "Failed to load products",
+  "noProductsFound": "No products found.",
+
+  "pleaseSelectGovernorateFirst": "Please select governorate first",
+
+  "pleaseFullAllRequiredFields": "Please fill in all required fields",
+
+  "noAdsFound": "No ads found.",
+  "errorLoadingAds": "Error loading ads",
+
+  "noCitiesFound": "No cities found",
+  "failedToLoadCities": "Failed to load cities",
+  "noGovernoratesFound": "No governorates found",
+  "failedToLoadGovernorates": "Failed to load governorates",
+  "failedToLoadPlans": "Failed to load plans",
+
+  "rejectionReasonTitle": "Rejection Reason",
+  "noReasonProvided": "No reason provided",
+
+  "failedToLoadProductsPrefix": "Failed to load products: ",
+
+  "deleteListingTitle": "Delete Listing",
+  "deleteListingMessage": "Are you sure you want to delete this listing?",
+  "deleteText": "Delete",
+  
+  "markAsSold": "Mark as Sold"
 }

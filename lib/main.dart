@@ -19,6 +19,8 @@ import 'package:_96_sooq/features/offers/bloc/offers_event.dart';
 import 'package:_96_sooq/features/offers/data/offers_api_service.dart';
 import 'package:_96_sooq/features/deals/viewmodel/bloc/favorites_list_bloc/favorites_list_bloc.dart';
 import 'package:_96_sooq/features/home/viewmodel/bloc/favorite_bloc/bloc/favorite_bloc.dart';
+import 'package:_96_sooq/features/root/bloc/root_bloc.dart';
+import 'package:_96_sooq/features/notifications/data/notification_deeplink_handler.dart';
 import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:_96_sooq/shared/app_navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -66,6 +68,7 @@ void main() async {
         '[Notifications] Opened from background tap. data=${message.data}',
       );
     }
+    NotificationDeepLinkHandler.handle(message.data);
   });
 
   final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
@@ -74,6 +77,7 @@ void main() async {
       '[Notifications] Opened from terminated tap. data=${initialMessage.data}',
     );
   }
+  final pendingNotificationData = initialMessage?.data;
 
   runApp(
     // DevicePreview(
@@ -102,12 +106,19 @@ void main() async {
               OffersBloc(apiService: const OffersApiService())
                 ..add(const FetchOffers()),
         ),
+        BlocProvider(create: (_) => RootBloc()),
       ],
       child: const MyApp(),
     ),
     //   },
     // ),
   );
+
+  if (pendingNotificationData != null) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NotificationDeepLinkHandler.handle(pendingNotificationData);
+    });
+  }
 }
 
 class MyApp extends StatelessWidget {

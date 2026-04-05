@@ -20,18 +20,17 @@ import 'package:translator/translator.dart';
 
 import 'package:_96_sooq/features/home/model/product_model.dart';
 import 'package:_96_sooq/features/addlist/view/screens/boost_your_product_screen.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 
 class SubscriptionListingScreen extends StatefulWidget {
   static const String routeName = '/subscription-listing';
 
   const SubscriptionListingScreen({
     super.key,
-    required this.disclaimerSubtext,
     required this.accountType,
     this.promoteProduct,
   });
 
-  final String disclaimerSubtext;
   final ListingAccountType accountType;
   final ProductModel? promoteProduct;
 
@@ -66,20 +65,20 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
     });
   }
 
-  _HeroContent get _heroContent =>
-      widget.accountType == ListingAccountType.business
-      ? const _HeroContent(
-          title: 'For Businesses',
-          subtitle:
-              'Scalable solutions for Omani entrepreneurs and local store owners.',
-          icon: Icons.business_outlined,
-        )
-      : const _HeroContent(
-          title: 'Choose Your Plan',
-          subtitle:
-              'Select the best membership for your local selling needs in Oman.',
-          icon: Icons.person_outline_rounded,
-        );
+  _HeroContent _heroContent(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return widget.accountType == ListingAccountType.business
+        ? _HeroContent(
+            title: loc.forBusinessesTitle,
+            subtitle: loc.forBusinessesSubtitle,
+            icon: Icons.business_outlined,
+          )
+        : _HeroContent(
+            title: loc.chooseYourPlanTitle,
+            subtitle: loc.chooseYourPlanSubtitle,
+            icon: Icons.person_outline_rounded,
+          );
+  }
 
   void _handleRetry() {
     context.read<AddlistPaymentFlowBloc>().add(
@@ -165,6 +164,7 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
   Future<void> _ensureFeatureTranslations({
     required List<ListingPlanModel> plans,
     required String localeCode,
+    required BuildContext context,
   }) async {
     if (localeCode != 'ar') {
       if (!mounted) return;
@@ -208,7 +208,11 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
 
       final sourceLines = plan.featureLines.isNotEmpty
           ? plan.featureLines
-          : <String>['${plan.durationDays} days listing duration'];
+          : <String>[
+              AppLocalizations.of(
+                context,
+              )!.daysListingDuration(plan.durationDays.toString()),
+            ];
 
       final translatedLines = <String>[];
       for (final line in sourceLines) {
@@ -238,7 +242,7 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final heroContent = _heroContent;
+    final heroContent = _heroContent(context);
     final localeCode = Localizations.localeOf(context).languageCode;
 
     return BlocBuilder<AddlistPaymentFlowBloc, AddlistPaymentFlowState>(
@@ -258,7 +262,11 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
         if (hasLoaded && plans.isNotEmpty) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted) return;
-            _ensureFeatureTranslations(plans: plans, localeCode: localeCode);
+            _ensureFeatureTranslations(
+              plans: plans,
+              localeCode: localeCode,
+              context: context,
+            );
           });
         }
 
@@ -272,7 +280,7 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 30),
               child: CustomButton(
-                text: 'Continue with Selection',
+                text: AppLocalizations.of(context)!.continueWithSelection,
                 color: canContinue
                     ? AppColors.primaryColor
                     : AppColors.primaryColor.withValues(alpha: 0.45),
@@ -293,7 +301,10 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         BackButtonWidget(ontap: () => Navigator.pop(context)),
-                        Text('Subscription Plans', style: AppThemes.f16w600),
+                        Text(
+                          AppLocalizations.of(context)!.subscriptionPlansTitle,
+                          style: AppThemes.f16w600,
+                        ),
                         const SizedBox(width: 30),
                       ],
                     ),
@@ -318,13 +329,6 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
                       style: AppThemes.f24w600,
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      heroContent.subtitle,
-                      textAlign: TextAlign.center,
-                      style: AppThemes.f14w400.copyWith(
-                        color: AppColors.productListingTextColor,
-                      ),
-                    ),
                     const SizedBox(height: 16),
                     if (isLoading) const _PlansLoadingWidget(),
                     if (hasFailed)
@@ -345,7 +349,11 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
                           final sourceFeatures = plan.featureLines.isNotEmpty
                               ? plan.featureLines
                               : <String>[
-                                  '${plan.durationDays} days listing duration',
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.daysListingDuration(
+                                    plan.durationDays.toString(),
+                                  ),
                                 ];
                           final hasArabicFeatureTranslations =
                               localeCode == 'ar' &&
@@ -361,7 +369,7 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
 
                           return _SubscriptionPlanCard(
                             title: plan.displayName(localeCode),
-                            subtitle: _buildSubtitle(plan),
+                            subtitle: _buildSubtitle(context, plan),
                             price: plan.price.toStringAsFixed(3),
                             currency: 'OMR',
                             features: features,
@@ -398,14 +406,14 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'WHY UPGRADE?',
+                                  AppLocalizations.of(context)!.whyUpgradeTitle,
                                   style: AppThemes.f14w600.copyWith(
                                     letterSpacing: 0.6,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  'Best value users sell items 40% faster on average due to higher volume capacity.',
+                                  AppLocalizations.of(context)!.whyUpgradeDesc,
                                   style: AppThemes.f14w400.copyWith(
                                     color: AppColors.productListingTextColor,
                                   ),
@@ -414,15 +422,6 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      widget.disclaimerSubtext,
-                      textAlign: TextAlign.center,
-                      style: AppThemes.f14w400.copyWith(
-                        color: const Color(0xFF94A3B8),
-                        height: 1.4,
                       ),
                     ),
                     const SizedBox(height: 28),
@@ -436,8 +435,10 @@ class _SubscriptionListingScreenState extends State<SubscriptionListingScreen> {
     );
   }
 
-  String _buildSubtitle(ListingPlanModel plan) {
-    return '${plan.durationDays} days';
+  String _buildSubtitle(BuildContext context, ListingPlanModel plan) {
+    return AppLocalizations.of(
+      context,
+    )!.daysLabel(plan.durationDays.toString());
   }
 }
 
@@ -548,7 +549,7 @@ class _PlansErrorWidget extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            message ?? 'Failed to load plans',
+            message ?? AppLocalizations.of(context)!.failedToLoadPlans,
             textAlign: TextAlign.center,
             style: AppThemes.f14w500.copyWith(color: const Color(0xFF9D1C1C)),
           ),
@@ -562,7 +563,7 @@ class _PlansErrorWidget extends StatelessWidget {
                 color: AppColors.primaryColor,
               ),
               child: Text(
-                'Retry',
+                AppLocalizations.of(context)!.retryText,
                 style: AppThemes.f14w600.copyWith(color: Colors.white),
               ),
             ),
@@ -587,7 +588,7 @@ class _PlansEmptyWidget extends StatelessWidget {
         border: Border.all(color: const Color(0xFFDCE2EC)),
       ),
       child: Text(
-        'No subscription plans available right now.',
+        AppLocalizations.of(context)!.noSubscriptionPlans,
         textAlign: TextAlign.center,
         style: AppThemes.f14w500,
       ),
@@ -676,7 +677,7 @@ class _SubscriptionPlanCard extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'BEST VALUE',
+                    AppLocalizations.of(context)!.bestValueBadge,
                     style: AppThemes.f12w700.copyWith(
                       color: AppColors.white,
                       letterSpacing: 0.3,

@@ -1,4 +1,5 @@
 import 'package:_96_sooq/constants/app_colors.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:_96_sooq/constants/api_endpoints.dart';
 import 'package:_96_sooq/features/deals/bloc/chat/chat_bloc.dart';
@@ -913,7 +914,7 @@ class _ChatComposerState extends State<_ChatComposer> {
                         textInputAction: TextInputAction.send,
                         onSubmitted: (_) => _handleSend(),
                         decoration: InputDecoration(
-                          hintText: 'Type a message',
+                          hintText: AppLocalizations.of(context)!.typeAMessage,
                           hintStyle: AppThemes.f14w400.copyWith(
                             color: const Color(0xFF465569),
                           ),

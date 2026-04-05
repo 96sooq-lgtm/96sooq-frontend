@@ -207,7 +207,7 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                           color: Color(0xFFCB3A31),
                         ),
                         const SizedBox(height: 12),
-                        Text('Could not load chats', style: AppThemes.f16w600),
+                        Text(AppLocalizations.of(context)!.couldNotLoadChats, style: AppThemes.f16w600),
                         const SizedBox(height: 16),
                         GestureDetector(
                           onTap: () => context.read<ChatListBloc>().add(
@@ -223,7 +223,7 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
-                              'Retry',
+                              AppLocalizations.of(context)!.retryText,
                               style: AppThemes.f14w600.copyWith(
                                 color: Colors.white,
                               ),
@@ -325,22 +325,23 @@ class _ChatRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Determine the display name and image depending on participant type
-    String displayName = 'Chat';
+    final loc = AppLocalizations.of(context)!;
+    String displayName = loc.chatsTitle;
     String? displayImage;
 
     if (conversation.otherParticipantType == 'store') {
-      displayName = conversation.storeName ?? 'Store';
+      displayName = conversation.storeName ?? loc.storeFallback;
       displayImage = conversation.storeLogo;
     } else {
       displayName =
           conversation.otherParticipantName ??
           conversation.senderName ??
-          'User';
+          loc.userFallback;
       displayImage =
           conversation.otherParticipantImage ?? conversation.senderLogo;
     }
 
-    final lastMsg = conversation.lastMessage ?? 'Tap to start chatting';
+    final lastMsg = conversation.lastMessage ?? loc.tapToStartChatting;
     final time = conversation.lastMessageAt != null
         ? DateFormat('hh:mm a').format(conversation.lastMessageAt!.toLocal())
         : '';

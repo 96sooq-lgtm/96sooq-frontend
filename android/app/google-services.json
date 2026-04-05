@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:739088924280:android:bf3ca07a43d32bc859778d",
+        "mobilesdk_app_id": "1:739088924280:android:d1c0e8ba07ba9d4d59778d",
         "android_client_info": {
-          "package_name": "com.example.u_96_sooq"
+          "package_name": "com.sooq96.app"
         }
       },
       "oauth_client": [],

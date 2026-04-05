@@ -1,4 +1,5 @@
 import 'package:_96_sooq/constants/app_colors.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:_96_sooq/features/categories/bloc/category_feed_bloc/category_feed_bloc.dart';
 import 'package:_96_sooq/features/categories/bloc/category_feed_bloc/category_feed_event.dart';
 import 'package:_96_sooq/features/categories/bloc/category_feed_bloc/category_feed_state.dart';
@@ -107,12 +108,12 @@ class _CategoryFeedScreenState extends State<CategoryFeedScreen> {
             if (state.status == CategoryFeedStatus.failure &&
                 state.products.isEmpty) {
               return Center(
-                child: Text('Failed to load products: ${state.errorMessage}'),
+                child: Text('${AppLocalizations.of(context)!.failedToLoadProductsPrefix}${state.errorMessage}'),
               );
             }
 
             if (state.products.isEmpty) {
-              return const Center(child: Text('No products found.'));
+              return Center(child: Text(AppLocalizations.of(context)!.noProductsFound));
             }
 
             return CustomScrollView(

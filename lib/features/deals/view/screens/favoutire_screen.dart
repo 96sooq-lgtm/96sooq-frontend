@@ -96,7 +96,7 @@ class _FavoutireScreenState extends State<FavoutireScreen> {
                     }
 
                     if (products.isEmpty) {
-                      return const Center(child: Text('No favorites yet'));
+                      return Center(child: Text(localizations.noFavoritesYet));
                     }
 
                     return RefreshIndicator(

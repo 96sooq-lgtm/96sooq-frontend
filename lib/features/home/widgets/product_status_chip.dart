@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 
 /// A small chip that displays the listing status with color-coded background.
 ///
@@ -31,31 +32,33 @@ class ProductStatusChip extends StatelessWidget {
       case 'active':
         return Colors.green;
       case 'rejected':
+      case 'expire':
+      case 'expired':
         return Colors.red;
       case 'sold':
         return Colors.black;
-      case 'expired':
-        return const Color(0xFF9E9E9E);
       default:
         return const Color(0xFF9E9E9E);
     }
   }
 
-  static String _label(String status) {
+  static String _label(BuildContext context, String status) {
+    final loc = AppLocalizations.of(context)!;
     switch (status) {
       case 'draft':
-        return 'Draft';
+        return loc.statusDraft;
       case 'pending_approval':
       case 'pending':
-        return 'Pending';
+        return loc.statusPending;
       case 'active':
-        return 'Active';
+        return loc.statusActive;
       case 'rejected':
-        return 'Rejected';
+        return loc.statusRejected;
       case 'sold':
-        return 'Sold';
+        return loc.statusSold;
+      case 'expire':
       case 'expired':
-        return 'Expired';
+        return loc.statusExpired;
       default:
         return status.replaceAll('_', ' ');
     }
@@ -64,7 +67,9 @@ class ProductStatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg = isFeatured ? Colors.black : _bgColor(status);
-    final label = isFeatured ? '96 PROMOTED' : _label(status).toUpperCase();
+    final label = isFeatured
+        ? AppLocalizations.of(context)!.promotedText
+        : _label(context, status).toUpperCase();
     final textColor = isFeatured ? const Color(0xFFFFD700) : Colors.white;
 
     return Container(

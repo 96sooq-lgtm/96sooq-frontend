@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:_96_sooq/features/notifications/data/notification_deeplink_handler.dart';
 
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse response) {
@@ -61,6 +62,16 @@ class LocalNotificationService {
       debugPrint(
         '[Notifications] Foreground tap payload=${response.payload}',
       );
+    }
+    final payload = response.payload;
+    if (payload == null || payload.trim().isEmpty) return;
+    try {
+      final data = jsonDecode(payload);
+      if (data is Map<String, dynamic>) {
+        NotificationDeepLinkHandler.handle(data);
+      }
+    } catch (_) {
+      // Ignore invalid payloads.
     }
   }
 

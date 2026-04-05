@@ -245,8 +245,8 @@ class _EditListingScreen2State extends State<EditListingScreen2> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Listing updated successfully!'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.listingUpdatedSuccess),
           backgroundColor: Colors.green,
         ),
       );
@@ -259,7 +259,7 @@ class _EditListingScreen2State extends State<EditListingScreen2> {
       setState(() => _isPosting = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Update failed: $e'),
+          content: Text('${AppLocalizations.of(context)!.updateFailedPrefix}$e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -288,7 +288,7 @@ class _EditListingScreen2State extends State<EditListingScreen2> {
               const SizedBox(width: 12),
               Expanded(
                 child: CustomButton(
-                  text: _isPosting ? 'Updating...' : 'Update',
+                  text: _isPosting ? localizations.updatingText : localizations.updateText,
                   onPressed: _isPosting ? () {} : _onUpdate,
                 ),
               ),
@@ -313,7 +313,7 @@ class _EditListingScreen2State extends State<EditListingScreen2> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       BackButtonWidget(ontap: () => Navigator.pop(context)),
-                      Text('Edit Listing', style: AppThemes.f16w600),
+                      Text(localizations.editListingTitle, style: AppThemes.f16w600),
                       const SizedBox(width: 30),
                     ],
                   ),

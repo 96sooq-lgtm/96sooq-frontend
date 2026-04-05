@@ -181,141 +181,138 @@ class _RootScreenState extends State<RootScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => RootBloc())],
-      child: BlocBuilder<RootBloc, RootState>(
-        builder: (context, state) {
-          return BlocListener<AuthBloc, AuthState>(
-            listener: (context, authState) {
-              _handleAuthStateChange(context, authState);
-            },
-            child: SafeArea(
-              top: false,
-              child: Scaffold(
-                backgroundColor: AppColors.primaryColor,
-                body: Column(
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).padding.top,
-                      color: Colors.white,
-                    ),
-                    Expanded(
-                      child: IndexedStack(
-                        index: state.currentIndex,
-                        children: _pages,
-                      ),
-                    ),
-                  ],
-                ),
-                floatingActionButton: FloatingActionButton(
-                  backgroundColor: AppColors.primaryColor,
-                  shape: const CircleBorder(),
-                  elevation: 6,
-                  onPressed: () async {
-                    final canNavigate = await _requireLogin(context);
-                    if (!canNavigate) return;
-
-                    if (!context.mounted) return;
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        settings: const RouteSettings(
-                          name: AddlistScreen.routeName,
-                        ),
-                        builder: (_) => const AddlistScreen(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 6),
-                    ),
-                    padding: const EdgeInsets.all(10),
-                    child: Image.asset(
-                      AppAssets.logo,
-                      width: 28,
-                      height: 28,
-                      fit: BoxFit.contain,
+    return BlocBuilder<RootBloc, RootState>(
+      builder: (context, state) {
+        return BlocListener<AuthBloc, AuthState>(
+          listener: (context, authState) {
+            _handleAuthStateChange(context, authState);
+          },
+          child: SafeArea(
+            top: false,
+            child: Scaffold(
+              backgroundColor: AppColors.primaryColor,
+              body: Column(
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).padding.top,
+                    color: Colors.white,
+                  ),
+                  Expanded(
+                    child: IndexedStack(
+                      index: state.currentIndex,
+                      children: _pages,
                     ),
                   ),
-                ),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerDocked,
-                bottomNavigationBar: Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    AnimatedBottomNavigationBar.builder(
-                      itemCount: _bottomNavItems.length,
-                      height: 50,
-                      backgroundColor: AppColors.primaryColor,
-                      activeIndex: state.currentIndex,
-                      gapLocation: GapLocation.center,
-                      notchSmoothness: NotchSmoothness.defaultEdge,
-                      splashColor: Colors.transparent,
-                      splashSpeedInMilliseconds: 0,
-                      splashRadius: 0,
-                      scaleFactor: 0,
-                      onTap: (index) async {
-                        if (_isProtectedTab(index)) {
-                          final isLoggedIn = await _requireLogin(context);
+                ],
+              ),
+              floatingActionButton: FloatingActionButton(
+                backgroundColor: AppColors.primaryColor,
+                shape: const CircleBorder(),
+                elevation: 6,
+                onPressed: () async {
+                  final canNavigate = await _requireLogin(context);
+                  if (!canNavigate) return;
 
-                          if (!isLoggedIn) {
-                            if (context.mounted) {
-                              context.read<RootBloc>().add(ChangeTabEvent(0));
-                            }
-                            return;
-                          }
-                        }
-
-                        if (!context.mounted) return;
-                        context.read<RootBloc>().add(ChangeTabEvent(index));
-                      },
-                      tabBuilder: (int index, bool isActive) {
-                        final item = _bottomNavItems[index];
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: SvgPicture.asset(
-                                isActive ? item.activeIcon : item.inactiveIcon,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              item.title(l10n),
-                              style: isActive
-                                  ? AppThemes.f12w600.copyWith(
-                                      color: Colors.white,
-                                    )
-                                  : AppThemes.f12w400.copyWith(
-                                      color: const Color(0xFF8F9BAD),
-                                    ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    Positioned(
-                      bottom: 2,
-                      child: Text(
-                        l10n.addListText,
-                        textAlign: TextAlign.center,
-                        style: AppThemes.f10w400.copyWith(
-                          color: const Color(0xFF8F9BAD),
-                        ),
+                  if (!context.mounted) return;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      settings: const RouteSettings(
+                        name: AddlistScreen.routeName,
                       ),
+                      builder: (_) => const AddlistScreen(),
                     ),
-                  ],
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 6),
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  child: Image.asset(
+                    AppAssets.logo,
+                    width: 28,
+                    height: 28,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+              bottomNavigationBar: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  AnimatedBottomNavigationBar.builder(
+                    itemCount: _bottomNavItems.length,
+                    height: 50,
+                    backgroundColor: AppColors.primaryColor,
+                    activeIndex: state.currentIndex,
+                    gapLocation: GapLocation.center,
+                    notchSmoothness: NotchSmoothness.defaultEdge,
+                    splashColor: Colors.transparent,
+                    splashSpeedInMilliseconds: 0,
+                    splashRadius: 0,
+                    scaleFactor: 0,
+                    onTap: (index) async {
+                      if (_isProtectedTab(index)) {
+                        final isLoggedIn = await _requireLogin(context);
+
+                        if (!isLoggedIn) {
+                          if (context.mounted) {
+                            context.read<RootBloc>().add(ChangeTabEvent(0));
+                          }
+                          return;
+                        }
+                      }
+
+                      if (!context.mounted) return;
+                      context.read<RootBloc>().add(ChangeTabEvent(index));
+                    },
+                    tabBuilder: (int index, bool isActive) {
+                      final item = _bottomNavItems[index];
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: SvgPicture.asset(
+                              isActive ? item.activeIcon : item.inactiveIcon,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            item.title(l10n),
+                            style: isActive
+                                ? AppThemes.f12w600.copyWith(
+                                    color: Colors.white,
+                                  )
+                                : AppThemes.f12w400.copyWith(
+                                    color: const Color(0xFF8F9BAD),
+                                  ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  Positioned(
+                    bottom: 2,
+                    child: Text(
+                      l10n.addListText,
+                      textAlign: TextAlign.center,
+                      style: AppThemes.f10w400.copyWith(
+                        color: const Color(0xFF8F9BAD),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

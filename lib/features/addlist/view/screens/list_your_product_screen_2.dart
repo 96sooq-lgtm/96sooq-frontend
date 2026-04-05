@@ -540,6 +540,11 @@ class _ListYourProductScreen2State extends State<ListYourProductScreen2> {
     }
 
     if (type == 'radio') {
+      final isArabic = localeCode.toLowerCase() == 'ar';
+      final optionsToUse = isArabic && attribute.optionsAr.isNotEmpty
+          ? attribute.optionsAr
+          : attribute.options;
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -548,7 +553,7 @@ class _ListYourProductScreen2State extends State<ListYourProductScreen2> {
           Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: attribute.options.map((option) {
+            children: optionsToUse.map((option) {
               final isSelected =
                   _dynamicSelectedValues[attribute.name] == option;
               return _ConditionChip(
@@ -574,6 +579,11 @@ class _ListYourProductScreen2State extends State<ListYourProductScreen2> {
       );
     }
 
+    final isArabic = localeCode.toLowerCase() == 'ar';
+    final optionsToUse = isArabic && attribute.optionsAr.isNotEmpty
+        ? attribute.optionsAr
+        : attribute.options;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -585,11 +595,11 @@ class _ListYourProductScreen2State extends State<ListYourProductScreen2> {
           readOnly: true,
           suffixIcon: const Icon(Icons.keyboard_arrow_down_rounded),
           onTap: () {
-            if (attribute.options.isEmpty) return;
+            if (optionsToUse.isEmpty) return;
 
             _pickFromList<String>(
               title: label,
-              options: attribute.options,
+              options: optionsToUse,
               labelBuilder: (value) => value,
               onSelected: (value) {
                 setState(() {
@@ -795,8 +805,8 @@ class _ListYourProductScreen2State extends State<ListYourProductScreen2> {
 
                       if (_selectedGovernorate == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Please select governorate first'),
+                          SnackBar(
+                            content: Text(localizations.selectGovernorateFirst),
                           ),
                         );
                         return;

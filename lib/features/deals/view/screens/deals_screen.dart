@@ -359,7 +359,7 @@ class _DealsScreenState extends State<DealsScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Text('Rejection Reason', style: AppThemes.f18w600),
+                Text(AppLocalizations.of(context)!.rejectionReasonTitle, style: AppThemes.f18w600),
               ],
             ),
             const SizedBox(height: 16),
@@ -372,7 +372,7 @@ class _DealsScreenState extends State<DealsScreen> {
                 border: Border.all(color: Colors.red.withValues(alpha: 0.15)),
               ),
               child: Text(
-                reason ?? 'No reason provided',
+                reason ?? AppLocalizations.of(context)!.noReasonProvided,
                 style: AppThemes.f14w500.copyWith(
                   color: const Color(0xFF4A4A4A),
                   height: 1.5,

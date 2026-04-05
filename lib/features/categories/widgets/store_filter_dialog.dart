@@ -2,6 +2,7 @@ import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:_96_sooq/features/categories/bloc/store_bloc/store_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 
 class StoreFilterDialog extends StatefulWidget {
   const StoreFilterDialog({super.key});
@@ -37,7 +38,10 @@ class _StoreFilterDialogState extends State<StoreFilterDialog> {
             Stack(
               alignment: Alignment.center,
               children: [
-                Text('Filter', style: AppThemes.f18w700),
+                Text(
+                  AppLocalizations.of(context)!.searchFilterTitle,
+                  style: AppThemes.f18w700,
+                ),
                 Align(
                   alignment: AlignmentDirectional.centerEnd,
                   child: GestureDetector(
@@ -53,7 +57,10 @@ class _StoreFilterDialogState extends State<StoreFilterDialog> {
             // Rating label
             Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Text('Rating', style: AppThemes.f14w600),
+              child: Text(
+                AppLocalizations.of(context)!.ratingTitle,
+                style: AppThemes.f14w600,
+              ),
             ),
 
             const SizedBox(height: 12),
@@ -120,7 +127,10 @@ class _StoreFilterDialogState extends State<StoreFilterDialog> {
                         : null,
                   ),
                   const SizedBox(width: 10),
-                  Text('Any Rating', style: AppThemes.f14w500),
+                  Text(
+                    AppLocalizations.of(context)!.anyRatingLabel,
+                    style: AppThemes.f14w500,
+                  ),
                 ],
               ),
             ),
@@ -141,7 +151,7 @@ class _StoreFilterDialogState extends State<StoreFilterDialog> {
                   ),
                   textStyle: AppThemes.f16w600,
                 ),
-                child: const Text('Apply'),
+                child: Text(AppLocalizations.of(context)!.applyButton),
               ),
             ),
 
@@ -151,7 +161,7 @@ class _StoreFilterDialogState extends State<StoreFilterDialog> {
             GestureDetector(
               onTap: _onReset,
               child: Text(
-                'Reset',
+                AppLocalizations.of(context)!.resetButton,
                 style: AppThemes.f14w500.copyWith(
                   color: const Color(0xFF6B6B6B),
                 ),

@@ -295,12 +295,12 @@ class _ProductListingViewState extends State<_ProductListingView> {
             SvgPicture.asset(AppAssets.noResultIc),
             const SizedBox(height: 28),
             Text(
-              'No result Found !',
+              AppLocalizations.of(context)!.noResultFoundTitle,
               style: AppThemes.f18w600.copyWith(color: const Color(0xFF6E7486)),
             ),
             const SizedBox(height: 10),
             Text(
-              'There is no result for your search.\nCome on, try again!',
+              AppLocalizations.of(context)!.noResultFoundSubtitle,
               textAlign: TextAlign.center,
               style: AppThemes.f14w400.copyWith(color: const Color(0xFF9CA3AF)),
             ),

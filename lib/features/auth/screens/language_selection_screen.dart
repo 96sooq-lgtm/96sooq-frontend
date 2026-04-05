@@ -4,6 +4,7 @@ import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:_96_sooq/core/bloc/language/bloc/language_bloc.dart';
 import 'package:_96_sooq/core/bloc/language/bloc/language_event.dart';
 import 'package:_96_sooq/core/bloc/language/bloc/language_state.dart';
+import 'package:_96_sooq/features/auth/data/services/language_api_service.dart';
 import 'package:_96_sooq/features/auth/widgets/language_selection_widget.dart';
 import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:_96_sooq/shared/global_widgets/custom_button_widgets.dart';
@@ -21,6 +22,7 @@ class LanguageSelectionScreen extends StatefulWidget {
 }
 
 class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
+  final LanguageApiService _languageApiService = const LanguageApiService();
   bool _isLanguageSwitching = false;
   Locale? _pendingLocale;
 
@@ -39,6 +41,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
 
     await Future<void>.delayed(const Duration(milliseconds: 300));
     if (!mounted) return;
+    await _languageApiService.updateLanguage(
+      language: locale.languageCode,
+    );
     languageBloc.add(ChangeLanguage(locale));
   }
 

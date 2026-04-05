@@ -156,13 +156,13 @@ class _ListYourProductScreenState extends State<ListYourProductScreen> {
     if (state.categoriesStatus == CategoriesStatus.loading) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Loading categories')));
+      ).showSnackBar(SnackBar(content: Text(localizations.loadingCategories)));
       return;
     }
 
     if (state.categories.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No categories available right now')),
+        SnackBar(content: Text(localizations.noCategoriesAvailable)),
       );
       return;
     }
@@ -195,7 +195,7 @@ class _ListYourProductScreenState extends State<ListYourProductScreen> {
     final localizations = AppLocalizations.of(context)!;
     if (_selectedCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select category first')),
+        SnackBar(content: Text(localizations.pleaseSelectCategoryFirst)),
       );
       return;
     }
@@ -206,14 +206,14 @@ class _ListYourProductScreenState extends State<ListYourProductScreen> {
       _openSubCategoryWhenLoaded = true;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Loading subcategories')));
+      ).showSnackBar(SnackBar(content: Text(localizations.loadingSubcategories)));
       return;
     }
 
     if (state.subCategories.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No subcategories found for this category'),
+        SnackBar(
+          content: Text(localizations.noSubcategoriesForCategory),
         ),
       );
       return;
@@ -313,8 +313,8 @@ class _ListYourProductScreenState extends State<ListYourProductScreen> {
           _openSubCategoryWhenLoaded = false;
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No subcategories found for this category'),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.noSubcategoriesFound),
             ),
           );
           return;
@@ -400,7 +400,7 @@ class _ListYourProductScreenState extends State<ListYourProductScreen> {
                     _RequiredLabel(label: localizations.addImagesTitle),
                     const SizedBox(height: 8),
                     Text(
-                      'Add at least 3 photos of your ad',
+                      AppLocalizations.of(context)!.addAtLeast3Photos,
                       style: AppThemes.f14w400.copyWith(
                         color: AppColors.productListingTextColor,
                       ),
@@ -521,7 +521,7 @@ class _ListYourProductScreenState extends State<ListYourProductScreen> {
                       Padding(
                         padding: const EdgeInsets.only(top: 6, left: 12),
                         child: Text(
-                          'Please add images smaller than 5 MB',
+                          localizations.pleaseAddSmallerImages,
                           style: AppThemes.f12w400.copyWith(color: Colors.red),
                         ),
                       ),
@@ -530,7 +530,7 @@ class _ListYourProductScreenState extends State<ListYourProductScreen> {
                       Padding(
                         padding: const EdgeInsets.only(top: 6, left: 12),
                         child: Text(
-                          'At least 3 photos are required',
+                          localizations.atLeast3PhotosRequired,
                           style: AppThemes.f12w400.copyWith(color: Colors.red),
                         ),
                       ),

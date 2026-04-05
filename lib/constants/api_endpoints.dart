@@ -15,6 +15,7 @@ class ApiEndpoints {
       "$baseUrl/api/subscriptions/listing-prices";
   static const String featuredBanners = "$baseUrl/api/banners/featured";
   static const String offers = "$baseUrl/api/feed/offers";
+  static const String popularSearches = "$baseUrl/api/feed/popular-searches";
   static String feedCategory(String categoryId) =>
       "$baseUrl/api/feed/category/$categoryId";
   static const String uploadToS3 = "$baseUrl/storage/upload";
@@ -109,4 +110,5 @@ class ApiEndpoints {
       '$baseUrl/api/notifications/register-token';
   static const String unregisterNotificationToken =
       '$baseUrl/api/notifications/unregister-token';
+  static const String userLanguage = '$baseUrl/api/users/me/language';
 }

@@ -99,7 +99,6 @@ class _AuthInterceptor extends Interceptor {
   static const List<String> _protectedPathPrefixes = [
     '/api/stores/check', // only the "do I have a store?" endpoint needs auth
     '/api/payments/',
-    '/api/listings/',
     '/api/subscriptions/ad-prices',
     '/api/subscriptions/',
   ];

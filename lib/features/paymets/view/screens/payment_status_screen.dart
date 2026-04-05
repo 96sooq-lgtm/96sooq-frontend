@@ -118,16 +118,16 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen>
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.white,
-        title: const Text('Cancel Payment?'),
-        content: const Text('Are you sure you want to cancel?'),
+        title: Text(AppLocalizations.of(context)!.cancelPaymentTitle),
+        content: Text(AppLocalizations.of(context)!.cancelPaymentMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('No'),
+            child: Text(AppLocalizations.of(context)!.noText),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Yes'),
+            child: Text(AppLocalizations.of(context)!.yesText),
           ),
         ],
       ),
@@ -422,7 +422,7 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen>
     return TextButton(
       key: key,
       onPressed: _showCancelDialog,
-      child: Text('Cancel', style: AppThemes.f16w500),
+      child: Text(AppLocalizations.of(context)!.cancelText, style: AppThemes.f16w500),
     );
   }
 

@@ -8,7 +8,6 @@ import 'package:_96_sooq/features/categories/widgets/store_listing_listview_widg
 import 'package:_96_sooq/features/categories/widgets/store_filter_dialog.dart';
 import 'package:_96_sooq/features/home/model/product_model.dart';
 import 'package:_96_sooq/features/home/widgets/product_detail_sheet.dart';
-import 'package:_96_sooq/features/home/widgets/product_listing_widget.dart';
 import 'package:_96_sooq/features/profile/view/screens/store_details_screen.dart';
 import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:_96_sooq/features/search/view/screens/search_screen.dart';
@@ -124,7 +123,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           padding: const EdgeInsets.symmetric(vertical: 24),
           child: Center(
             child: Text(
-              'Select a category to view subcategories',
+              AppLocalizations.of(context)!.selectCategoryPrompt,
               style: AppThemes.f12w500,
               textAlign: TextAlign.center,
             ),
@@ -139,7 +138,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: _SubCategoryErrorWidget(
-            message: state.subCategoriesError ?? 'Failed to load subcategories',
+            message: state.subCategoriesError ?? AppLocalizations.of(context)!.failedToLoadSubcategories,
             onRetry: () {
               final parentId = state.selectedParentId;
               if (parentId == null || parentId.isEmpty) {
@@ -157,7 +156,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             padding: const EdgeInsets.symmetric(vertical: 24),
             child: Center(
               child: Text(
-                'No subcategories found',
+                AppLocalizations.of(context)!.noSubcategoriesFound,
                 style: AppThemes.f12w500,
                 textAlign: TextAlign.center,
               ),
@@ -271,7 +270,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       state.categories.isEmpty) {
                     return _RootCategoriesErrorWidget(
                       message:
-                          state.categoriesError ?? 'Failed to load categories',
+                          state.categoriesError ?? localizations.failedToLoadCategories,
                       onRetry: () {
                         context.read<CategoriesBloc>().add(
                           CategoriesRequested(),
@@ -348,7 +347,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                       return _RootCategoriesErrorWidget(
                                         message:
                                             storeState.categoryError ??
-                                            'Failed to load stores',
+                                            localizations.failedToLoadStores,
                                         onRetry: _requestInitialStores,
                                       );
                                     }
@@ -387,64 +386,64 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                   isArabic: isArabic,
                                   localeCode: localeCode,
                                 ),
-                                const SizedBox(height: 24),
-                                ProductListingWidget(
-                                  category: localizations.latestPicksTitle,
-                                  onProductTap: (product) {
-                                    showProductDetailSheet(
-                                      context: context,
-                                      product: product,
-                                    );
-                                  },
-                                  products: [
-                                    ProductModel(
-                                      id: '1',
-                                      title: 'Samsung Galaxy',
-                                      details: 'S24 256 GB',
-                                      amount: '125 OMR',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=900&q=80',
-                                    ),
-                                    ProductModel(
-                                      id: '2',
-                                      title: 'iPhone 15',
-                                      details: '128 GB',
-                                      amount: '320 OMR',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=900&q=80',
-                                    ),
-                                    ProductModel(
-                                      id: '3',
-                                      title: 'MacBook Air',
-                                      details: 'M2 16GB',
-                                      amount: '540 OMR',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=900&q=80',
-                                    ),
-                                    ProductModel(
-                                      id: '4',
-                                      title: 'Sony Headphones',
-                                      details: 'WH-1000XM5',
-                                      amount: '90 OMR',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=900&q=80',
-                                    ),
-                                  ],
-                                  onSeeAllTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ProductListingScreen(
-                                          categoryId: selectedCategoryIndex > 0
-                                              ? apiCategories[selectedCategoryIndex -
-                                                        1]
-                                                    .id
-                                              : '',
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
+                                // const SizedBox(height: 24),
+                                // ProductListingWidget(
+                                //   category: localizations.latestPicksTitle,
+                                //   onProductTap: (product) {
+                                //     showProductDetailSheet(
+                                //       context: context,
+                                //       product: product,
+                                //     );
+                                //   },
+                                //   products: [
+                                //     ProductModel(
+                                //       id: '1',
+                                //       title: 'Samsung Galaxy',
+                                //       details: 'S24 256 GB',
+                                //       amount: '125 OMR',
+                                //       imageUrl:
+                                //           'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=900&q=80',
+                                //     ),
+                                //     ProductModel(
+                                //       id: '2',
+                                //       title: 'iPhone 15',
+                                //       details: '128 GB',
+                                //       amount: '320 OMR',
+                                //       imageUrl:
+                                //           'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=900&q=80',
+                                //     ),
+                                //     ProductModel(
+                                //       id: '3',
+                                //       title: 'MacBook Air',
+                                //       details: 'M2 16GB',
+                                //       amount: '540 OMR',
+                                //       imageUrl:
+                                //           'https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=900&q=80',
+                                //     ),
+                                //     ProductModel(
+                                //       id: '4',
+                                //       title: 'Sony Headphones',
+                                //       details: 'WH-1000XM5',
+                                //       amount: '90 OMR',
+                                //       imageUrl:
+                                //           'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=900&q=80',
+                                //     ),
+                                //   ],
+                                //   onSeeAllTap: () {
+                                //     Navigator.push(
+                                //       context,
+                                //       MaterialPageRoute(
+                                //         builder: (context) => ProductListingScreen(
+                                //           categoryId: selectedCategoryIndex > 0
+                                //               ? apiCategories[selectedCategoryIndex -
+                                //                         1]
+                                //                     .id
+                                //               : '',
+                                //         ),
+                                //       ),
+                                //     );
+                                //   },
+                                // ),
                               ],
                             ],
                           ),
@@ -573,7 +572,7 @@ class _RootCategoriesErrorWidget extends StatelessWidget {
               style: AppThemes.f12w500,
             ),
             const SizedBox(height: 12),
-            ElevatedButton(onPressed: onRetry, child: const Text('Retry')),
+            ElevatedButton(onPressed: onRetry, child: Text(AppLocalizations.of(context)!.retryText)),
           ],
         ),
       ),
@@ -604,7 +603,7 @@ class _SubCategoryErrorWidget extends StatelessWidget {
           const SizedBox(height: 8),
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: TextButton(onPressed: onRetry, child: const Text('Retry')),
+            child: TextButton(onPressed: onRetry, child: Text(AppLocalizations.of(context)!.retryText)),
           ),
         ],
       ),

@@ -16,6 +16,7 @@ import 'package:_96_sooq/shared/global_widgets/app_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:_96_sooq/features/addlist/data/listing_creation_api_service.dart';
 
 enum _DealsTab { active, sold }
 
@@ -114,9 +115,17 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
                     }
 
                     if (state.products.isEmpty) {
+                      final loc = AppLocalizations.of(context)!;
+                      final statusLabel = switch (_selectedTab.name) {
+                        'draft' => loc.statusDraft,
+                        'pending' => loc.statusPending,
+                        'rejected' => loc.statusRejected,
+                        'sold' => loc.statusSold,
+                        _ => loc.statusActive,
+                      };
                       return Center(
                         child: Text(
-                          'No ${_selectedTab.name} deals found.',
+                          loc.noDealsFound(statusLabel),
                           style: AppThemes.f14w500,
                         ),
                       );
@@ -133,10 +142,12 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
                         final product = state.products[index];
                         final status = product.status?.toLowerCase() ?? '';
 
-                        // For individual users: hide promote for rejected/pending
-                        final showPromote =
-                            isStoreUser ||
-                            (status != 'rejected' && status != 'pending');
+                        final isExpired = status == 'expire' || status == 'expired';
+                        final isRejectedOrPending = status == 'rejected' || status == 'pending';
+                        
+                        // Prevent promote for expired for ALL users.
+                        // For individual users, also hide for rejected/pending.
+                        final showPromote = !isExpired && (isStoreUser || !isRejectedOrPending);
 
                         return _MyDealCard(
                           product: product,
@@ -150,29 +161,29 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
                               builder: (context) => AlertDialog(
                                 surfaceTintColor: Colors.transparent,
                                 backgroundColor: Colors.white,
-                                title: const Text(
-                                  'Delete Listing',
+                                title: Text(
+                                  AppLocalizations.of(context)!.deleteListingTitle,
                                   style: AppThemes.f16w600,
                                 ),
-                                content: const Text(
-                                  'Are you sure you want to delete this listing?',
+                                content: Text(
+                                  AppLocalizations.of(context)!.deleteListingMessage,
                                   style: AppThemes.f14w500,
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.pop(context, false),
-                                    child: const Text(
-                                      'Cancel',
-                                      style: TextStyle(color: Colors.grey),
+                                    child: Text(
+                                      AppLocalizations.of(context)!.cancelText,
+                                      style: const TextStyle(color: Colors.grey),
                                     ),
                                   ),
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.pop(context, true),
-                                    child: const Text(
-                                      'Delete',
-                                      style: TextStyle(color: Colors.red),
+                                    child: Text(
+                                      AppLocalizations.of(context)!.deleteText,
+                                      style: const TextStyle(color: Colors.red),
                                     ),
                                   ),
                                 ],
@@ -204,6 +215,7 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
                           onPromote: () => _onPromoteTap(context, product),
                           onTap: () =>
                               _openProductDetailSheet(context, product),
+                          onMarkAsSold: status == 'active' ? () => _markAsSoldTap(context, product) : null,
                         );
                       },
                     );
@@ -215,6 +227,69 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _markAsSoldTap(BuildContext context, ProductModel product) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: Colors.white,
+        title: Text(
+          AppLocalizations.of(context)!.markAsSold,
+          style: AppThemes.f16w600,
+        ),
+        content: Text(
+          'Are you sure you want to mark this listing as sold?',
+          style: AppThemes.f14w500,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(
+              AppLocalizations.of(context)!.cancelText,
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              AppLocalizations.of(context)!.markAsSold,
+              style: const TextStyle(color: Colors.green),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && context.mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const Center(child: CircularProgressIndicator()),
+      );
+      try {
+        final creationService = const ListingCreationApiService();
+        await creationService.updateListing(
+          id: product.id,
+          request: {"status": "sold"},
+        );
+        if (context.mounted) {
+          Navigator.pop(context); // Close loading
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Listing marked as sold successfully.')),
+          );
+          _fetchListings(_selectedTab);
+        }
+      } catch (e) {
+        if (context.mounted) {
+          Navigator.pop(context); // Close loading
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to update: $e')),
+          );
+        }
+      }
+    }
   }
 
   void _onPromoteTap(BuildContext context, ProductModel product) {
@@ -239,8 +314,6 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
             builder: (_) => BlocProvider(
               create: (_) => AddlistPaymentFlowBloc(),
               child: SubscriptionListingScreen(
-                disclaimerSubtext:
-                    'Business account gets 1 listing free per month.',
                 accountType: accountType,
                 promoteProduct: product,
               ),
@@ -291,8 +364,6 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
           builder: (_) => BlocProvider(
             create: (_) => AddlistPaymentFlowBloc(),
             child: SubscriptionListingScreen(
-              disclaimerSubtext:
-                  'Individual account gets 1 listing free per month.',
               accountType: accountType,
               promoteProduct: product,
             ),
@@ -315,7 +386,7 @@ class _MyDealsScreenState extends State<MyDealsScreen> {
                   planId: null,
                   planAmount: 0.0,
                   currency: 'OMR',
-                  useExistingQuota: false,
+                  useExistingQuota: true,
                 ),
               ),
             child: BoostYourProductScreen(
@@ -434,6 +505,7 @@ class _MyDealCard extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onPromote,
+    this.onMarkAsSold,
   });
 
   final ProductModel product;
@@ -445,6 +517,7 @@ class _MyDealCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onPromote;
+  final VoidCallback? onMarkAsSold;
 
   @override
   Widget build(BuildContext context) {
@@ -559,6 +632,15 @@ class _MyDealCard extends StatelessWidget {
                         onTap: () {},
                       ),
                     ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _OutlinedTextButton(
+                        label: product.viewsCount.toString(),
+                        icon: Icons.visibility_outlined,
+                        iconColor: AppColors.brandBlack,
+                        onTap: () {},
+                      ),
+                    ),
                     if (showPromote) ...[
                       const SizedBox(width: 10),
                       Expanded(
@@ -571,6 +653,18 @@ class _MyDealCard extends StatelessWidget {
                     ],
                   ],
                 ),
+              if (onMarkAsSold != null) ...[
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: _OutlinedTextButton(
+                    label: AppLocalizations.of(context)!.markAsSold,
+                    icon: Icons.check_circle_outline,
+                    iconColor: Colors.green,
+                    onTap: onMarkAsSold!,
+                  ),
+                ),
+              ]
             ],
           ),
         ),

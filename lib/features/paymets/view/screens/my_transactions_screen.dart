@@ -160,8 +160,8 @@ class MyTransactionsScreen extends StatelessWidget {
     TransactionModel transaction,
   ) async {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Generating invoice...'),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.generatingInvoice),
         duration: Duration(seconds: 1),
       ),
     );
@@ -176,7 +176,7 @@ class MyTransactionsScreen extends StatelessWidget {
       if (!context.mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Failed to generate invoice: $e')));
+      ).showSnackBar(SnackBar(content: Text('${AppLocalizations.of(context)!.failedToGenerateInvoicePrefix}$e')));
     }
   }
 }

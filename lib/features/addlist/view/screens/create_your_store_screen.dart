@@ -278,15 +278,15 @@ class _CreateYourStoreScreenState extends State<CreateYourStoreScreen> {
         if (state.submitStatus == StoreLoadStatus.success) {
           if (_isEditMode) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Your store has been updated successfully'),
+              SnackBar(
+                content: Text(localizations.storeUpdatedSuccess),
               ),
             );
             Navigator.pop(context, true);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Your store has been created successfully'),
+              SnackBar(
+                content: Text(localizations.storeCreatedSuccess),
               ),
             );
             context.read<StoreProfileBloc>().add(
@@ -341,7 +341,7 @@ class _CreateYourStoreScreenState extends State<CreateYourStoreScreen> {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 30),
               child: CustomButton(
-                text: _isEditMode ? 'Update Store' : localizations.continueText,
+                text: _isEditMode ? localizations.updateStoreText : localizations.continueText,
                 isLoading: isSubmitting,
                 color: canSubmit
                     ? AppColors.primaryColor
@@ -369,8 +369,8 @@ class _CreateYourStoreScreenState extends State<CreateYourStoreScreen> {
                           BackButtonWidget(ontap: () => Navigator.pop(context)),
                           Text(
                             _isEditMode
-                                ? 'Edit Your Store'
-                                : 'Create Your Store',
+                                ? localizations.editYourStoreTitle
+                                : localizations.createYourStoreTitle,
                             style: AppThemes.f16w600,
                           ),
                           const SizedBox(width: 30),
@@ -583,7 +583,7 @@ class _CreateYourStoreScreenState extends State<CreateYourStoreScreen> {
                       const _RequiredLabel(label: 'District'),
                       const SizedBox(height: 8),
                       CustomTextFormField(
-                        labelText: 'District',
+                        labelText: localizations.districtLabel,
                         controller: districtController,
                         readOnly: true,
                         suffixIcon: const Icon(
@@ -592,9 +592,9 @@ class _CreateYourStoreScreenState extends State<CreateYourStoreScreen> {
                         onTap: () async {
                           if (state.selectedGovernorate == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
+                              SnackBar(
                                 content: Text(
-                                  'Please select governorate first',
+                                  localizations.selectGovernorateFirst,
                                 ),
                               ),
                             );
@@ -614,7 +614,7 @@ class _CreateYourStoreScreenState extends State<CreateYourStoreScreen> {
                           }
 
                           await _pickFromList(
-                            title: 'Select your District',
+                            title: localizations.selectYourDistrict,
                             options: state.districts,
                             labelBuilder: (value) =>
                                 value.displayName(localeCode),

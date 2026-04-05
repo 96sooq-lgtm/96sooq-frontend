@@ -71,11 +71,53 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
     super.dispose();
   }
 
+  String? _localizedCondition(AppLocalizations l10n, String? rawValue) {
+    final value = rawValue?.trim();
+    if (value == null || value.isEmpty) return null;
+    switch (value.toLowerCase()) {
+      case 'new':
+        return l10n.newCondition;
+      case 'used':
+        return l10n.usedCondition;
+      default:
+        return value;
+    }
+  }
+
+  String? _localizedSellerType(AppLocalizations l10n, String? rawValue) {
+    final value = rawValue?.trim();
+    if (value == null || value.isEmpty) return null;
+    switch (value.toLowerCase()) {
+      case 'store':
+        return l10n.storeTitle;
+      case 'individual':
+        return l10n.individualShortLabel;
+      default:
+        return value;
+    }
+  }
+
+  String _formatPrice(String amount, String? currency) {
+    final trimmedAmount = amount.trim();
+    final parsedAmount = double.tryParse(trimmedAmount);
+    final formattedAmount = parsedAmount != null
+        ? parsedAmount.toStringAsFixed(3)
+        : trimmedAmount;
+    final currencyKey =
+        (currency != null && currency.trim().isNotEmpty) ? currency.trim() : 'OMR';
+    return '$formattedAmount $currencyKey';
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final product = widget.product;
     final hideActions = widget.hideActions;
+    final localizedCondition =
+        _localizedCondition(localizations, product.condition);
+    final localizedSellerType =
+        _localizedSellerType(localizations, product.sellerType);
+    final formattedPrice = _formatPrice(product.amount, product.currency);
     return DraggableScrollableSheet(
       initialChildSize: 0.93,
       minChildSize: 0.5,
@@ -228,10 +270,10 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
                         final String displayName = isIndividual
                             ? ((product.userName?.trim().isNotEmpty == true)
                                   ? product.userName!
-                                  : 'Seller')
+                                  : AppLocalizations.of(context)!.sellerFallback)
                             : ((product.storeName?.trim().isNotEmpty == true)
                                   ? product.storeName!
-                                  : 'Store');
+                                  : AppLocalizations.of(context)!.storeFallback);
 
                         final String? displayImageUrl = isIndividual
                             ? product.userProfilePicture
@@ -322,7 +364,7 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          product.amount,
+                          formattedPrice,
                           style: AppThemes.f20w700.copyWith(
                             color: AppColors.brandBlack,
                           ),
@@ -375,7 +417,7 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
                     ],
                     Row(
                       children: [
-                        if ((product.condition ?? '').trim().isNotEmpty) ...[
+                        if (localizedCondition != null) ...[
                           IntrinsicWidth(
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -395,7 +437,8 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'Condition: ${product.condition}',
+                                    '${localizations.conditionLabel}: '
+                                    '$localizedCondition',
                                     style: AppThemes.f12w500.copyWith(
                                       color: Colors.blue,
                                       fontWeight: FontWeight.w600,
@@ -407,7 +450,7 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
                           ),
                           const SizedBox(width: 8),
                         ],
-                        if ((product.sellerType ?? '').trim().isNotEmpty)
+                        if (localizedSellerType != null)
                           IntrinsicWidth(
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -427,7 +470,8 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'Seller: ${product.sellerType}',
+                                    '${localizations.sellerTypeTitle}: '
+                                    '$localizedSellerType',
                                     style: AppThemes.f12w500.copyWith(
                                       color: Colors.green,
                                       fontWeight: FontWeight.w600,
@@ -511,7 +555,7 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
                                             ),
                                         child: ChatScreen(
                                           currentUserId: currentUserId,
-                                          userName: 'Seller',
+                                          userName: AppLocalizations.of(context)!.sellerFallback,
                                           avatarUrl:
                                               product.imageUrl.trim().isNotEmpty
                                               ? product.imageUrl
@@ -532,7 +576,7 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
                                   ); // Close loading dialog
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text('Could not start chat: $e'),
+                                      content: Text('${AppLocalizations.of(context)!.couldNotStartChatPrefix}$e'),
                                     ),
                                   );
                                 }

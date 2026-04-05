@@ -131,5 +131,218 @@
   "storeNameLabel": "اسم المتجر",
   "mobileNumber": "رقم الهاتف",
   "resend": "أعد الإرسال",
-  "didntReceivedCode": "لم  يصل الرمز ؟"
+  "didntReceivedCode": "لم  يصل الرمز ؟",
+  "howCanWeHelpYou": "كيف يمكننا مساعدتك؟",
+  "supportTeamDescription": "فريقنا متاح لمساعدتك في أي أسئلة حول ٩٦ سوق.",
+  "whatsappSupport": "دعم واتساب",
+  "fastestResponseTime": "أسرع وقت استجابة",
+  "chatNow": "دردش الآن",
+  "emailSupport": "دعم البريد الإلكتروني",
+  "emailUs": "راسلنا عبر البريد",
+  "callSupport": "دعم الاتصال",
+  "speakWithOurTeam": "تحدث مع فريقنا",
+  "callNow": "اتصل الآن",
+  "pushNotifications": "تفعيل الإشعارات",
+  "noDealsFound": "لا توجد صفقات {status}",
+  "@noDealsFound": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "noSubcategoriesFound": "لم يتم العثور على فئات فرعية",
+  "noFavoritesYet": "لا توجد مفضلات بعد",
+  "statusDraft": "مسودة",
+  "statusPending": "قيد الانتظار",
+  "statusActive": "نشط",
+  "statusRejected": "مرفوض",
+  "statusSold": "مباع",
+  "statusExpired": "منتهي",
+  "promotedText": "96 ممول",
+  "subscriptionPlansTitle": "خطط الاشتراك",
+  "forBusinessesTitle": "للشركات",
+  "forBusinessesSubtitle": "حلول قابلة للتطوير لرواد الأعمال العمانيين وأصحاب المتاجر المحلية.",
+  "chooseYourPlanTitle": "اختر خطتك",
+  "chooseYourPlanSubtitle": "حدد أفضل عضوية لاحتياجات البيع المحلية الخاصة بك في عمان.",
+  "continueWithSelection": "المتابعة مع الاختيار",
+  "whyUpgradeTitle": "لماذا الترقية؟",
+  "whyUpgradeDesc": "يبيع مستخدمو أفضل قيمة العناصر أسرع بنسبة 40٪ في المتوسط بسبب سعة الحجم الأكبر.",
+  "bestValueBadge": "أفضل قيمة",
+  "noSubscriptionPlans": "لا تتوفر خطط اشتراك في الوقت الحالي.",
+  "daysListingDuration": "{days} أيام مدة الإعلان",
+  "@daysListingDuration": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "daysLabel": "{days} أيام",
+  "@daysLabel": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "priceRangeTitle": "نطاق السعر (ريال عماني)",
+  "minPriceLabel": "الحد الأدنى للسعر",
+  "maxPriceLabel": "الحد الأقصى للسعر",
+  "sellerTypeTitle": "نوع البائع",
+  "applyFiltersButton": "تطبيق الفلاتر",
+  "ratingTitle": "التقييم",
+  "anyRatingLabel": "أي تقييم",
+  "applyButton": "تطبيق",
+  "resetButton": "إعادة تعيين",
+  "searchPlaceholder": "ابحث عن إلكترونيات",
+  "recentSearchesTitle": "عمليات البحث الأخيرة",
+  "clearAllText": "مسح الكل",
+  "popularSearchesTitle": "عمليات البحث الشائعة",
+  "postsTabTitle": "المنشورات",
+  "reviewsTabTitle": "التقييمات",
+  "noListingsText": "لا توجد إعلانات بعد",
+  "startAReviewButton": "ابدأ في كتابة تقييم",
+  "noReviewsForBusiness": "لا توجد تقييمات لهذا\nالنشاط التجاري حتى الآن",
+  "noReviewsYet": "لا توجد تقييمات بعد",
+  "writeAReviewTitle": "اكتب تقييمًا",
+  "rateBusinessPrompt": "كيف تقيم هذا النشاط التجاري؟",
+  "shareExperienceHint": "شارك تجربتك (اختياري)",
+  "reviewSubmittedSuccess": "تم إرسال التقييم بنجاح!",
+  "reviewSubmitFailedPrefix": "فشل إرسال التقييم: ",
+  "submitReviewButton": "إرسال التقييم",
+  "starCount": "{count, plural, =1{نجمة واحدة} =2{نجمتان} few{{count} نجوم} many{{count} نجمة} other{{count} نجمة}}",
+  "@starCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewCountText": "({count} {count, plural, =1{تقييم} =2{تقييمان} few{تقييمات} many{تقييمًا} other{تقييم}})",
+  "@reviewCountText": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "whichPromotionTitle": "ما هي الترقية التي تحتاجها لمنتجك؟",
+  "promotionSelectionDesc": "حدد الخيار الأفضل لزيادة المشاهدات والنقرات والمبيعات.",
+  "daysTopLabel": "أيام",
+  "currentRateTopLabel": "السعر الحالي",
+  "perDayLabel": "/ في اليوم",
+  "forDaysLabel": "/ لمدة {days} أيام",
+  "@forDaysLabel": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "totalPromotionDaysLabel": "إجمالي أيام الترقية",
+  "totalDaysCountLabel": "{days} أيام",
+  "@totalDaysCountLabel": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "totalPriceTopLabel": "السعر الإجمالي",
+  "listingSubmittedReviewText": "تم إرسال إعلانك للمراجعة!",
+  "postWillBePublishedText": "تم تعيين منشورك للمراجعة وسيتم نشره بنجاح في غضون 30 دقيقة القادمة",
+  "checkoutFailedPrefix": "فشل الدفع: ",
+  "paymentSummaryTitle": "ملخص الدفع",
+  "selectedPlanTitleSection": "الخطة المحددة",
+  "orderDetailsTitleSection": "تفاصيل الطلب",
+  "viewItemButton": "عرض العنصر",
+  "billedMonthlyText": "الفوترة شهرية",
+  "subtotalLabel": "المجموع الفرعي",
+  "platformFeeLabel": "رسوم المنصة (2%)",
+  "totalAmountLabel": "المبلغ الإجمالي",
+  "productListingAdOption": "إعلان قائمة المنتج",
+  "payAndConfirmTotal": "الدفع والتأكيد {amount} {currency}",
+  "@payAndConfirmTotal": {
+    "placeholders": {
+      "amount": {},
+      "currency": {}
+    }
+  },
+  "noResultFoundTitle": "لم يتم العثور على نتائج!",
+  "noResultFoundSubtitle": "لا توجد نتائج لبحثك.\nهيا، حاول مرة أخرى!",
+  "addAtLeast3Photos": "أضف ما لا يقل عن 3 صور لإعلانك",
+
+  "locationServicesOff": "خدمات الموقع معطلة",
+  "locationServicesOffMessage": "لعرض الإعلانات القريبة، يرجى تفعيل خدمات الموقع في إعدادات جهازك.",
+  "notNow": "ليس الآن",
+  "openSettings": "فتح الإعدادات",
+  "unableToOpenLink": "تعذر فتح الرابط",
+
+  "cancelPaymentTitle": "إلغاء الدفع؟",
+  "cancelPaymentMessage": "هل أنت متأكد أنك تريد الإلغاء؟",
+  "noText": "لا",
+  "yesText": "نعم",
+
+  "generatingInvoice": "جاري إنشاء الفاتورة...",
+  "failedToGenerateInvoicePrefix": "فشل إنشاء الفاتورة: ",
+
+  "editListingTitle": "تعديل الإعلان",
+  "listingUpdatedSuccess": "تم تحديث الإعلان بنجاح!",
+  "updateFailedPrefix": "فشل التحديث: ",
+  "updatingText": "جاري التحديث...",
+  "updateText": "تحديث",
+
+  "storeUpdatedSuccess": "تم تحديث متجرك بنجاح",
+  "storeCreatedSuccess": "تم إنشاء متجرك بنجاح",
+  "editYourStoreTitle": "تعديل متجرك",
+  "createYourStoreTitle": "إنشاء متجرك",
+  "updateStoreText": "تحديث المتجر",
+  "selectGovernorateFirst": "يرجى اختيار المحافظة أولاً",
+  "selectYourDistrict": "اختر منطقتك",
+  "districtLabel": "المنطقة",
+
+  "loadingCategories": "جاري تحميل الفئات",
+  "noCategoriesAvailable": "لا توجد فئات متاحة حالياً",
+  "pleaseSelectCategoryFirst": "يرجى اختيار الفئة أولاً",
+  "loadingSubcategories": "جاري تحميل الفئات الفرعية",
+  "noSubcategoriesForCategory": "لم يتم العثور على فئات فرعية لهذه الفئة",
+  "pleaseAddSmallerImages": "يرجى إضافة صور أصغر من 5 ميغابايت",
+  "atLeast3PhotosRequired": "مطلوب 3 صور على الأقل",
+
+  "typeAMessage": "اكتب رسالة",
+
+  "couldNotLoadChats": "تعذر تحميل المحادثات",
+  "retryText": "إعادة المحاولة",
+  "tapToStartChatting": "اضغط لبدء المحادثة",
+
+  "couldNotStartChatPrefix": "تعذر بدء المحادثة: ",
+  "openLinkText": "فتح الرابط",
+
+  "sellerFallback": "البائع",
+  "storeFallback": "المتجر",
+  "userFallback": "المستخدم",
+  "productFallback": "المنتج",
+  "noDescriptionText": "لا يوجد وصف",
+
+  "selectCategoryPrompt": "اختر فئة لعرض الفئات الفرعية",
+  "failedToLoadSubcategories": "فشل تحميل الفئات الفرعية",
+  "failedToLoadCategories": "فشل تحميل الفئات",
+  "failedToLoadStores": "فشل تحميل المتاجر",
+  "failedToLoadProducts": "فشل تحميل المنتجات",
+  "noProductsFound": "لم يتم العثور على منتجات.",
+
+  "pleaseSelectGovernorateFirst": "يرجى اختيار المحافظة أولاً",
+
+  "pleaseFullAllRequiredFields": "يرجى ملء جميع الحقول المطلوبة",
+
+  "noAdsFound": "لم يتم العثور على إعلانات.",
+  "errorLoadingAds": "خطأ في تحميل الإعلانات",
+
+  "noCitiesFound": "لم يتم العثور على مدن",
+  "failedToLoadCities": "فشل تحميل المدن",
+  "noGovernoratesFound": "لم يتم العثور على محافظات",
+  "failedToLoadGovernorates": "فشل تحميل المحافظات",
+  "failedToLoadPlans": "فشل تحميل الخطط",
+
+  "rejectionReasonTitle": "سبب الرفض",
+  "noReasonProvided": "لم يتم تقديم سبب",
+
+  "failedToLoadProductsPrefix": "فشل تحميل المنتجات: ",
+
+  "deleteListingTitle": "حذف الإعلان",
+  "deleteListingMessage": "هل أنت متأكد أنك تريد حذف هذا الإعلان؟",
+  "deleteText": "حذف",
+  
+  "markAsSold": "تحديد كمباع"
 }

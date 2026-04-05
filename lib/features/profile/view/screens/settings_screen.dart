@@ -2,6 +2,7 @@ import 'package:_96_sooq/constants/app_colors.dart';
 import 'package:_96_sooq/constants/app_themes.dart';
 import 'package:_96_sooq/features/notifications/data/notification_registration_service.dart';
 import 'package:_96_sooq/shared/global_widgets/backnavigation_button.dart';
+import 'package:_96_sooq/l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -53,6 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -66,9 +68,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Row(
                 children: [
                   BackButtonWidget(ontap: () => Navigator.pop(context)),
-                  const Expanded(
+                  Expanded(
                     child: Center(
-                      child: Text('Settings', style: AppThemes.f18w600),
+                      child: Text(
+                        localizations.settingsTitle,
+                        style: AppThemes.f18w600,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 40),
@@ -77,7 +82,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: 32),
 
               // ── Notifications heading ──
-              const Text('Notifications', style: AppThemes.f16w600),
+              Text(localizations.notificationTitle, style: AppThemes.f16w600),
               const SizedBox(height: 16),
 
               // ── Push Notifications toggle ──
@@ -108,7 +113,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Push Notifications',
+                        localizations.pushNotifications,
                         style: AppThemes.f14w500.copyWith(
                           color: const Color(0xFF2A2F3B),
                         ),

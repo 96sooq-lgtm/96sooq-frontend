@@ -390,4 +390,485 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get email => 'البريد';
+
+  @override
+  String get howCanWeHelpYou => 'كيف يمكننا مساعدتك؟';
+
+  @override
+  String get supportTeamDescription => 'فريقنا متاح لمساعدتك في أي أسئلة حول ٩٦ سوق.';
+
+  @override
+  String get whatsappSupport => 'دعم واتساب';
+
+  @override
+  String get fastestResponseTime => 'أسرع وقت استجابة';
+
+  @override
+  String get chatNow => 'دردش الآن';
+
+  @override
+  String get emailSupport => 'دعم البريد الإلكتروني';
+
+  @override
+  String get emailUs => 'راسلنا عبر البريد';
+
+  @override
+  String get callSupport => 'دعم الاتصال';
+
+  @override
+  String get speakWithOurTeam => 'تحدث مع فريقنا';
+
+  @override
+  String get callNow => 'اتصل الآن';
+
+  @override
+  String get pushNotifications => 'تفعيل الإشعارات';
+
+  @override
+  String noDealsFound(Object status) {
+    return 'لا توجد صفقات $status';
+  }
+
+  @override
+  String get noSubcategoriesFound => 'لم يتم العثور على فئات فرعية';
+
+  @override
+  String get noFavoritesYet => 'لا توجد مفضلات بعد';
+
+  @override
+  String get statusDraft => 'مسودة';
+
+  @override
+  String get statusPending => 'قيد الانتظار';
+
+  @override
+  String get statusActive => 'نشط';
+
+  @override
+  String get statusRejected => 'مرفوض';
+
+  @override
+  String get statusSold => 'مباع';
+
+  @override
+  String get statusExpired => 'منتهي';
+
+  @override
+  String get promotedText => '96 ممول';
+
+  @override
+  String get subscriptionPlansTitle => 'خطط الاشتراك';
+
+  @override
+  String get forBusinessesTitle => 'للشركات';
+
+  @override
+  String get forBusinessesSubtitle => 'حلول قابلة للتطوير لرواد الأعمال العمانيين وأصحاب المتاجر المحلية.';
+
+  @override
+  String get chooseYourPlanTitle => 'اختر خطتك';
+
+  @override
+  String get chooseYourPlanSubtitle => 'حدد أفضل عضوية لاحتياجات البيع المحلية الخاصة بك في عمان.';
+
+  @override
+  String get continueWithSelection => 'المتابعة مع الاختيار';
+
+  @override
+  String get whyUpgradeTitle => 'لماذا الترقية؟';
+
+  @override
+  String get whyUpgradeDesc => 'يبيع مستخدمو أفضل قيمة العناصر أسرع بنسبة 40٪ في المتوسط بسبب سعة الحجم الأكبر.';
+
+  @override
+  String get bestValueBadge => 'أفضل قيمة';
+
+  @override
+  String get noSubscriptionPlans => 'لا تتوفر خطط اشتراك في الوقت الحالي.';
+
+  @override
+  String daysListingDuration(Object days) {
+    return '$days أيام مدة الإعلان';
+  }
+
+  @override
+  String daysLabel(Object days) {
+    return '$days أيام';
+  }
+
+  @override
+  String get priceRangeTitle => 'نطاق السعر (ريال عماني)';
+
+  @override
+  String get minPriceLabel => 'الحد الأدنى للسعر';
+
+  @override
+  String get maxPriceLabel => 'الحد الأقصى للسعر';
+
+  @override
+  String get sellerTypeTitle => 'نوع البائع';
+
+  @override
+  String get applyFiltersButton => 'تطبيق الفلاتر';
+
+  @override
+  String get ratingTitle => 'التقييم';
+
+  @override
+  String get anyRatingLabel => 'أي تقييم';
+
+  @override
+  String get applyButton => 'تطبيق';
+
+  @override
+  String get resetButton => 'إعادة تعيين';
+
+  @override
+  String get searchPlaceholder => 'ابحث عن إلكترونيات';
+
+  @override
+  String get recentSearchesTitle => 'عمليات البحث الأخيرة';
+
+  @override
+  String get clearAllText => 'مسح الكل';
+
+  @override
+  String get popularSearchesTitle => 'عمليات البحث الشائعة';
+
+  @override
+  String get postsTabTitle => 'المنشورات';
+
+  @override
+  String get reviewsTabTitle => 'التقييمات';
+
+  @override
+  String get noListingsText => 'لا توجد إعلانات بعد';
+
+  @override
+  String get startAReviewButton => 'ابدأ في كتابة تقييم';
+
+  @override
+  String get noReviewsForBusiness => 'لا توجد تقييمات لهذا\nالنشاط التجاري حتى الآن';
+
+  @override
+  String get noReviewsYet => 'لا توجد تقييمات بعد';
+
+  @override
+  String get writeAReviewTitle => 'اكتب تقييمًا';
+
+  @override
+  String get rateBusinessPrompt => 'كيف تقيم هذا النشاط التجاري؟';
+
+  @override
+  String get shareExperienceHint => 'شارك تجربتك (اختياري)';
+
+  @override
+  String get reviewSubmittedSuccess => 'تم إرسال التقييم بنجاح!';
+
+  @override
+  String get reviewSubmitFailedPrefix => 'فشل إرسال التقييم: ';
+
+  @override
+  String get submitReviewButton => 'إرسال التقييم';
+
+  @override
+  String starCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count نجمة',
+      many: '$count نجمة',
+      few: '$count نجوم',
+      two: 'نجمتان',
+      one: 'نجمة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reviewCountText(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تقييم',
+      many: 'تقييمًا',
+      few: 'تقييمات',
+      two: 'تقييمان',
+      one: 'تقييم',
+    );
+    return '($count $_temp0)';
+  }
+
+  @override
+  String get whichPromotionTitle => 'ما هي الترقية التي تحتاجها لمنتجك؟';
+
+  @override
+  String get promotionSelectionDesc => 'حدد الخيار الأفضل لزيادة المشاهدات والنقرات والمبيعات.';
+
+  @override
+  String get daysTopLabel => 'أيام';
+
+  @override
+  String get currentRateTopLabel => 'السعر الحالي';
+
+  @override
+  String get perDayLabel => '/ في اليوم';
+
+  @override
+  String forDaysLabel(Object days) {
+    return '/ لمدة $days أيام';
+  }
+
+  @override
+  String get totalPromotionDaysLabel => 'إجمالي أيام الترقية';
+
+  @override
+  String totalDaysCountLabel(Object days) {
+    return '$days أيام';
+  }
+
+  @override
+  String get totalPriceTopLabel => 'السعر الإجمالي';
+
+  @override
+  String get listingSubmittedReviewText => 'تم إرسال إعلانك للمراجعة!';
+
+  @override
+  String get postWillBePublishedText => 'تم تعيين منشورك للمراجعة وسيتم نشره بنجاح في غضون 30 دقيقة القادمة';
+
+  @override
+  String get checkoutFailedPrefix => 'فشل الدفع: ';
+
+  @override
+  String get paymentSummaryTitle => 'ملخص الدفع';
+
+  @override
+  String get selectedPlanTitleSection => 'الخطة المحددة';
+
+  @override
+  String get orderDetailsTitleSection => 'تفاصيل الطلب';
+
+  @override
+  String get viewItemButton => 'عرض العنصر';
+
+  @override
+  String get billedMonthlyText => 'الفوترة شهرية';
+
+  @override
+  String get subtotalLabel => 'المجموع الفرعي';
+
+  @override
+  String get platformFeeLabel => 'رسوم المنصة (2%)';
+
+  @override
+  String get totalAmountLabel => 'المبلغ الإجمالي';
+
+  @override
+  String get productListingAdOption => 'إعلان قائمة المنتج';
+
+  @override
+  String payAndConfirmTotal(Object amount, Object currency) {
+    return 'الدفع والتأكيد $amount $currency';
+  }
+
+  @override
+  String get noResultFoundTitle => 'لم يتم العثور على نتائج!';
+
+  @override
+  String get noResultFoundSubtitle => 'لا توجد نتائج لبحثك.\nهيا، حاول مرة أخرى!';
+
+  @override
+  String get addAtLeast3Photos => 'أضف ما لا يقل عن 3 صور لإعلانك';
+
+  @override
+  String get locationServicesOff => 'خدمات الموقع معطلة';
+
+  @override
+  String get locationServicesOffMessage => 'لعرض الإعلانات القريبة، يرجى تفعيل خدمات الموقع في إعدادات جهازك.';
+
+  @override
+  String get notNow => 'ليس الآن';
+
+  @override
+  String get openSettings => 'فتح الإعدادات';
+
+  @override
+  String get unableToOpenLink => 'تعذر فتح الرابط';
+
+  @override
+  String get cancelPaymentTitle => 'إلغاء الدفع؟';
+
+  @override
+  String get cancelPaymentMessage => 'هل أنت متأكد أنك تريد الإلغاء؟';
+
+  @override
+  String get noText => 'لا';
+
+  @override
+  String get yesText => 'نعم';
+
+  @override
+  String get generatingInvoice => 'جاري إنشاء الفاتورة...';
+
+  @override
+  String get failedToGenerateInvoicePrefix => 'فشل إنشاء الفاتورة: ';
+
+  @override
+  String get editListingTitle => 'تعديل الإعلان';
+
+  @override
+  String get listingUpdatedSuccess => 'تم تحديث الإعلان بنجاح!';
+
+  @override
+  String get updateFailedPrefix => 'فشل التحديث: ';
+
+  @override
+  String get updatingText => 'جاري التحديث...';
+
+  @override
+  String get updateText => 'تحديث';
+
+  @override
+  String get storeUpdatedSuccess => 'تم تحديث متجرك بنجاح';
+
+  @override
+  String get storeCreatedSuccess => 'تم إنشاء متجرك بنجاح';
+
+  @override
+  String get editYourStoreTitle => 'تعديل متجرك';
+
+  @override
+  String get createYourStoreTitle => 'إنشاء متجرك';
+
+  @override
+  String get updateStoreText => 'تحديث المتجر';
+
+  @override
+  String get selectGovernorateFirst => 'يرجى اختيار المحافظة أولاً';
+
+  @override
+  String get selectYourDistrict => 'اختر منطقتك';
+
+  @override
+  String get districtLabel => 'المنطقة';
+
+  @override
+  String get loadingCategories => 'جاري تحميل الفئات';
+
+  @override
+  String get noCategoriesAvailable => 'لا توجد فئات متاحة حالياً';
+
+  @override
+  String get pleaseSelectCategoryFirst => 'يرجى اختيار الفئة أولاً';
+
+  @override
+  String get loadingSubcategories => 'جاري تحميل الفئات الفرعية';
+
+  @override
+  String get noSubcategoriesForCategory => 'لم يتم العثور على فئات فرعية لهذه الفئة';
+
+  @override
+  String get pleaseAddSmallerImages => 'يرجى إضافة صور أصغر من 5 ميغابايت';
+
+  @override
+  String get atLeast3PhotosRequired => 'مطلوب 3 صور على الأقل';
+
+  @override
+  String get typeAMessage => 'اكتب رسالة';
+
+  @override
+  String get couldNotLoadChats => 'تعذر تحميل المحادثات';
+
+  @override
+  String get retryText => 'إعادة المحاولة';
+
+  @override
+  String get tapToStartChatting => 'اضغط لبدء المحادثة';
+
+  @override
+  String get couldNotStartChatPrefix => 'تعذر بدء المحادثة: ';
+
+  @override
+  String get openLinkText => 'فتح الرابط';
+
+  @override
+  String get sellerFallback => 'البائع';
+
+  @override
+  String get storeFallback => 'المتجر';
+
+  @override
+  String get userFallback => 'المستخدم';
+
+  @override
+  String get productFallback => 'المنتج';
+
+  @override
+  String get noDescriptionText => 'لا يوجد وصف';
+
+  @override
+  String get selectCategoryPrompt => 'اختر فئة لعرض الفئات الفرعية';
+
+  @override
+  String get failedToLoadSubcategories => 'فشل تحميل الفئات الفرعية';
+
+  @override
+  String get failedToLoadCategories => 'فشل تحميل الفئات';
+
+  @override
+  String get failedToLoadStores => 'فشل تحميل المتاجر';
+
+  @override
+  String get failedToLoadProducts => 'فشل تحميل المنتجات';
+
+  @override
+  String get noProductsFound => 'لم يتم العثور على منتجات.';
+
+  @override
+  String get pleaseSelectGovernorateFirst => 'يرجى اختيار المحافظة أولاً';
+
+  @override
+  String get pleaseFullAllRequiredFields => 'يرجى ملء جميع الحقول المطلوبة';
+
+  @override
+  String get noAdsFound => 'لم يتم العثور على إعلانات.';
+
+  @override
+  String get errorLoadingAds => 'خطأ في تحميل الإعلانات';
+
+  @override
+  String get noCitiesFound => 'لم يتم العثور على مدن';
+
+  @override
+  String get failedToLoadCities => 'فشل تحميل المدن';
+
+  @override
+  String get noGovernoratesFound => 'لم يتم العثور على محافظات';
+
+  @override
+  String get failedToLoadGovernorates => 'فشل تحميل المحافظات';
+
+  @override
+  String get failedToLoadPlans => 'فشل تحميل الخطط';
+
+  @override
+  String get rejectionReasonTitle => 'سبب الرفض';
+
+  @override
+  String get noReasonProvided => 'لم يتم تقديم سبب';
+
+  @override
+  String get failedToLoadProductsPrefix => 'فشل تحميل المنتجات: ';
+
+  @override
+  String get deleteListingTitle => 'حذف الإعلان';
+
+  @override
+  String get deleteListingMessage => 'هل أنت متأكد أنك تريد حذف هذا الإعلان؟';
+
+  @override
+  String get deleteText => 'حذف';
+
+  @override
+  String get markAsSold => 'تحديد كمباع';
 }

@@ -43,6 +43,17 @@ class _ProductCardState extends State<ProductCard>
   late AnimationController _favoriteAnimationController;
   late Animation<double> _favoriteScaleAnimation;
 
+  String _formatPrice(String amount, String? currency) {
+    final trimmedAmount = amount.trim();
+    final parsedAmount = double.tryParse(trimmedAmount);
+    final formattedAmount = parsedAmount != null
+        ? parsedAmount.toStringAsFixed(3)
+        : trimmedAmount;
+    final currencyKey =
+        (currency != null && currency.trim().isNotEmpty) ? currency.trim() : 'OMR';
+    return '$formattedAmount $currencyKey';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -233,7 +244,11 @@ class _ProductCardState extends State<ProductCard>
               ),
             ),
             const SizedBox(height: 10),
-            Text(widget.product.amount, style: AppThemes.f14w600, maxLines: 1),
+            Text(
+              _formatPrice(widget.product.amount, widget.product.currency),
+              style: AppThemes.f14w600,
+              maxLines: 1,
+            ),
             const SizedBox(height: 4),
             Text(
               widget.product.title,
