@@ -40,6 +40,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:_96_sooq/constants/app_themes.dart';
+import 'package:_96_sooq/features/notifications/view/screens/notifications_screen.dart';
+import 'package:_96_sooq/features/notifications/bloc/notifications_bloc.dart';
+import 'package:_96_sooq/features/notifications/bloc/notifications_event.dart';
+import 'package:_96_sooq/features/notifications/bloc/notifications_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -73,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       ),
     );
     _requestStoreProfileIfLoggedIn();
+    _fetchNotificationUnreadCount();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || _requestedLocationOnStart) return;
       _requestedLocationOnStart = true;
@@ -217,6 +222,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     context.read<StoreProfileBloc>().add(const StoreProfileCheckRequested());
   }
 
+  Future<void> _fetchNotificationUnreadCount() async {
+    final isLoggedIn = await _authSessionRepository.isLoggedIn();
+    if (!mounted || !isLoggedIn) return;
+    context
+        .read<NotificationsBloc>()
+        .add(const NotificationsUnreadCountRequested());
+  }
+
   Future<void> _onRefresh() async {
     // Re-fetch location
     context.read<LocationBloc>().add(LocationUseCurrentRequested());
@@ -239,6 +252,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
     // Re-check store profile
     _requestStoreProfileIfLoggedIn();
+    // Re-fetch notification unread count
+    _fetchNotificationUnreadCount();
     // Small delay so the indicator shows
     await Future.delayed(const Duration(milliseconds: 500));
   }
@@ -457,7 +472,91 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             },
                           ),
                           const SizedBox(width: 5),
-                          _IconCircle(AppAssets.notificationIc),
+                          BlocBuilder<NotificationsBloc, NotificationsState>(
+                            buildWhen: (prev, curr) =>
+                                prev.unreadCount != curr.unreadCount,
+                            builder: (context, notifState) {
+                              return Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  _IconCircle(
+                                    AppAssets.notificationIc,
+                                    onTap: () async {
+                                      final isLoggedIn =
+                                          await _authSessionRepository
+                                              .isLoggedIn();
+                                      if (!context.mounted) return;
+                                      if (!isLoggedIn) {
+                                        final result =
+                                            await Navigator.push<bool>(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                const LoginScreen(),
+                                          ),
+                                        );
+                                        if (!context.mounted) return;
+                                        if (result == true) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  const NotificationsScreen(),
+                                            ),
+                                          );
+                                        }
+                                        return;
+                                      }
+                                      if (context.mounted) {
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                const NotificationsScreen(),
+                                          ),
+                                        );
+                                        // Refresh unread count when returning
+                                        if (context.mounted) {
+                                          context
+                                              .read<NotificationsBloc>()
+                                              .add(
+                                                const NotificationsUnreadCountRequested(),
+                                              );
+                                        }
+                                      }
+                                    },
+                                  ),
+                                  if (notifState.unreadCount > 0)
+                                    Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xFFE31D1C),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        constraints: const BoxConstraints(
+                                          minWidth: 18,
+                                          minHeight: 18,
+                                        ),
+                                        child: Text(
+                                          notifState.unreadCount > 99
+                                              ? '99+'
+                                              : '${notifState.unreadCount}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ],

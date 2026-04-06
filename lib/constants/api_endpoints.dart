@@ -110,5 +110,12 @@ class ApiEndpoints {
       '$baseUrl/api/notifications/register-token';
   static const String unregisterNotificationToken =
       '$baseUrl/api/notifications/unregister-token';
+  static const String notifications = '$baseUrl/api/notifications/';
+  static const String notificationsUnreadCount =
+      '$baseUrl/api/notifications/unread-count';
+  static const String notificationsMarkAllRead =
+      '$baseUrl/api/notifications/mark-all-read';
+  static String notificationMarkRead(String notificationId) =>
+      '$baseUrl/api/notifications/$notificationId';
   static const String userLanguage = '$baseUrl/api/users/me/language';
 }

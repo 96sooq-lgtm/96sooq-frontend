@@ -12,6 +12,8 @@ import 'package:_96_sooq/features/categories/bloc/store_bloc/store_bloc.dart';
 import 'package:_96_sooq/features/profile/bloc/profile_bloc.dart';
 import 'package:_96_sooq/features/profile/bloc/profile_event.dart';
 import 'package:_96_sooq/features/notifications/data/local_notification_service.dart';
+import 'package:_96_sooq/features/notifications/bloc/notifications_bloc.dart';
+import 'package:_96_sooq/features/notifications/data/notification_api_service.dart';
 import 'package:_96_sooq/features/profile/bloc/store_profile/store_profile_bloc.dart';
 import 'package:_96_sooq/features/root/view/screens/root_view.dart';
 import 'package:_96_sooq/features/offers/bloc/offers_bloc.dart';
@@ -107,6 +109,11 @@ void main() async {
                 ..add(const FetchOffers()),
         ),
         BlocProvider(create: (_) => RootBloc()),
+        BlocProvider(
+          create: (_) => NotificationsBloc(
+            apiService: const NotificationApiService(),
+          ),
+        ),
       ],
       child: const MyApp(),
     ),
