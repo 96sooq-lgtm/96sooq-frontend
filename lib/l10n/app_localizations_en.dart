@@ -276,6 +276,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickEasySetupAdvantage => 'Quick & Easy Setup: Start buying or posting in just a few steps';
 
   @override
+  String get individualAdvantage1 => 'Post your ad for one month for free';
+
+  @override
+  String get individualAdvantage2 => 'Upgrade your ad for only 3.100';
+
+  @override
+  String get individualAdvantage3 => 'Post for free in all categories';
+
+  @override
+  String get businessAdvantage1 => 'Post unlimited for only 20 Rials';
+
+  @override
+  String get businessAdvantage2 => 'Post in all categories in your own store';
+
+  @override
+  String get businessAdvantage3 => 'Create your own store';
+
+  @override
   String get listYourProductTitle => 'List Your Product';
 
   @override

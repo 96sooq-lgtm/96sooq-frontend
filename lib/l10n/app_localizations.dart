@@ -629,6 +629,42 @@ abstract class AppLocalizations {
   /// **'Quick & Easy Setup: Start buying or posting in just a few steps'**
   String get quickEasySetupAdvantage;
 
+  /// No description provided for @individualAdvantage1.
+  ///
+  /// In en, this message translates to:
+  /// **'Post your ad for one month for free'**
+  String get individualAdvantage1;
+
+  /// No description provided for @individualAdvantage2.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade your ad for only 3.100'**
+  String get individualAdvantage2;
+
+  /// No description provided for @individualAdvantage3.
+  ///
+  /// In en, this message translates to:
+  /// **'Post for free in all categories'**
+  String get individualAdvantage3;
+
+  /// No description provided for @businessAdvantage1.
+  ///
+  /// In en, this message translates to:
+  /// **'Post unlimited for only 20 Rials'**
+  String get businessAdvantage1;
+
+  /// No description provided for @businessAdvantage2.
+  ///
+  /// In en, this message translates to:
+  /// **'Post in all categories in your own store'**
+  String get businessAdvantage2;
+
+  /// No description provided for @businessAdvantage3.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your own store'**
+  String get businessAdvantage3;
+
   /// No description provided for @listYourProductTitle.
   ///
   /// In en, this message translates to:

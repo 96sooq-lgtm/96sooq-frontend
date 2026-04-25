@@ -161,9 +161,9 @@ class _AddlistScreenState extends State<AddlistScreen> {
                         iconBg: const Color(0xFFE6EDFF),
                         title: localizations.individualAccountType,
                         advantages: [
-                          localizations.simplePostingAdvantage,
-                          localizations.directInteractionAdvantage,
-                          localizations.quickEasySetupAdvantage,
+                          localizations.individualAdvantage1,
+                          localizations.individualAdvantage2,
+                          localizations.individualAdvantage3,
                         ],
                         isSelected:
                             _selectedType == ListingAccountType.individual,
@@ -178,9 +178,9 @@ class _AddlistScreenState extends State<AddlistScreen> {
                       iconBg: const Color(0xFFFFE9C9),
                       title: localizations.businessAccountType,
                       advantages: [
-                        localizations.simplePostingAdvantage,
-                        localizations.directInteractionAdvantage,
-                        localizations.quickEasySetupAdvantage,
+                        localizations.businessAdvantage1,
+                        localizations.businessAdvantage2,
+                        localizations.businessAdvantage3,
                       ],
                       isSelected: showOnlyBusiness
                           ? true

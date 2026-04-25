@@ -28,19 +28,20 @@ class LanguageSelectionWidget extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 43, vertical: 24),
         width: double.maxFinite,
         decoration: BoxDecoration(
-          color: Color(0xFFF6F6F6),
+          color: Colors.white,
           border: isSelected
-              ? Border.all(color: AppColors.primaryColor)
-              : Border(),
+              ? Border.all(color: AppColors.subTextBlue, width: 3.0)
+              : Border.all(color: Colors.transparent, width: 2.0),
           borderRadius: BorderRadius.all(Radius.circular(17)),
         ),
         child: Center(
           child: Row(
-            mainAxisAlignment: .spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 language,
-                style: isArabic ? AppThemes.f16w600 : AppThemes.f14w400,
+                style: (isArabic ? AppThemes.f16w600 : AppThemes.f14w400)
+                    .copyWith(color: Colors.black),
               ),
               Image.asset(assetPath),
             ],

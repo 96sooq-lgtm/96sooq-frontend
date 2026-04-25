@@ -276,16 +276,34 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quickEasySetupAdvantage => 'إعداد سريع وسهل: ابدأ الشراء أو النشر في بضع خطوات فقط';
 
   @override
+  String get individualAdvantage1 => 'إنشر إعلانك لمدة شهر مجانا';
+
+  @override
+  String get individualAdvantage2 => 'قم بالترقية إعلانك ب 3.100 فقط';
+
+  @override
+  String get individualAdvantage3 => 'قم بالنشر مجانا في جميع الفئات';
+
+  @override
+  String get businessAdvantage1 => 'إنشر بلاحدود مقابل 20 ريال فقط';
+
+  @override
+  String get businessAdvantage2 => 'قم بالنشر في جميع الفئات في متجرك الخاص';
+
+  @override
+  String get businessAdvantage3 => 'قم بإنشاء متجرك الخاص';
+
+  @override
   String get listYourProductTitle => 'قم بإدراج منتجك';
 
   @override
-  String get governorateLabel => 'محافظة';
+  String get governorateLabel => 'ولاية';
 
   @override
   String get wilayatLabel => 'مقاطعة';
 
   @override
-  String get postText => 'بريد';
+  String get postText => 'نشر';
 
   @override
   String get postingText => 'إرسال';
@@ -315,7 +333,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get useCurrentLocationText => 'استخدم الموقع الحالي';
 
   @override
-  String get allInOmanText => 'كل ذلك في عمان';
+  String get allInOmanText => 'كل المدن';
 
   @override
   String get latestPicksTitle => 'أحدث اللقطات';
@@ -330,10 +348,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tryAgainText => 'حاول ثانية';
 
   @override
-  String get continueWithGoogleText => 'تواصل مع جوجل';
+  String get continueWithGoogleText => 'إيميل جوجل';
 
   @override
-  String get continueWithAppleText => 'تسجيل الدخول باستخدام Apple';
+  String get continueWithAppleText => 'أي كلود أبل';
 
   @override
   String get downloadInvoiceText => 'تحميل الفاتورة';

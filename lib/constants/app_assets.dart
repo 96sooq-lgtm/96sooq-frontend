@@ -1,5 +1,7 @@
 class AppAssets {
   static const String logo = "assets/images/96_sooq_logo.png";
+  static const String logoSvg = "assets/icons/96_sooq_logo.svg";
+  static const String logoHq = "assets/images/96_sooq_logo_hq.png";
   static const String banner1 = "assets/images/96_sooq_banner_1.png";
   static const String banner2 = "assets/images/96_sooq_banner_2.png";
   static const String banner3 = "assets/images/96_sooq_banner_3.png";
