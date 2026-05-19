@@ -276,22 +276,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickEasySetupAdvantage => 'Quick & Easy Setup: Start buying or posting in just a few steps';
 
   @override
-  String get individualAdvantage1 => 'Post your ad for one month for free';
+  String get individualAdvantage1 => 'Chat directly with buyers for faster and easier deals.';
 
   @override
-  String get individualAdvantage2 => 'Upgrade your ad for only 3.100';
+  String get individualAdvantage2 => 'Post products quickly without any complex setup process.';
 
   @override
-  String get individualAdvantage3 => 'Post for free in all categories';
+  String get individualAdvantage3 => 'Reach nearby buyers and sell personal items easily.';
 
   @override
-  String get businessAdvantage1 => 'Post unlimited for only 20 Rials';
+  String get businessAdvantage1 => 'Build customer trust with a professional business profile and reviews.';
 
   @override
-  String get businessAdvantage2 => 'Post in all categories in your own store';
+  String get businessAdvantage2 => 'Showcase and manage multiple products from one profile.';
 
   @override
-  String get businessAdvantage3 => 'Create your own store';
+  String get businessAdvantage3 => 'Increase sales opportunities and grow your brand reach.';
 
   @override
   String get listYourProductTitle => 'List Your Product';

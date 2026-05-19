@@ -276,22 +276,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quickEasySetupAdvantage => 'إعداد سريع وسهل: ابدأ الشراء أو النشر في بضع خطوات فقط';
 
   @override
-  String get individualAdvantage1 => 'إنشر إعلانك لمدة شهر مجانا';
+  String get individualAdvantage1 => 'تواصل مباشرةً مع المشترين لإتمام الصفقات بسرعة وسهولة.';
 
   @override
-  String get individualAdvantage2 => 'قم بالترقية إعلانك ب 3.100 فقط';
+  String get individualAdvantage2 => 'انشر منتجاتك بسرعة دون أي إعدادات معقدة.';
 
   @override
-  String get individualAdvantage3 => 'قم بالنشر مجانا في جميع الفئات';
+  String get individualAdvantage3 => 'تواصل مع المشترين القريبين منك وقم ببيع أغراضك الشخصية بسهولة.';
 
   @override
-  String get businessAdvantage1 => 'إنشر بلاحدود مقابل 20 ريال فقط';
+  String get businessAdvantage1 => 'ابنِ ثقة عملائك من خلال ملف تعريف احترافي وتقييمات إيجابية.';
 
   @override
-  String get businessAdvantage2 => 'قم بالنشر في جميع الفئات في متجرك الخاص';
+  String get businessAdvantage2 => 'اعرض وأدر منتجات متعددة من ملف تعريف واحد.';
 
   @override
-  String get businessAdvantage3 => 'قم بإنشاء متجرك الخاص';
+  String get businessAdvantage3 => 'زد فرص مبيعاتك ووسّع نطاق علامتك التجارية.';
 
   @override
   String get listYourProductTitle => 'قم بإدراج منتجك';

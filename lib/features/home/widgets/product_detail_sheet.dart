@@ -409,7 +409,7 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
                       Text(
                         product.details.trim(),
                         style: AppThemes.f14w400.copyWith(
-                          color: const Color(0xFF8F9BB3),
+                          color: AppColors.brandBlack,
                           height: 1.5,
                         ),
                       ),
@@ -470,8 +470,7 @@ class _ProductDetailSheetState extends State<ProductDetailSheet>
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    '${localizations.sellerTypeTitle}: '
-                                    '$localizedSellerType',
+                                    localizedSellerType,
                                     style: AppThemes.f12w500.copyWith(
                                       color: Colors.green,
                                       fontWeight: FontWeight.w600,
