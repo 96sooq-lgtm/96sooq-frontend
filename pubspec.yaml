@@ -2,7 +2,7 @@ name: _96_sooq
 description: "A new Flutter project."
 publish_to: "none"
 
-version: 1.0.0+7
+version: 1.0.0+8
 
 environment:
   sdk: ^3.10.7
@@ -43,6 +43,8 @@ dependencies:
   firebase_core: ^4.5.0
   firebase_messaging: ^16.1.2
   flutter_local_notifications: ^17.2.4
+  sign_in_with_apple: ^6.1.4
+  crypto: ^3.0.6
 
 dev_dependencies:
   flutter_test:

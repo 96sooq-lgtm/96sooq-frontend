@@ -5,6 +5,8 @@ sealed class AuthEvent {}
 
 final class GoogleSignInRequested extends AuthEvent {}
 
+final class AppleSignInRequested extends AuthEvent {}
+
 final class AuthSessionChanged extends AuthEvent {
   AuthSessionChanged({required this.event, required this.session});
 
@@ -37,3 +39,6 @@ final class CompleteProfileRequested extends AuthEvent {
 }
 
 final class LogoutRequested extends AuthEvent {}
+
+final class DeleteAccountRequested extends AuthEvent {}
+

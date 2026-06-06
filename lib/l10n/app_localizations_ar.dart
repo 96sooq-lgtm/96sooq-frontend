@@ -889,4 +889,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get markAsSold => 'تحديد كمباع';
+
+  @override
+  String get deleteAccountTitle => 'حذف الحساب';
+
+  @override
+  String get deleteAccountMessage => 'هل أنت متأكد أنك تريد حذف حسابك؟ هذا الإجراء دائم ولا يمكن التراجع عنه. سيتم حذف جميع بياناتك وإعلاناتك وسجلاتك.';
+
+  @override
+  String get deleteAccountConfirm => 'نعم، احذف حسابي';
+
+  @override
+  String get accountDeletedSuccess => 'تم حذف حسابك بنجاح.';
+
+  @override
+  String get deletingAccountText => 'جاري حذف الحساب...';
 }

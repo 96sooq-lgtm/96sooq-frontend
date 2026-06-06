@@ -35,6 +35,14 @@ class AuthApiService {
     }
   }
 
+  Future<void> deleteAccount() async {
+    try {
+      await DioServices.client.delete(ApiEndpoints.deleteAccount);
+    } on DioException catch (e) {
+      throw Exception(_buildDioErrorMessage('delete account', e));
+    }
+  }
+
   CheckUserResponse _parseCheckUserResponse(Response<dynamic> response) {
     final data = response.data;
     if (data is! Map<String, dynamic>) {

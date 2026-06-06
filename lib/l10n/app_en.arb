@@ -350,5 +350,11 @@
   "deleteListingMessage": "Are you sure you want to delete this listing?",
   "deleteText": "Delete",
   
-  "markAsSold": "Mark as Sold"
+  "markAsSold": "Mark as Sold",
+
+  "deleteAccountTitle": "Delete Account",
+  "deleteAccountMessage": "Are you sure you want to delete your account? This action is permanent and cannot be undone. All your data, listings, and history will be removed.",
+  "deleteAccountConfirm": "Yes, Delete My Account",
+  "accountDeletedSuccess": "Your account has been successfully deleted.",
+  "deletingAccountText": "Deleting account..."
 }

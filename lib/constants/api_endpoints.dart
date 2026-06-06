@@ -118,4 +118,5 @@ class ApiEndpoints {
   static String notificationMarkRead(String notificationId) =>
       '$baseUrl/api/notifications/$notificationId';
   static const String userLanguage = '$baseUrl/api/users/me/language';
+  static const String deleteAccount = '$baseUrl/api/users/me';
 }

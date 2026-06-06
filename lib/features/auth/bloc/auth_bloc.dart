@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer' as developer;
+import 'dart:math' as math;
 
 import 'package:_96_sooq/features/auth/data/models/check_user_request_model.dart';
 import 'package:_96_sooq/features/auth/data/models/complete_profile_request_model.dart';
@@ -8,8 +10,10 @@ import 'package:_96_sooq/features/auth/data/models/auth_user_model.dart'
 import 'package:_96_sooq/features/auth/data/services/auth_api_service.dart';
 import 'package:_96_sooq/features/auth/domain/auth_session_repository.dart';
 import 'package:_96_sooq/features/notifications/data/notification_registration_service.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'auth_event.dart';
@@ -29,10 +33,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
            notificationRegistrationService ?? NotificationRegistrationService(),
        super(AuthInitial()) {
     on<GoogleSignInRequested>(_onGoogleSignInRequested);
+    on<AppleSignInRequested>(_onAppleSignInRequested);
     on<AuthSessionChanged>(_onAuthSessionChanged);
     on<OAuthCheckUserRequested>(_onOAuthCheckUserRequested);
     on<CompleteProfileRequested>(_onCompleteProfileRequested);
     on<LogoutRequested>(_onLogoutRequested);
+    on<DeleteAccountRequested>(_onDeleteAccountRequested);
 
     _authSubscription = _supabaseClient.auth.onAuthStateChange.listen((data) {
       add(AuthSessionChanged(event: data.event, session: data.session));
@@ -51,12 +57,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     GoogleSignInRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
+    emit(AuthLoading('google'));
     try {
       await _supabaseClient.auth.signInWithOAuth(
         OAuthProvider.google,
         redirectTo: 'io.supabase.flutter://login-callback/',
-        authScreenLaunchMode: LaunchMode.externalApplication,
+        authScreenLaunchMode: LaunchMode.inAppBrowserView,
       );
       emit(AuthOAuthInProgress());
     } on AuthException catch (e, st) {
@@ -92,6 +98,84 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  /// Generates a cryptographically-secure random nonce.
+  String _generateNonce([int length = 32]) {
+    const charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = math.Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+        .join();
+  }
+
+  /// Returns the sha256 hash of [input] in hex notation.
+  String _sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
+  Future<void> _onAppleSignInRequested(
+    AppleSignInRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading('apple'));
+    try {
+      final rawNonce = _generateNonce();
+      final hashedNonce = _sha256ofString(rawNonce);
+
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: hashedNonce,
+      );
+
+      final idToken = credential.identityToken;
+      if (idToken == null) {
+        emit(AuthFailure(message: 'Apple Sign In failed: no identity token.'));
+        return;
+      }
+
+      await _supabaseClient.auth.signInWithIdToken(
+        provider: OAuthProvider.apple,
+        idToken: idToken,
+        nonce: rawNonce,
+      );
+
+      // The auth state change listener will handle the rest
+      // (OAuthCheckUserRequested → check user → auth/profile completion)
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (e.code == AuthorizationErrorCode.canceled) {
+        // User cancelled — just go back to initial
+        emit(AuthInitial());
+        return;
+      }
+      developer.log(
+        'Apple Sign In authorization error: ${e.code} ${e.message}',
+        name: 'AuthBloc',
+        error: e,
+      );
+      emit(AuthFailure(message: 'Apple sign in failed: ${e.message}'));
+    } on AuthException catch (e, st) {
+      developer.log(
+        'Apple Sign In Supabase error: ${e.message}',
+        name: 'AuthBloc',
+        error: e,
+        stackTrace: st,
+      );
+      emit(AuthFailure(message: 'Apple sign in failed: ${e.message}'));
+    } catch (e, st) {
+      developer.log(
+        'Apple Sign In unexpected error',
+        name: 'AuthBloc',
+        error: e,
+        stackTrace: st,
+      );
+      emit(AuthFailure(message: 'Apple sign in failed: $e'));
+    }
+  }
+
   void _onAuthSessionChanged(
     AuthSessionChanged event,
     Emitter<AuthState> emit,
@@ -110,6 +194,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  /// Detect OAuth provider from session metadata.
+  String _detectProvider(Session session) {
+    final appMetadata = session.user.appMetadata;
+    final provider = appMetadata['provider']?.toString().toLowerCase() ?? '';
+    if (provider.contains('apple')) return 'apple';
+    return 'google';
+  }
+
   Future<void> _onOAuthCheckUserRequested(
     OAuthCheckUserRequested event,
     Emitter<AuthState> emit,
@@ -119,7 +211,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
 
     _isProcessingOAuthCheck = true;
-    emit(AuthLoading());
+    final provider = _detectProvider(event.session);
+    emit(AuthLoading(provider));
 
     try {
       final providerId = event.session.user.id;
@@ -133,7 +226,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(
           AuthFailure(
             message:
-                'Unable to continue Google sign in. Missing provider id or email.',
+                'Unable to continue sign in. Missing provider id or email.',
           ),
         );
         return;
@@ -141,7 +234,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       final response = await _authApiService.checkUser(
         CheckUserRequest(
-          provider: 'google',
+          provider: provider,
           providerId: providerId,
           email: email,
         ),
@@ -182,6 +275,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           providerId: providerId,
           profilePicture: profilePicture,
           initialName: initialName,
+          provider: provider,
         ),
       );
     } catch (e, st) {
@@ -201,7 +295,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     CompleteProfileRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
+    emit(AuthLoading('complete_profile'));
 
     try {
       final response = await _authApiService.completeProfile(
@@ -270,13 +364,45 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     LogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
+    emit(AuthLoading('logout'));
     await _notificationRegistrationService.unregisterCurrentToken();
     await _authSessionRepository.clearSession();
     try {
       await _supabaseClient.auth.signOut();
     } catch (_) {}
     emit(AuthUnauthenticated());
+  }
+
+  Future<void> _onDeleteAccountRequested(
+    DeleteAccountRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading('delete_account'));
+    try {
+      // Call the backend to delete user data
+      await _authApiService.deleteAccount();
+
+      // Unregister push token
+      await _notificationRegistrationService.unregisterCurrentToken();
+
+      // Clear local session
+      await _authSessionRepository.clearSession();
+
+      // Sign out of Supabase
+      try {
+        await _supabaseClient.auth.signOut();
+      } catch (_) {}
+
+      emit(AuthAccountDeleted());
+    } catch (e, st) {
+      developer.log(
+        'Delete account failed',
+        name: 'AuthBloc',
+        error: e,
+        stackTrace: st,
+      );
+      emit(AuthFailure(message: 'Failed to delete account: $e'));
+    }
   }
 
   @override

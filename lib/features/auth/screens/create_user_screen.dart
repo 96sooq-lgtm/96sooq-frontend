@@ -18,12 +18,14 @@ class CreateUserScreen extends StatefulWidget {
     required this.providerId,
     this.profilePicture = '',
     this.initialName = '',
+    this.provider = 'google',
   });
 
   final String email;
   final String providerId;
   final String profilePicture;
   final String initialName;
+  final String provider;
 
   @override
   State<CreateUserScreen> createState() => _CreateUserScreenState();
@@ -67,7 +69,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
 
     context.read<AuthBloc>().add(
       CompleteProfileRequested(
-        provider: 'google',
+        provider: widget.provider,
         providerId: widget.providerId,
         email: widget.email,
         name: name,

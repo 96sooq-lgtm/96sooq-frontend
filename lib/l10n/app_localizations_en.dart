@@ -883,4 +883,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markAsSold => 'Mark as Sold';
+
+  @override
+  String get deleteAccountTitle => 'Delete Account';
+
+  @override
+  String get deleteAccountMessage => 'Are you sure you want to delete your account? This action is permanent and cannot be undone. All your data, listings, and history will be removed.';
+
+  @override
+  String get deleteAccountConfirm => 'Yes, Delete My Account';
+
+  @override
+  String get accountDeletedSuccess => 'Your account has been successfully deleted.';
+
+  @override
+  String get deletingAccountText => 'Deleting account...';
 }

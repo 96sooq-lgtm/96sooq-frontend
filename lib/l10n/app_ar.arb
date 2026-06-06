@@ -350,5 +350,11 @@
   "deleteListingMessage": "هل أنت متأكد أنك تريد حذف هذا الإعلان؟",
   "deleteText": "حذف",
   
-  "markAsSold": "تحديد كمباع"
+  "markAsSold": "تحديد كمباع",
+
+  "deleteAccountTitle": "حذف الحساب",
+  "deleteAccountMessage": "هل أنت متأكد أنك تريد حذف حسابك؟ هذا الإجراء دائم ولا يمكن التراجع عنه. سيتم حذف جميع بياناتك وإعلاناتك وسجلاتك.",
+  "deleteAccountConfirm": "نعم، احذف حسابي",
+  "accountDeletedSuccess": "تم حذف حسابك بنجاح.",
+  "deletingAccountText": "جاري حذف الحساب..."
 }

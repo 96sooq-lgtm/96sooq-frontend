@@ -56,6 +56,7 @@ class _LoginScreenState extends State<LoginScreen>
             providerId: state.providerId,
             profilePicture: state.profilePicture,
             initialName: state.initialName,
+            provider: state.provider,
           ),
         ),
       );
@@ -176,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen>
                             children: [
                               BlocBuilder<AuthBloc, AuthState>(
                                 builder: (context, state) {
-                                  final isLoading = state is AuthLoading;
+                                  final isLoading = state is AuthLoading && state.provider == 'google';
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 16,
@@ -216,25 +217,27 @@ class _LoginScreenState extends State<LoginScreen>
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,
                                 ),
-                                child: CustomIconButtonWhite(
-                                  text: localizations.continueWithAppleText,
-                                  icon: AppAssets.appleLogoSvg,
-                                  textStyle: isArabic
-                                      ? AppThemes.f18w600.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                        )
-                                      : AppThemes.f16w600.copyWith(
-                                          fontWeight: isArabic
-                                              ? FontWeight.w700
-                                              : FontWeight.w600,
-                                        ),
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Apple sign in is coming soon',
-                                        ),
-                                      ),
+                                child: BlocBuilder<AuthBloc, AuthState>(
+                                  builder: (context, state) {
+                                    final isLoading = state is AuthLoading && state.provider == 'apple';
+                                    return CustomIconButtonWhite(
+                                      text: localizations.continueWithAppleText,
+                                      icon: AppAssets.appleLogoSvg,
+                                      textStyle: isArabic
+                                          ? AppThemes.f18w600.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            )
+                                          : AppThemes.f16w600.copyWith(
+                                              fontWeight: isArabic
+                                                  ? FontWeight.w700
+                                                  : FontWeight.w600,
+                                            ),
+                                      isLoading: isLoading,
+                                      onPressed: () {
+                                        context.read<AuthBloc>().add(
+                                          AppleSignInRequested(),
+                                        );
+                                      },
                                     );
                                   },
                                 ),
