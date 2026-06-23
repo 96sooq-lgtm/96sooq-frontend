@@ -27,6 +27,9 @@ class CreateUserScreen extends StatefulWidget {
   final String initialName;
   final String provider;
 
+  /// Whether the name/email came from Apple and should not be editable.
+  bool get isApple => provider == 'apple';
+
   @override
   State<CreateUserScreen> createState() => _CreateUserScreenState();
 }
@@ -60,19 +63,36 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
     final name = fullNameController.text.trim();
     final phone = mobileNumberController.text.trim();
 
-    if (name.isEmpty || phone.isEmpty) {
+    // For Apple users, the name comes from the Apple credential and may be
+    // empty on subsequent authorisations (Apple only shares it once). We must
+    // NOT block the user from proceeding because of a missing name — Apple's
+    // Guideline 4 forbids asking for info already provided by Sign in with
+    // Apple.  Phone number is the only truly required user input.
+    if (!widget.isApple && name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseFullAllRequiredFields)),
+      );
+      return;
+    }
+    if (phone.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.pleaseFullAllRequiredFields)),
       );
       return;
     }
 
+    // For Apple users, if name is empty (Apple only shares it on first auth),
+    // derive a fallback from the email prefix so the backend has something.
+    final effectiveName = name.isNotEmpty
+        ? name
+        : (widget.isApple ? widget.email.split('@').first : name);
+
     context.read<AuthBloc>().add(
       CompleteProfileRequested(
         provider: widget.provider,
         providerId: widget.providerId,
         email: widget.email,
-        name: name,
+        name: effectiveName,
         phoneNumber: '${countryCodeController.text}$phone',
         profilePicture: widget.profilePicture,
       ),
@@ -128,14 +148,18 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                       Image.asset(AppAssets.logo),
                       const SizedBox(height: 10),
                       Text(
-                        localizations.createAccountTitle,
+                        widget.isApple
+                            ? localizations.createAccountTitle
+                            : localizations.createAccountTitle,
                         style: AppThemes.f20w600.copyWith(
                           color: AppColors.white,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        localizations.signupDescriptionText,
+                        widget.isApple
+                            ? localizations.enterMobileNumberHint
+                            : localizations.signupDescriptionText,
                         textAlign: TextAlign.center,
                         style: AppThemes.f12w400.copyWith(
                           color: AppColors.subTextColor,
@@ -171,14 +195,23 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: .start,
                       children: [
-                        Textfieldlabeltext(
-                          text: localizations.enterFullNameHint,
-                        ),
-                        const SizedBox(height: 7),
-                        CustomTextFormField(
-                          labelText: localizations.enterFullNameHint,
-                          controller: fullNameController,
-                        ),
+                        // ── Name field ──────────────────────────────────
+                        // For Apple: only show if Apple actually provided a
+                        // name, and it's always disabled (read-only).
+                        // For Google: show as editable.
+                        if (!widget.isApple || widget.initialName.isNotEmpty) ...[
+                          Textfieldlabeltext(
+                            text: localizations.enterFullNameHint,
+                          ),
+                          const SizedBox(height: 7),
+                          CustomTextFormField(
+                            labelText: localizations.enterFullNameHint,
+                            controller: fullNameController,
+                            enabled: !widget.isApple,
+                          ),
+                        ],
+
+                        // ── Mobile number field ─────────────────────────
                         Textfieldlabeltext(
                           text: localizations.enterMobileNumberHint,
                         ),
@@ -225,13 +258,23 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                             ),
                           ],
                         ),
-                        Textfieldlabeltext(text: localizations.email),
-                        const SizedBox(height: 7),
-                        CustomTextFormField(
-                          labelText: '',
-                          enabled: false,
-                          controller: emailController,
-                        ),
+
+                        // ── Email field ─────────────────────────────────
+                        // For Apple: hide entirely — Apple already provided
+                        // the email via the Authentication Services
+                        // framework.  Showing it as a disabled field
+                        // suggests we're asking for it.
+                        // For Google: show as disabled read-only.
+                        if (!widget.isApple) ...[
+                          Textfieldlabeltext(text: localizations.email),
+                          const SizedBox(height: 7),
+                          CustomTextFormField(
+                            labelText: '',
+                            enabled: false,
+                            controller: emailController,
+                          ),
+                        ],
+
                         const SizedBox(height: 20),
                         BlocBuilder<AuthBloc, AuthState>(
                           builder: (context, state) {

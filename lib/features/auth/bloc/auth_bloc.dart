@@ -53,6 +53,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   bool _isProcessingOAuthCheck = false;
 
+  // Cached Apple credential data — Apple only provides name/email on the
+  // *first* authorisation, so we must capture it from the credential directly.
+  String? _pendingAppleFullName;
+  String? _pendingAppleEmail;
+
   Future<void> _onGoogleSignInRequested(
     GoogleSignInRequested event,
     Emitter<AuthState> emit,
@@ -130,6 +135,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ],
         nonce: hashedNonce,
       );
+
+      // Cache Apple-provided name and email (only available on first auth).
+      final givenName = credential.givenName ?? '';
+      final familyName = credential.familyName ?? '';
+      final appleName = '$givenName $familyName'.trim();
+      if (appleName.isNotEmpty) {
+        _pendingAppleFullName = appleName;
+      }
+      if (credential.email != null && credential.email!.isNotEmpty) {
+        _pendingAppleEmail = credential.email;
+      }
 
       final idToken = credential.identityToken;
       if (idToken == null) {
@@ -216,11 +232,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       final providerId = event.session.user.id;
-      final email = event.session.user.email ?? '';
       final profilePicture =
           (event.session.user.userMetadata?['avatar_url'] ?? '').toString();
-      final initialName = (event.session.user.userMetadata?['full_name'] ?? '')
-          .toString();
+
+      // For Apple Sign In, prefer the cached credential data over Supabase
+      // userMetadata, because Apple only provides name/email on the *first*
+      // authorisation and Supabase may not relay them.
+      String email;
+      String initialName;
+      if (provider == 'apple') {
+        email = _pendingAppleEmail ?? event.session.user.email ?? '';
+        initialName = _pendingAppleFullName ??
+            (event.session.user.userMetadata?['full_name'] ?? '').toString();
+        // Clear cached data after use
+        _pendingAppleFullName = null;
+        _pendingAppleEmail = null;
+      } else {
+        email = event.session.user.email ?? '';
+        initialName = (event.session.user.userMetadata?['full_name'] ?? '')
+            .toString();
+      }
 
       if (providerId.isEmpty || email.isEmpty) {
         emit(
